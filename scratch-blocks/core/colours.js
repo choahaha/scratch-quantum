@@ -94,10 +94,10 @@ Blockly.Colours = {
     "quaternary": "#FF3355"
   },
   "quantum": {
-    "primary": "#8B5CF6",
-    "secondary": "#7C3AED",
-    "tertiary": "#6D28D9",
-    "quaternary": "#6D28D9"
+    "primary": "#FF4081",
+    "secondary": "#F03A77",
+    "tertiary": "#E0336D",
+    "quaternary": "#E0336D"
   },
   "text": "#FFFFFF",
   "workspace": "#F9F9F9",
