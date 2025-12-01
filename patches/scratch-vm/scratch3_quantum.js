@@ -1,0 +1,157 @@
+const Cast = require('../util/cast');
+const {fetchWithTimeout} = require('../util/fetch-with-timeout');
+const log = require('../util/log');
+
+// Railway 백엔드 API URL
+const QUANTUM_API_URL = 'https://web-production-201eb.up.railway.app';
+
+// API 요청 타임아웃 (30초)
+const SERVER_TIMEOUT_MS = 30000;
+
+// 전역 회로 상태 (모든 스프라이트에서 공유)
+let globalCircuit = {
+    blocks: [],
+    result: ''
+};
+
+class Scratch3QuantumBlocks {
+    constructor (runtime) {
+        this.runtime = runtime;
+    }
+
+    getPrimitives () {
+        return {
+            quantum_createCircuit: this.createCircuit,
+            quantum_gateH: this.gateH,
+            quantum_gateX: this.gateX,
+            quantum_gateY: this.gateY,
+            quantum_gateZ: this.gateZ,
+            quantum_gateCX: this.gateCX,
+            quantum_measure: this.measure,
+            quantum_measureAll: this.measureAll,
+            quantum_run: this.run,
+            quantum_getResult: this.getResult
+        };
+    }
+
+    createCircuit (args) {
+        const numQubits = Cast.toNumber(args.NUM_QUBITS);
+        const numClbits = Cast.toNumber(args.NUM_CLBITS);
+
+        globalCircuit = {
+            blocks: [{
+                opcode: 'quantum_createCircuit',
+                args: {
+                    NUM_QUBITS: numQubits,
+                    NUM_CLBITS: numClbits
+                }
+            }],
+            result: ''
+        };
+
+        log.log(`Quantum: Created circuit with ${numQubits} qubits, ${numClbits} clbits`);
+    }
+
+    gateH (args) {
+        const qubit = Cast.toNumber(args.QUBIT);
+        globalCircuit.blocks.push({
+            opcode: 'quantum_gateH',
+            args: { QUBIT: qubit }
+        });
+        log.log(`Quantum: Added H gate on qubit ${qubit}`);
+    }
+
+    gateX (args) {
+        const qubit = Cast.toNumber(args.QUBIT);
+        globalCircuit.blocks.push({
+            opcode: 'quantum_gateX',
+            args: { QUBIT: qubit }
+        });
+    }
+
+    gateY (args) {
+        const qubit = Cast.toNumber(args.QUBIT);
+        globalCircuit.blocks.push({
+            opcode: 'quantum_gateY',
+            args: { QUBIT: qubit }
+        });
+    }
+
+    gateZ (args) {
+        const qubit = Cast.toNumber(args.QUBIT);
+        globalCircuit.blocks.push({
+            opcode: 'quantum_gateZ',
+            args: { QUBIT: qubit }
+        });
+    }
+
+    gateCX (args) {
+        const control = Cast.toNumber(args.CONTROL);
+        const target = Cast.toNumber(args.TARGET);
+        globalCircuit.blocks.push({
+            opcode: 'quantum_gateCX',
+            args: { CONTROL: control, TARGET: target }
+        });
+    }
+
+    measure (args) {
+        const qubit = Cast.toNumber(args.QUBIT);
+        const clbit = Cast.toNumber(args.CLBIT);
+        globalCircuit.blocks.push({
+            opcode: 'quantum_measure',
+            args: { QUBIT: qubit, CLBIT: clbit }
+        });
+        log.log(`Quantum: Added measure qubit ${qubit} -> clbit ${clbit}`);
+    }
+
+    measureAll () {
+        globalCircuit.blocks.push({
+            opcode: 'quantum_measureAll',
+            args: {}
+        });
+        log.log('Quantum: Added measureAll');
+    }
+
+    run (args) {
+        const shots = Cast.toNumber(args.SHOTS);
+
+        if (globalCircuit.blocks.length === 0 ||
+            globalCircuit.blocks[0].opcode !== 'quantum_createCircuit') {
+            globalCircuit.result = 'Error: 먼저 "양자 회로 만들기" 블록을 사용하세요!';
+            log.warn('Quantum: No circuit created before run');
+            return Promise.resolve();
+        }
+
+        log.log(`Quantum: Running circuit with ${shots} shots, blocks:`, JSON.stringify(globalCircuit.blocks));
+
+        return fetchWithTimeout(`${QUANTUM_API_URL}/api/quantum/execute`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                blocks: globalCircuit.blocks,
+                shots: shots
+            })
+        }, SERVER_TIMEOUT_MS)
+            .then(response => response.json())
+            .then(data => {
+                log.log('Quantum: Response:', data);
+                if (data.success) {
+                    globalCircuit.result = data.result_text || data.result;
+                } else {
+                    globalCircuit.result = `Error: ${data.error}`;
+                }
+            })
+            .catch(error => {
+                log.warn(`Quantum execution error: ${error}`);
+                globalCircuit.result = `Error: ${error.message}`;
+            });
+    }
+
+    getResult () {
+        return globalCircuit.result || '';
+    }
+}
+
+module.exports = Scratch3QuantumBlocks;

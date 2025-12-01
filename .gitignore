@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+*.cache
+
+# Environment
+.env
+.env.local
+
+# Sub-repositories (have their own .git)
+# quantum-backend is on Railway
+quantum-backend/
+
+# scratch-blocks and scratch-gui are forks - track separately
+# scratch-blocks/
+# scratch-gui/
