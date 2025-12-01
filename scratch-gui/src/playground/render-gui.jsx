@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {compose} from 'redux';
 
 import AppStateHOC from '../lib/app-state-hoc.jsx';
+import AuthManagerHOC from '../lib/auth-manager-hoc.jsx';
 import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
@@ -36,6 +37,7 @@ export default appTarget => {
     // ability to compose reducers.
     const WrappedGui = compose(
         AppStateHOC,
+        AuthManagerHOC,
         HashParserHOC
     )(GUI);
 

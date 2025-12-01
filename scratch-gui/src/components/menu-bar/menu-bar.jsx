@@ -807,50 +807,90 @@ class MenuBar extends React.Component {
                             </React.Fragment>
                         )
                     ) : (
-                        // ******** no login session is available, so don't show login stuff
+                        // ******** Custom auth - show username and logout
                         <React.Fragment>
-                            {this.props.showComingSoon ? (
-                                <React.Fragment>
-                                    <MenuBarItemTooltip id="mystuff">
-                                        <div
-                                            className={classNames(
-                                                styles.menuBarItem,
-                                                styles.hoverable,
-                                                styles.mystuffButton
-                                            )}
-                                        >
-                                            <img
-                                                className={styles.mystuffIcon}
-                                                src={mystuffIcon}
-                                            />
-                                        </div>
-                                    </MenuBarItemTooltip>
-                                    <MenuBarItemTooltip
-                                        id="account-nav"
+                            {this.props.authUsername ? (
+                                <div
+                                    className={classNames(
+                                        styles.menuBarItem,
+                                        styles.hoverable,
+                                        styles.accountNavMenu,
+                                        {[styles.active]: this.props.accountMenuOpen}
+                                    )}
+                                    onMouseUp={this.props.onClickAccount}
+                                >
+                                    <img
+                                        className={styles.profileIcon}
+                                        src={profileIcon}
+                                    />
+                                    <span>
+                                        {this.props.authUsername}
+                                    </span>
+                                    <img
+                                        className={styles.dropdownCaretIcon}
+                                        src={dropdownCaret}
+                                    />
+                                    <MenuBarMenu
+                                        className={classNames(styles.menuBarMenu)}
+                                        open={this.props.accountMenuOpen}
                                         place={this.props.isRtl ? 'right' : 'left'}
+                                        onRequestClose={this.props.onRequestCloseAccount}
                                     >
-                                        <div
-                                            className={classNames(
-                                                styles.menuBarItem,
-                                                styles.hoverable,
-                                                styles.accountNavMenu
-                                            )}
+                                        <MenuSection>
+                                            <MenuItem onClick={this.props.onLogout}>
+                                                <FormattedMessage
+                                                    defaultMessage="Sign out"
+                                                    description="Sign out from the application"
+                                                    id="gui.menuBar.signOut"
+                                                />
+                                            </MenuItem>
+                                        </MenuSection>
+                                    </MenuBarMenu>
+                                </div>
+                            ) : (
+                                this.props.showComingSoon ? (
+                                    <React.Fragment>
+                                        <MenuBarItemTooltip id="mystuff">
+                                            <div
+                                                className={classNames(
+                                                    styles.menuBarItem,
+                                                    styles.hoverable,
+                                                    styles.mystuffButton
+                                                )}
+                                            >
+                                                <img
+                                                    className={styles.mystuffIcon}
+                                                    src={mystuffIcon}
+                                                />
+                                            </div>
+                                        </MenuBarItemTooltip>
+                                        <MenuBarItemTooltip
+                                            id="account-nav"
+                                            place={this.props.isRtl ? 'right' : 'left'}
                                         >
-                                            <img
-                                                className={styles.profileIcon}
-                                                src={profileIcon}
-                                            />
-                                            <span>
-                                                {'scratch-cat'}
-                                            </span>
-                                            <img
-                                                className={styles.dropdownCaretIcon}
-                                                src={dropdownCaret}
-                                            />
-                                        </div>
-                                    </MenuBarItemTooltip>
-                                </React.Fragment>
-                            ) : []}
+                                            <div
+                                                className={classNames(
+                                                    styles.menuBarItem,
+                                                    styles.hoverable,
+                                                    styles.accountNavMenu
+                                                )}
+                                            >
+                                                <img
+                                                    className={styles.profileIcon}
+                                                    src={profileIcon}
+                                                />
+                                                <span>
+                                                    {'scratch-cat'}
+                                                </span>
+                                                <img
+                                                    className={styles.dropdownCaretIcon}
+                                                    src={dropdownCaret}
+                                                />
+                                            </div>
+                                        </MenuBarItemTooltip>
+                                    </React.Fragment>
+                                ) : []
+                            )}
                         </React.Fragment>
                     )}
                 </div>
@@ -864,6 +904,7 @@ class MenuBar extends React.Component {
 MenuBar.propTypes = {
     aboutMenuOpen: PropTypes.bool,
     accountMenuOpen: PropTypes.bool,
+    authUsername: PropTypes.string,
     authorId: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     authorThumbnailUrl: PropTypes.string,
     authorUsername: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
@@ -919,6 +960,7 @@ MenuBar.propTypes = {
     onClickSaveAsCopy: PropTypes.func,
     onClickSettings: PropTypes.func,
     onLogOut: PropTypes.func,
+    onLogout: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
     onOpenDebugModal: PropTypes.func,
@@ -955,9 +997,12 @@ MenuBar.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
     const loadingState = state.scratchGui.projectState.loadingState;
     const user = state.session && state.session.session && state.session.session.user;
+    // Get username from custom auth state
+    const authProfile = state.scratchGui.auth && state.scratchGui.auth.profile;
     return {
         aboutMenuOpen: aboutMenuOpen(state),
         accountMenuOpen: accountMenuOpen(state),
+        authUsername: authProfile ? authProfile.username : null,
         currentLocale: state.locales.locale,
         fileMenuOpen: fileMenuOpen(state),
         editMenuOpen: editMenuOpen(state),
