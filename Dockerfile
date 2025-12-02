@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Install Python and build dependencies
+RUN apk add --no-cache python3 py3-pip make g++ && ln -sf python3 /usr/bin/python
+
 WORKDIR /app
 
 # Copy both scratch-blocks and scratch-gui
