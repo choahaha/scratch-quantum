@@ -9,9 +9,9 @@ WORKDIR /app
 COPY scratch-blocks ./scratch-blocks
 COPY scratch-gui ./scratch-gui
 
-# Install scratch-blocks dependencies
+# Install scratch-blocks dependencies (skip prepublish script that requires Java)
 WORKDIR /app/scratch-blocks
-RUN npm install --legacy-peer-deps
+RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Install scratch-gui dependencies and build
 WORKDIR /app/scratch-gui
