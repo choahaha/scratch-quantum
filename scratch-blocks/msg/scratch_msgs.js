@@ -5476,7 +5476,18 @@ Blockly.ScratchMsgs.locales["en"] =
     "NEW_BROADCAST_MESSAGE": "New message",
     "NEW_BROADCAST_MESSAGE_TITLE": "New message name:",
     "BROADCAST_MODAL_TITLE": "New Message",
-    "DEFAULT_BROADCAST_MESSAGE_NAME": "message1"
+    "DEFAULT_BROADCAST_MESSAGE_NAME": "message1",
+    "CATEGORY_QUANTUM": "Quantum",
+    "QUANTUM_CREATECIRCUIT": "create quantum circuit qubits %1 classical bits %2",
+    "QUANTUM_GATE_H": "H gate qubit %1",
+    "QUANTUM_GATE_X": "X gate qubit %1",
+    "QUANTUM_GATE_Y": "Y gate qubit %1",
+    "QUANTUM_GATE_Z": "Z gate qubit %1",
+    "QUANTUM_GATE_CX": "CNOT gate control %1 target %2",
+    "QUANTUM_MEASURE": "measure qubit %1 to classical bit %2",
+    "QUANTUM_MEASUREALL": "measure all qubits",
+    "QUANTUM_RUN": "run quantum circuit shots %1",
+    "QUANTUM_GETRESULT": "quantum measurement result"
 };
 
 Blockly.ScratchMsgs.locales["es"] =
@@ -8933,7 +8944,18 @@ Blockly.ScratchMsgs.locales["ko"] =
     "NEW_BROADCAST_MESSAGE": "새로운 메시지",
     "NEW_BROADCAST_MESSAGE_TITLE": "새로운 메시지 이름:",
     "BROADCAST_MODAL_TITLE": "새로운 메시지",
-    "DEFAULT_BROADCAST_MESSAGE_NAME": "메시지1"
+    "DEFAULT_BROADCAST_MESSAGE_NAME": "메시지1",
+    "CATEGORY_QUANTUM": "양자",
+    "QUANTUM_CREATECIRCUIT": "양자 회로 만들기 큐비트 %1 클래식 비트 %2",
+    "QUANTUM_GATE_H": "H 게이트 큐비트 %1",
+    "QUANTUM_GATE_X": "X 게이트 큐비트 %1",
+    "QUANTUM_GATE_Y": "Y 게이트 큐비트 %1",
+    "QUANTUM_GATE_Z": "Z 게이트 큐비트 %1",
+    "QUANTUM_GATE_CX": "CNOT 게이트 제어 %1 대상 %2",
+    "QUANTUM_MEASURE": "측정하기 큐비트 %1 클래식 비트 %2",
+    "QUANTUM_MEASUREALL": "모든 큐비트 측정하기",
+    "QUANTUM_RUN": "양자 회로 실행하기 샷 %1",
+    "QUANTUM_GETRESULT": "양자 측정 결과"
 };
 
 Blockly.ScratchMsgs.locales["ha"] =

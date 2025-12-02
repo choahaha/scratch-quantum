@@ -34,7 +34,7 @@ Blockly.Blocks['quantum_createCircuit'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_createCircuit",
-      "message0": "양자 회로 만들기 큐비트 %1 클래식 비트 %2",
+      "message0": Blockly.Msg.QUANTUM_CREATECIRCUIT,
       "args0": [
         {
           "type": "input_value",
@@ -58,7 +58,7 @@ Blockly.Blocks['quantum_gateH'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_gateH",
-      "message0": "H 게이트 큐비트 %1",
+      "message0": Blockly.Msg.QUANTUM_GATE_H,
       "args0": [
         {
           "type": "input_value",
@@ -78,7 +78,7 @@ Blockly.Blocks['quantum_gateX'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_gateX",
-      "message0": "X 게이트 큐비트 %1",
+      "message0": Blockly.Msg.QUANTUM_GATE_X,
       "args0": [
         {
           "type": "input_value",
@@ -98,7 +98,7 @@ Blockly.Blocks['quantum_gateY'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_gateY",
-      "message0": "Y 게이트 큐비트 %1",
+      "message0": Blockly.Msg.QUANTUM_GATE_Y,
       "args0": [
         {
           "type": "input_value",
@@ -118,7 +118,7 @@ Blockly.Blocks['quantum_gateZ'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_gateZ",
-      "message0": "Z 게이트 큐비트 %1",
+      "message0": Blockly.Msg.QUANTUM_GATE_Z,
       "args0": [
         {
           "type": "input_value",
@@ -138,7 +138,7 @@ Blockly.Blocks['quantum_gateCX'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_gateCX",
-      "message0": "CNOT 게이트 제어 %1 대상 %2",
+      "message0": Blockly.Msg.QUANTUM_GATE_CX,
       "args0": [
         {
           "type": "input_value",
@@ -162,7 +162,7 @@ Blockly.Blocks['quantum_measure'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_measure",
-      "message0": "측정하기 큐비트 %1 클래식 비트 %2",
+      "message0": Blockly.Msg.QUANTUM_MEASURE,
       "args0": [
         {
           "type": "input_value",
@@ -186,7 +186,7 @@ Blockly.Blocks['quantum_measureAll'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_measureAll",
-      "message0": "모든 큐비트 측정하기",
+      "message0": Blockly.Msg.QUANTUM_MEASUREALL,
       "category": Blockly.Categories.quantum,
       "extensions": ["colours_quantum", "shape_statement"]
     });
@@ -200,7 +200,7 @@ Blockly.Blocks['quantum_run'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_run",
-      "message0": "양자 회로 실행하기 샷 %1",
+      "message0": Blockly.Msg.QUANTUM_RUN,
       "args0": [
         {
           "type": "input_value",
@@ -220,7 +220,7 @@ Blockly.Blocks['quantum_getResult'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_getResult",
-      "message0": "양자 측정 결과",
+      "message0": Blockly.Msg.QUANTUM_GETRESULT,
       "category": Blockly.Categories.quantum,
       "extensions": ["colours_quantum", "output_string"]
     });
