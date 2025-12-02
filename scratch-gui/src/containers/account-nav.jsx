@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import AccountNavComponent from '../components/menu-bar/account-nav.jsx';
+import {openStudentGallery} from '../reducers/modals';
 
 const AccountNav = function (props) {
     const {
@@ -25,6 +26,7 @@ const AccountNav = function (props) {
 AccountNav.propTypes = {
     isAdmin: PropTypes.bool,
     isRtl: PropTypes.bool,
+    onOpenStudentGallery: PropTypes.func,
     thumbnailUrl: PropTypes.string,
     username: PropTypes.string
 };
@@ -35,7 +37,9 @@ const mapStateToProps = state => ({
     username: state.scratchGui.auth.profile ? state.scratchGui.auth.profile.username : ''
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = dispatch => ({
+    onOpenStudentGallery: () => dispatch(openStudentGallery())
+});
 
 export default injectIntl(connect(
     mapStateToProps,

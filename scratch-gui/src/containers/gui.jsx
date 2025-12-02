@@ -23,7 +23,8 @@ import {
     closeBackdropLibrary,
     closeTelemetryModal,
     openExtensionLibrary,
-    closeDebugModal
+    closeDebugModal,
+    closeStudentGallery
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -175,6 +176,7 @@ const mapStateToProps = state => {
         ),
         telemetryModalVisible: state.scratchGui.modals.telemetryModal,
         tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
+        studentGalleryVisible: state.scratchGui.modals.studentGallery,
         vm: state.scratchGui.vm
     };
 };
@@ -187,7 +189,8 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseBackdropLibrary: () => dispatch(closeBackdropLibrary()),
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseDebugModal: () => dispatch(closeDebugModal()),
-    onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal())
+    onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
+    onRequestCloseStudentGallery: () => dispatch(closeStudentGallery())
 });
 
 const ConnectedGUI = injectIntl(connect(

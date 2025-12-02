@@ -1,0 +1,98 @@
+@import "../../css/colors.css";
+
+.gallery-content {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.gallery-item {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.gallery-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.screenshot {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+    background: #f0f0f0;
+}
+
+.item-info {
+    padding: 0.5rem;
+    border-top: 1px solid #eee;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: $text-primary;
+    margin: 0 0 0.25rem 0;
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: $text-primary-transparent;
+    margin: 0;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    color: $text-primary-transparent;
+}
+
+.empty {
+    text-align: center;
+    padding: 3rem;
+    color: $text-primary-transparent;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem 1rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.student-count {
+    font-size: 0.875rem;
+    color: $text-primary-transparent;
+}
+
+.refresh-button {
+    background: $motion-primary;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.refresh-button:hover {
+    background: $motion-tertiary;
+}

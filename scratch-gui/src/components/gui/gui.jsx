@@ -30,6 +30,7 @@ import Alerts from '../../containers/alerts.jsx';
 import DragLayer from '../../containers/drag-layer.jsx';
 import ConnectionModal from '../../containers/connection-modal.jsx';
 import TelemetryModal from '../telemetry-modal/telemetry-modal.jsx';
+import StudentGallery from '../../containers/student-gallery.jsx';
 
 import layout, {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 import {resolveStageSize} from '../../lib/screen-utils';
@@ -113,6 +114,7 @@ const GUIComponent = props => {
         onRequestCloseCostumeLibrary,
         onRequestCloseDebugModal,
         onRequestCloseTelemetryModal,
+        onRequestCloseStudentGallery,
         onSeeCommunity,
         onShare,
         onShowPrivacyPolicy,
@@ -123,6 +125,7 @@ const GUIComponent = props => {
         showComingSoon,
         soundsTabVisible,
         stageSizeMode,
+        studentGalleryVisible,
         targetIsStage,
         telemetryModalVisible,
         theme,
@@ -202,6 +205,9 @@ const GUIComponent = props => {
                     <ConnectionModal
                         vm={vm}
                     />
+                ) : null}
+                {studentGalleryVisible ? (
+                    <StudentGallery />
                 ) : null}
                 {costumeLibraryVisible ? (
                     <CostumeLibrary
@@ -444,6 +450,7 @@ GUIComponent.propTypes = {
     showComingSoon: PropTypes.bool,
     soundsTabVisible: PropTypes.bool,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
+    studentGalleryVisible: PropTypes.bool,
     targetIsStage: PropTypes.bool,
     telemetryModalVisible: PropTypes.bool,
     theme: PropTypes.string,

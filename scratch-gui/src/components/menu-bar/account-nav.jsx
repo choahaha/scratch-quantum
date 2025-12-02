@@ -26,6 +26,7 @@ const AccountNavComponent = ({
     onClick,
     onClose,
     onLogOut,
+    onOpenStudentGallery,
     thumbnailUrl,
     username
 }) => (
@@ -63,11 +64,11 @@ const AccountNavComponent = ({
         >
             {isAdmin ? (
                 <React.Fragment>
-                    <MenuItemContainer href="/admin/dashboard">
+                    <MenuItemContainer onClick={onOpenStudentGallery}>
                         <FormattedMessage
-                            defaultMessage="Dashboard"
-                            description="Text to link to admin dashboard"
-                            id="gui.accountMenu.adminDashboard"
+                            defaultMessage="Student Screens"
+                            description="Text to open student screens gallery"
+                            id="gui.accountMenu.studentScreens"
                         />
                     </MenuItemContainer>
                     <MenuItemContainer href="/admin/users">
@@ -101,6 +102,7 @@ AccountNavComponent.propTypes = {
     onClick: PropTypes.func,
     onClose: PropTypes.func,
     onLogOut: PropTypes.func,
+    onOpenStudentGallery: PropTypes.func,
     thumbnailUrl: PropTypes.string,
     username: PropTypes.string
 };

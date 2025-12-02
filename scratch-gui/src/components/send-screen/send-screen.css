@@ -1,0 +1,21 @@
+@import "../../css/colors.css";
+
+.send-screen {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.375rem;
+    border-radius: 0.25rem;
+    user-select: none;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.send-screen:hover {
+    background-color: $looks-light-transparent;
+}
+
+.send-screen.is-active {
+    background-color: $motion-primary;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
