@@ -15,8 +15,9 @@ RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Install scratch-gui dependencies (including peer deps) and build
 WORKDIR /app/scratch-gui
-RUN rm -f package-lock.json && npm install --legacy-peer-deps react@16.14.0 react-dom@16.14.0
-RUN npm run build
+RUN npm install -g yarn
+RUN rm -f package-lock.json && yarn add react@16.14.0 react-dom@16.14.0 --ignore-engines
+RUN yarn build
 
 # Install serve to host static files
 RUN npm install -g serve
