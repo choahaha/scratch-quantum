@@ -23,26 +23,16 @@ const AccountNav = function (props) {
 };
 
 AccountNav.propTypes = {
-    classroomId: PropTypes.string,
-    isEducator: PropTypes.bool,
+    isAdmin: PropTypes.bool,
     isRtl: PropTypes.bool,
-    isStudent: PropTypes.bool,
-    profileUrl: PropTypes.string,
     thumbnailUrl: PropTypes.string,
     username: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-    classroomId: state.session && state.session.session && state.session.session.user ?
-        state.session.session.user.classroomId : '',
-    isEducator: state.session && state.session.permissions && state.session.permissions.educator,
-    isStudent: state.session && state.session.permissions && state.session.permissions.student,
-    profileUrl: state.session && state.session.session && state.session.session.user ?
-        `/users/${state.session.session.user.username}` : '',
-    thumbnailUrl: state.session && state.session.session && state.session.session.user ?
-        state.session.session.user.thumbnailUrl : null,
-    username: state.session && state.session.session && state.session.session.user ?
-        state.session.session.user.username : ''
+    isAdmin: state.scratchGui.auth.profile && state.scratchGui.auth.profile.role === 'admin',
+    thumbnailUrl: state.scratchGui.auth.profile ? state.scratchGui.auth.profile.avatar_url : null,
+    username: state.scratchGui.auth.profile ? state.scratchGui.auth.profile.username : ''
 });
 
 const mapDispatchToProps = () => ({});

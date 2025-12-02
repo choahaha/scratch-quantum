@@ -129,8 +129,8 @@ const AuthManagerHOC = function (WrappedComponent) {
                 .insert({
                     id: authData.user.id,
                     username: username,
-                    display_name: displayName,
-                    role: 'user'
+                    email: authData.user.email,
+                    role: 'student'
                 });
 
             if (profileError) {
@@ -209,7 +209,7 @@ const AuthManagerHOC = function (WrappedComponent) {
             return (
                 <WrappedComponent
                     {...componentProps}
-                    onLogout={this.handleLogout}
+                    onLogOut={this.handleLogout}
                 />
             );
         }
