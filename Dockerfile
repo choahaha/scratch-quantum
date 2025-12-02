@@ -13,11 +13,9 @@ COPY scratch-gui ./scratch-gui
 WORKDIR /app/scratch-blocks
 RUN npm install --legacy-peer-deps --ignore-scripts
 
-# Install scratch-gui dependencies and build
+# Install scratch-gui dependencies (including peer deps) and build
 WORKDIR /app/scratch-gui
-RUN npm install --legacy-peer-deps
-# Install peer dependencies (react is required but listed as peerDependency)
-RUN npm install react@16.14.0 react-dom@16.14.0 --legacy-peer-deps
+RUN npm install react@16.14.0 react-dom@16.14.0 --legacy-peer-deps --save && npm install --legacy-peer-deps
 RUN npm run build
 
 # Install serve to host static files
