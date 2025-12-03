@@ -45,18 +45,23 @@ class Controls extends React.Component {
         const userId = this.props.userId;
         const username = this.props.username;
 
+        console.log('SendScreen: Starting...', {userId, username, hasRenderer: !!vm.renderer});
+
         if (!vm.renderer || !userId) {
+            console.warn('SendScreen: Missing renderer or userId');
             this.setState({sendActive: false});
             return;
         }
 
         vm.renderer.requestSnapshot(async dataURI => {
+            console.log('SendScreen: Got snapshot, length:', dataURI ? dataURI.length : 0);
             try {
                 const blob = dataURItoBlob(dataURI);
                 const timestamp = Date.now();
                 const filePath = `${userId}/${timestamp}.png`;
+                console.log('SendScreen: Uploading to:', filePath);
 
-                const {error: uploadError} = await supabase.storage
+                const {data: uploadData, error: uploadError} = await supabase.storage
                     .from('screenshots')
                     .upload(filePath, blob, {
                         contentType: 'image/png',
@@ -64,24 +69,32 @@ class Controls extends React.Component {
                     });
 
                 if (uploadError) {
-                    console.error('Screenshot upload error:', uploadError);
+                    console.error('SendScreen: Upload error:', uploadError);
                     this.setState({sendActive: false});
                     return;
                 }
+                console.log('SendScreen: Upload success:', uploadData);
 
                 const {data: urlData} = supabase.storage
                     .from('screenshots')
                     .getPublicUrl(filePath);
+                console.log('SendScreen: Public URL:', urlData.publicUrl);
 
-                await supabase.from('student_screens').insert({
+                const {data: insertData, error: insertError} = await supabase.from('student_screens').insert({
                     user_id: userId,
                     username: username,
                     screenshot_url: urlData.publicUrl
                 });
 
+                if (insertError) {
+                    console.error('SendScreen: Insert error:', insertError);
+                } else {
+                    console.log('SendScreen: Insert success:', insertData);
+                }
+
                 this.setState({sendActive: false});
             } catch (error) {
-                console.error('Send screen error:', error);
+                console.error('SendScreen: Error:', error);
                 this.setState({sendActive: false});
             }
         });
