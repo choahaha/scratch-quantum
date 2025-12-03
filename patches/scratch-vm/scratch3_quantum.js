@@ -3,7 +3,7 @@ const {fetchWithTimeout} = require('../util/fetch-with-timeout');
 const log = require('../util/log');
 
 // Railway 백엔드 API URL
-const QUANTUM_API_URL = 'https://web-production-201eb.up.railway.app';
+const QUANTUM_API_URL = 'https://quantum-backend-production-3180.up.railway.app';
 
 // API 요청 타임아웃 (30초)
 const SERVER_TIMEOUT_MS = 30000;
