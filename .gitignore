@@ -27,9 +27,8 @@ npm-debug.log*
 .env
 .env.local
 
-# Sub-repositories (have their own .git)
-# quantum-backend is on Railway
-quantum-backend/
+# Sub-repositories notes
+# quantum-backend - Python FastAPI for quantum simulation
 
 # scratch-blocks and scratch-gui are forks - track separately
 # scratch-blocks/
