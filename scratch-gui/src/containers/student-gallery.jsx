@@ -14,7 +14,8 @@ class StudentGallery extends React.Component {
             'handleClose',
             'handleRefresh',
             'fetchScreens',
-            'handleRealtimeInsert'
+            'handleRealtimeInsert',
+            'handleDeleteAll'
         ]);
         this.state = {
             loading: true,
@@ -108,6 +109,42 @@ class StudentGallery extends React.Component {
         this.fetchScreens();
     }
 
+    async handleDeleteAll () {
+        if (!window.confirm('모든 학생 화면을 삭제하시겠습니까?')) return;
+
+        try {
+            // 1. Storage에서 모든 스크린샷 삭제
+            const {data: folders} = await supabase.storage
+                .from('screenshots')
+                .list('', {limit: 1000});
+
+            if (folders) {
+                for (const folder of folders) {
+                    if (folder.name === '.emptyFolderPlaceholder') continue;
+
+                    const {data: files} = await supabase.storage
+                        .from('screenshots')
+                        .list(folder.name);
+
+                    if (files && files.length > 0) {
+                        const paths = files.map(f => `${folder.name}/${f.name}`);
+                        await supabase.storage.from('screenshots').remove(paths);
+                    }
+                }
+            }
+
+            // 2. DB 테이블 비우기
+            await supabase.from('student_screens').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+            // 3. 화면 갱신
+            this.setState({screens: []});
+            console.log('All screens deleted successfully');
+        } catch (error) {
+            console.error('Error deleting screens:', error);
+            alert('삭제 중 오류가 발생했습니다.');
+        }
+    }
+
     render () {
         return (
             <StudentGalleryComponent
@@ -116,6 +153,7 @@ class StudentGallery extends React.Component {
                 screens={this.state.screens}
                 onRefresh={this.handleRefresh}
                 onRequestClose={this.handleClose}
+                onDeleteAll={this.handleDeleteAll}
             />
         );
     }

@@ -80,10 +80,20 @@ class Controls extends React.Component {
                     .getPublicUrl(filePath);
                 console.log('SendScreen: Public URL:', urlData.publicUrl);
 
+                // 프로젝트 JSON 가져오기
+                let projectJson = null;
+                try {
+                    projectJson = vm.toJSON();
+                    console.log('SendScreen: Got project JSON');
+                } catch (jsonError) {
+                    console.warn('SendScreen: Could not get project JSON:', jsonError);
+                }
+
                 const {data: insertData, error: insertError} = await supabase.from('student_screens').insert({
                     user_id: userId,
                     username: username,
-                    screenshot_url: urlData.publicUrl
+                    screenshot_url: urlData.publicUrl,
+                    project_json: projectJson
                 });
 
                 if (insertError) {
