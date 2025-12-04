@@ -1013,7 +1013,7 @@ const mapStateToProps = (state, ownProps) => {
         loginMenuOpen: loginMenuOpen(state),
         modeMenuOpen: modeMenuOpen(state),
         projectTitle: state.scratchGui.projectTitle,
-        sessionExists: state.scratchGui.auth.isAuthenticated,
+        sessionExists: false,  // 원래 Scratch 로그인 비활성화, 커스텀 인증만 사용
         settingsMenuOpen: settingsMenuOpen(state),
         username: authProfile ? authProfile.username : null,
         userOwnsProject: ownProps.authorUsername && user &&
