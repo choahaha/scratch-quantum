@@ -837,7 +837,7 @@ class MenuBar extends React.Component {
                                         onRequestClose={this.props.onRequestCloseAccount}
                                     >
                                         <MenuSection>
-                                            <MenuItem onClick={this.props.onLogout}>
+                                            <MenuItem onClick={this.props.onLogOut}>
                                                 <FormattedMessage
                                                     defaultMessage="Sign out"
                                                     description="Sign out from the application"
