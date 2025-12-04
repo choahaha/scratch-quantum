@@ -147,6 +147,8 @@ const AuthManagerHOC = function (WrappedComponent) {
 
         async handleLogout () {
             await supabase.auth.signOut();
+            // Reload the page to clear all VM state and blocks
+            window.location.reload();
         }
 
         handleRegisterClick () {

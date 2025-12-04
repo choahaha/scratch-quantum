@@ -29,7 +29,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 import SettingsMenu from './settings-menu.jsx';
 
-import {openTipsLibrary, openDebugModal} from '../../reducers/modals';
+import {openTipsLibrary, openDebugModal, openStudentGallery} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -836,6 +836,24 @@ class MenuBar extends React.Component {
                                         place={this.props.isRtl ? 'right' : 'left'}
                                         onRequestClose={this.props.onRequestCloseAccount}
                                     >
+                                        {this.props.isAdmin && (
+                                            <React.Fragment>
+                                                <MenuItem onClick={this.props.onOpenStudentGallery}>
+                                                    <FormattedMessage
+                                                        defaultMessage="Student Screens"
+                                                        description="Text to open student screens gallery"
+                                                        id="gui.accountMenu.studentScreens"
+                                                    />
+                                                </MenuItem>
+                                                <MenuItem href="/admin/users">
+                                                    <FormattedMessage
+                                                        defaultMessage="User Management"
+                                                        description="Text to link to user management page"
+                                                        id="gui.accountMenu.userManagement"
+                                                    />
+                                                </MenuItem>
+                                            </React.Fragment>
+                                        )}
                                         <MenuSection>
                                             <MenuItem onClick={this.props.onLogOut}>
                                                 <FormattedMessage
@@ -1003,6 +1021,7 @@ const mapStateToProps = (state, ownProps) => {
         aboutMenuOpen: aboutMenuOpen(state),
         accountMenuOpen: accountMenuOpen(state),
         authUsername: authProfile ? authProfile.username : null,
+        isAdmin: authProfile ? authProfile.role === 'admin' : false,
         currentLocale: state.locales.locale,
         fileMenuOpen: fileMenuOpen(state),
         editMenuOpen: editMenuOpen(state),
@@ -1031,6 +1050,7 @@ const mapDispatchToProps = dispatch => ({
     autoUpdateProject: () => dispatch(autoUpdateProject()),
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
     onOpenDebugModal: () => dispatch(openDebugModal()),
+    onOpenStudentGallery: () => dispatch(openStudentGallery()),
     onClickAccount: () => dispatch(openAccountMenu()),
     onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),
