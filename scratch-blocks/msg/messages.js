@@ -293,13 +293,12 @@ Blockly.Msg.CATEGORY_MYBLOCKS = 'My Blocks';
 Blockly.Msg.CATEGORY_QUANTUM = 'Quantum';
 
 // Quantum blocks
-Blockly.Msg.QUANTUM_CREATECIRCUIT = 'create quantum circuit qubits %1 classical bits %2';
+Blockly.Msg.QUANTUM_CREATECIRCUIT = 'create quantum circuit with %1 qubits';
 Blockly.Msg.QUANTUM_GATE_H = 'H gate qubit %1';
 Blockly.Msg.QUANTUM_GATE_X = 'X gate qubit %1';
 Blockly.Msg.QUANTUM_GATE_Y = 'Y gate qubit %1';
 Blockly.Msg.QUANTUM_GATE_Z = 'Z gate qubit %1';
 Blockly.Msg.QUANTUM_GATE_CX = 'CNOT gate control %1 target %2';
-Blockly.Msg.QUANTUM_MEASURE = 'measure qubit %1 to classical bit %2';
 Blockly.Msg.QUANTUM_MEASUREALL = 'measure all qubits';
 Blockly.Msg.QUANTUM_RUN = 'run quantum circuit shots %1';
 Blockly.Msg.QUANTUM_GETRESULT = 'quantum measurement result';

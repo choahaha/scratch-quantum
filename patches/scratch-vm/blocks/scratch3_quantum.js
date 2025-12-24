@@ -27,7 +27,6 @@ class Scratch3QuantumBlocks {
             quantum_gateY: this.gateY,
             quantum_gateZ: this.gateZ,
             quantum_gateCX: this.gateCX,
-            quantum_measure: this.measure,
             quantum_measureAll: this.measureAll,
             quantum_run: this.run,
             quantum_getResult: this.getResult
@@ -36,20 +35,18 @@ class Scratch3QuantumBlocks {
 
     createCircuit (args) {
         const numQubits = Cast.toNumber(args.NUM_QUBITS);
-        const numClbits = Cast.toNumber(args.NUM_CLBITS);
 
         globalCircuit = {
             blocks: [{
                 opcode: 'quantum_createCircuit',
                 args: {
-                    NUM_QUBITS: numQubits,
-                    NUM_CLBITS: numClbits
+                    NUM_QUBITS: numQubits
                 }
             }],
             result: ''
         };
 
-        log.log(`Quantum: Created circuit with ${numQubits} qubits, ${numClbits} clbits`);
+        log.log(`Quantum: Created circuit with ${numQubits} qubits`);
     }
 
     gateH (args) {
@@ -92,16 +89,6 @@ class Scratch3QuantumBlocks {
             opcode: 'quantum_gateCX',
             args: { CONTROL: control, TARGET: target }
         });
-    }
-
-    measure (args) {
-        const qubit = Cast.toNumber(args.QUBIT);
-        const clbit = Cast.toNumber(args.CLBIT);
-        globalCircuit.blocks.push({
-            opcode: 'quantum_measure',
-            args: { QUBIT: qubit, CLBIT: clbit }
-        });
-        log.log(`Quantum: Added measure qubit ${qubit} -> clbit ${clbit}`);
     }
 
     measureAll () {

@@ -39,10 +39,6 @@ Blockly.Blocks['quantum_createCircuit'] = {
         {
           "type": "input_value",
           "name": "NUM_QUBITS"
-        },
-        {
-          "type": "input_value",
-          "name": "NUM_CLBITS"
         }
       ],
       "category": Blockly.Categories.quantum,
@@ -156,31 +152,7 @@ Blockly.Blocks['quantum_gateCX'] = {
 };
 
 // ============================================
-// 7. quantum_measure - 측정하기
-// ============================================
-Blockly.Blocks['quantum_measure'] = {
-  init: function() {
-    this.jsonInit({
-      "id": "quantum_measure",
-      "message0": Blockly.Msg.QUANTUM_MEASURE,
-      "args0": [
-        {
-          "type": "input_value",
-          "name": "QUBIT"
-        },
-        {
-          "type": "input_value",
-          "name": "CLBIT"
-        }
-      ],
-      "category": Blockly.Categories.quantum,
-      "extensions": ["colours_quantum", "shape_statement"]
-    });
-  }
-};
-
-// ============================================
-// 8. quantum_measureAll - 모든 큐비트 측정하기
+// 7. quantum_measureAll - 모든 큐비트 측정하기
 // ============================================
 Blockly.Blocks['quantum_measureAll'] = {
   init: function() {
@@ -194,7 +166,7 @@ Blockly.Blocks['quantum_measureAll'] = {
 };
 
 // ============================================
-// 9. quantum_run - 양자 회로 실행하기
+// 8. quantum_run - 양자 회로 실행하기
 // ============================================
 Blockly.Blocks['quantum_run'] = {
   init: function() {
@@ -214,7 +186,7 @@ Blockly.Blocks['quantum_run'] = {
 };
 
 // ============================================
-// 10. quantum_getResult - 측정 결과 (Reporter)
+// 9. quantum_getResult - 측정 결과 (Reporter)
 // ============================================
 Blockly.Blocks['quantum_getResult'] = {
   init: function() {

@@ -748,12 +748,7 @@ const quantum = function (isInitialSetup, isStage, targetId, colors) {
         <block type="quantum_createCircuit">
             <value name="NUM_QUBITS">
                 <shadow type="math_number">
-                    <field name="NUM">1</field>
-                </shadow>
-            </value>
-            <value name="NUM_CLBITS">
-                <shadow type="math_number">
-                    <field name="NUM">1</field>
+                    <field name="NUM">2</field>
                 </shadow>
             </value>
         </block>
@@ -799,18 +794,6 @@ const quantum = function (isInitialSetup, isStage, targetId, colors) {
             </value>
         </block>
         ${blockSeparator}
-        <block type="quantum_measure">
-            <value name="QUBIT">
-                <shadow type="math_number">
-                    <field name="NUM">0</field>
-                </shadow>
-            </value>
-            <value name="CLBIT">
-                <shadow type="math_number">
-                    <field name="NUM">0</field>
-                </shadow>
-            </value>
-        </block>
         <block type="quantum_measureAll"/>
         ${blockSeparator}
         <block type="quantum_run">
