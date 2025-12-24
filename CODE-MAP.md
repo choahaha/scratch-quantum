@@ -491,4 +491,202 @@ Redux Dispatch
 
 ---
 
+## 6. Scratch Quantum 커스텀 기능
+
+이 프로젝트는 Scratch 3.0을 기반으로 양자컴퓨팅 교육 및 학생 관리 기능을 추가한 커스텀 버전입니다.
+
+### 6.1 프로젝트 구조
+
+```
+scratch-quantum/
+├── scratch-gui/                    # 커스텀 Scratch GUI
+│   ├── src/
+│   │   ├── lib/
+│   │   │   └── supabase-client.js  # Supabase 클라이언트
+│   │   ├── reducers/
+│   │   │   └── auth.js             # 인증 상태 관리
+│   │   ├── containers/
+│   │   │   ├── controls.jsx        # 스크린샷 전송 로직
+│   │   │   └── student-gallery.jsx # 학생 갤러리 컨테이너
+│   │   └── components/
+│   │       ├── send-screen/        # 전송 버튼 컴포넌트
+│   │       └── student-gallery/    # 학생 갤러리 UI
+│   └── node_modules/scratch-vm/    # 런타임 (패치 적용됨)
+│
+├── scratch-blocks/                  # Blockly 기반 블록 에디터
+│
+├── patches/                         # scratch-vm 패치 파일
+│   └── scratch-vm/
+│       ├── blocks/
+│       │   └── scratch3_quantum.js # 양자 블록 구현
+│       └── engine/
+│           └── runtime.js          # 양자 블록 등록
+│
+├── Dockerfile                       # Railway 배포용
+└── CODE-MAP.md                      # 이 문서
+```
+
+### 6.2 양자컴퓨팅 블록 (Quantum Blocks)
+
+**파일 위치**: `patches/scratch-vm/blocks/scratch3_quantum.js`
+
+```javascript
+// 블록 종류
+quantum_createCircuit  // 양자 회로 만들기 (큐빗 수, 클래식 비트 수)
+quantum_gateH          // Hadamard 게이트
+quantum_gateX          // X 게이트 (NOT)
+quantum_gateY          // Y 게이트
+quantum_gateZ          // Z 게이트
+quantum_gateCX         // CNOT 게이트 (제어-타겟)
+quantum_measure        // 측정 (큐빗 → 클래식 비트)
+quantum_measureAll     // 전체 측정
+quantum_run            // 회로 실행 (shots 횟수)
+quantum_getResult      // 결과 가져오기
+```
+
+**백엔드 API**: `https://quantum-backend-production-3180.up.railway.app`
+
+### 6.3 Supabase 통합
+
+**파일**: `scratch-gui/src/lib/supabase-client.js`
+
+```javascript
+// Supabase 프로젝트: tzyprsfsxagwepaqhvvm
+const supabaseUrl = 'https://tzyprsfsxagwepaqhvvm.supabase.co';
+const supabaseAnonKey = 'eyJhbGci...';
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+```
+
+**데이터베이스 테이블**:
+
+| 테이블 | 용도 | 주요 컬럼 |
+|--------|------|-----------|
+| `users` | 사용자 정보 | id, username, role (admin/student) |
+| `student_screens` | 학생 화면 캡처 | user_id, username, screenshot_url, project_json, created_at |
+
+**Storage 버킷**:
+- `screenshots` - 학생 스크린샷 저장 (Public)
+
+### 6.4 인증 시스템
+
+**파일**: `scratch-gui/src/reducers/auth.js`
+
+```javascript
+// Redux 상태
+state.scratchGui.auth = {
+  profile: {
+    id: 'uuid',
+    username: 'student1',
+    role: 'student' | 'admin'
+  }
+}
+```
+
+**역할별 기능**:
+- `student`: 스크린샷 전송 버튼 표시
+- `admin`: Student Gallery 메뉴 접근 가능
+
+### 6.5 학생 화면 전송 기능
+
+**전송 버튼**: `scratch-gui/src/components/send-screen/`
+**전송 로직**: `scratch-gui/src/containers/controls.jsx`
+
+```javascript
+// 전송 프로세스
+1. vm.renderer.requestSnapshot() → dataURI 캡처
+2. Supabase Storage 업로드 (screenshots/{userId}/{timestamp}.png)
+3. vm.toJSON() → 프로젝트 JSON 추출
+4. student_screens 테이블에 INSERT (url + json)
+```
+
+### 6.6 Admin 학생 갤러리
+
+**컴포넌트**: `scratch-gui/src/components/student-gallery/`
+**컨테이너**: `scratch-gui/src/containers/student-gallery.jsx`
+
+**기능**:
+- 실시간 업데이트 (Supabase Realtime)
+- 4열 그리드 레이아웃 (반응형)
+- 한국 시간(KST) 표시
+- 전체 삭제 기능
+- 상세 모달 (스크린샷 + 프로젝트 JSON 코드)
+
+```css
+/* 레이아웃 */
+.gallery-grid {
+  grid-template-columns: repeat(4, 1fr);  /* 기본 4열 */
+}
+@media (max-width: 1200px) { /* 3열 */ }
+@media (max-width: 900px) { /* 2열 */ }
+```
+
+### 6.7 Docker 배포 (Railway)
+
+**파일**: `Dockerfile`
+
+```dockerfile
+FROM node:20-alpine
+# 패치 적용 순서:
+# 1. scratch-blocks 설치
+# 2. scratch-gui 설치
+# 3. patches/ → node_modules/scratch-vm/ 복사
+# 4. yarn build
+# 5. serve -s build -l 8080
+```
+
+**배포 URL**: Railway에서 자동 배포
+
+### 6.8 커스텀 파일 목록
+
+| 파일 | 역할 |
+|------|------|
+| `scratch-gui/src/lib/supabase-client.js` | Supabase 클라이언트 |
+| `scratch-gui/src/reducers/auth.js` | 인증 Redux 리듀서 |
+| `scratch-gui/src/components/send-screen/*` | 전송 버튼 UI |
+| `scratch-gui/src/containers/controls.jsx` | 전송 로직 (수정됨) |
+| `scratch-gui/src/components/student-gallery/*` | 갤러리 UI |
+| `scratch-gui/src/containers/student-gallery.jsx` | 갤러리 로직 |
+| `scratch-gui/src/reducers/modals.js` | 갤러리 모달 상태 (수정됨) |
+| `patches/scratch-vm/blocks/scratch3_quantum.js` | 양자 블록 |
+| `patches/scratch-vm/engine/runtime.js` | 블록 등록 |
+
+---
+
+## 7. 개발 및 배포
+
+### 7.1 로컬 개발
+
+```bash
+cd scratch-quantum/scratch-gui
+npm start
+# http://localhost:8601
+```
+
+### 7.2 패치 적용 (수동)
+
+```bash
+cp patches/scratch-vm/blocks/*.js scratch-gui/node_modules/scratch-vm/src/blocks/
+cp patches/scratch-vm/engine/*.js scratch-gui/node_modules/scratch-vm/src/engine/
+```
+
+### 7.3 Railway 배포
+
+```bash
+git add -A && git commit -m "message" && git push
+# Railway 자동 배포 (Dockerfile 기반)
+```
+
+### 7.4 Supabase 설정
+
+**필요한 테이블/버킷**:
+1. `users` 테이블 (role 컬럼 포함)
+2. `student_screens` 테이블 (project_json JSONB 컬럼)
+3. `screenshots` Storage 버킷 (Public)
+
+**RLS 정책**:
+- students: INSERT own screens
+- admin: SELECT/DELETE all screens
+
+---
+
 *이 문서는 Scratch 3.0 codebase를 이해하고 수정하는 데 필요한 핵심 정보를 제공합니다.*

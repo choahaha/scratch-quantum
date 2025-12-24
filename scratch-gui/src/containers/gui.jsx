@@ -24,7 +24,8 @@ import {
     closeTelemetryModal,
     openExtensionLibrary,
     closeDebugModal,
-    closeStudentGallery
+    closeStudentGallery,
+    closeVisualizationModal
 } from '../reducers/modals';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
@@ -177,6 +178,7 @@ const mapStateToProps = state => {
         telemetryModalVisible: state.scratchGui.modals.telemetryModal,
         tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
         studentGalleryVisible: state.scratchGui.modals.studentGallery,
+        visualizationModalVisible: state.scratchGui.modals.visualizationModal,
         vm: state.scratchGui.vm
     };
 };
@@ -190,7 +192,8 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseCostumeLibrary: () => dispatch(closeCostumeLibrary()),
     onRequestCloseDebugModal: () => dispatch(closeDebugModal()),
     onRequestCloseTelemetryModal: () => dispatch(closeTelemetryModal()),
-    onRequestCloseStudentGallery: () => dispatch(closeStudentGallery())
+    onRequestCloseStudentGallery: () => dispatch(closeStudentGallery()),
+    onRequestCloseVisualizationModal: () => dispatch(closeVisualizationModal())
 });
 
 const ConnectedGUI = injectIntl(connect(

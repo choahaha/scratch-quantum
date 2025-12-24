@@ -803,7 +803,28 @@ const quantum = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        ${blockSeparator}
         <block type="quantum_getResult"/>
+        <block type="quantum_getResultData"/>
+        ${categorySeparator}
+    </category>
+    `;
+};
+
+const visualization = function (isInitialSetup, isStage, targetId, colors) {
+    return `
+    <category
+        name="%{BKY_CATEGORY_VISUALIZATION}"
+        id="visualization"
+        colour="${colors.primary}"
+        secondaryColour="${colors.tertiary}">
+        <block type="visualization_histogram">
+            <value name="DATA">
+                <shadow type="text">
+                    <field name="TEXT"></field>
+                </shadow>
+            </value>
+        </block>
         ${categorySeparator}
     </category>
     `;
@@ -859,6 +880,7 @@ const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categ
     const variablesXML = moveCategory('data') || variables(isInitialSetup, isStage, targetId, colors.data);
     const myBlocksXML = moveCategory('procedures') || myBlocks(isInitialSetup, isStage, targetId, colors.more);
     const quantumXML = moveCategory('quantum') || quantum(isInitialSetup, isStage, targetId, colors.quantum);
+    const visualizationXML = moveCategory('visualization') || visualization(isInitialSetup, isStage, targetId, colors.visualization);
 
     const everything = [
         xmlOpen,
@@ -871,7 +893,8 @@ const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categ
         operatorsXML, gap,
         variablesXML, gap,
         myBlocksXML, gap,
-        quantumXML
+        quantumXML, gap,
+        visualizationXML
     ];
 
     for (const extensionCategory of categoriesXML) {

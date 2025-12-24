@@ -5486,7 +5486,12 @@ Blockly.ScratchMsgs.locales["en"] =
     "QUANTUM_GATE_CX": "CNOT gate control %1 target %2",
     "QUANTUM_MEASUREALL": "measure all qubits",
     "QUANTUM_RUN": "run quantum circuit shots %1",
-    "QUANTUM_GETRESULT": "quantum measurement result"
+    "QUANTUM_GETRESULT": "quantum measurement result",
+    "QUANTUM_GETRESULTDATA": "quantum measurement %1",
+    "QUANTUM_RESULT_STATE": "state",
+    "QUANTUM_RESULT_COUNTS": "counts",
+    "CATEGORY_VISUALIZATION": "Visualization",
+    "VISUALIZATION_HISTOGRAM": "show histogram of %1"
 };
 
 Blockly.ScratchMsgs.locales["es"] =
@@ -8953,7 +8958,12 @@ Blockly.ScratchMsgs.locales["ko"] =
     "QUANTUM_GATE_CX": "CNOT 게이트 제어 %1 대상 %2",
     "QUANTUM_MEASUREALL": "모든 큐비트 측정하기",
     "QUANTUM_RUN": "양자 회로 실행하기 샷 %1",
-    "QUANTUM_GETRESULT": "양자 측정 결과"
+    "QUANTUM_GETRESULT": "양자 측정 결과",
+    "QUANTUM_GETRESULTDATA": "양자 측정 결과의 %1",
+    "QUANTUM_RESULT_STATE": "상태",
+    "QUANTUM_RESULT_COUNTS": "횟수",
+    "CATEGORY_VISUALIZATION": "시각화",
+    "VISUALIZATION_HISTOGRAM": "%1 히스토그램 보기"
 };
 
 Blockly.ScratchMsgs.locales["ha"] =

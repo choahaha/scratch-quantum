@@ -110,3 +110,66 @@
 ```
 
 출력: `|0>: 512 (50.0%), |1>: 512 (50.0%)`
+
+---
+
+## Phase 7: 인증 시스템 (Supabase) ✅ 완료
+
+### 완료된 작업
+- [x] `renderLogin is not a function` 오류 수정
+  - `menu-bar.jsx`에서 `sessionExists: false`로 설정하여 원래 Scratch 로그인 비활성화
+- [x] 회원가입 시 users 테이블 동기화 문제 해결
+  - Supabase Database Trigger 생성 (`handle_new_user` 함수)
+  - `auth.users` INSERT 시 자동으로 `public.users`에도 INSERT
+- [x] Sign out 기능 수정
+  - `onLogout` → `onLogOut` 오타 수정
+- [x] Admin 드롭다운 메뉴 복원
+  - "Student Screens" 메뉴 추가
+  - "User Management" 메뉴 추가
+  - `isAdmin` 상태를 mapStateToProps에 추가
+- [x] 로그아웃 시 블록 상태 초기화
+  - `handleLogout`에서 `window.location.reload()` 추가
+
+### Supabase Database Trigger (SQL Editor에서 실행 완료)
+```sql
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.users (id, username, display_name, role)
+  VALUES (
+    NEW.id,
+    split_part(NEW.email, '@', 1),
+    split_part(NEW.email, '@', 1),
+    'student'
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+```
+
+### 수정된 파일
+| 파일 | 변경 내용 |
+|------|----------|
+| `scratch-gui/src/components/menu-bar/menu-bar.jsx` | Admin 메뉴 추가, sessionExists 비활성화, onLogOut 수정 |
+| `scratch-gui/src/lib/auth-manager-hoc.jsx` | 로그아웃 시 페이지 새로고침 추가 |
+
+### 확인 필요 사항
+- [ ] Student Gallery 한국 시간(KST) 표시 확인
+  - 코드는 이미 `timeZone: 'Asia/Seoul'` 설정됨 (student-gallery.jsx:30-31)
+  - 배포된 Docker 이미지 업데이트 필요할 수 있음
+
+### Git 커밋 히스토리
+```
+811f7c2 fix: restore admin menus and clear state on logout
+73827ec fix: correct onLogout prop name to onLogOut for sign out functionality
+1727eaa fix: disable original Scratch login to use custom Supabase auth only
+63d76fb Admin 갤러리 개선: KST 시간, 4열 레이아웃, 전체삭제, 상세모달
+```
+
+### 참고
+- Supabase Project ID: `tzyprsfsxagwepaqhvvm`

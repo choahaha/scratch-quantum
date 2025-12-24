@@ -58,21 +58,55 @@ def create_histogram(data_str: str) -> str:
         # Try JSON anyway
         counts = json.loads(data_str)
 
-    # Create histogram
+    # Create histogram with Pastel Rainbow style
     states = list(counts.keys())
     values = list(counts.values())
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    bars = ax.bar(states, values, color='#8C8C8C', edgecolor='#666666')
+    # Pastel rainbow colors
+    pastel_colors = [
+        '#FFB3BA',  # Pastel Pink
+        '#BAFFC9',  # Pastel Green
+        '#BAE1FF',  # Pastel Blue
+        '#FFFFBA',  # Pastel Yellow
+        '#FFD9BA',  # Pastel Orange
+        '#E0BBE4',  # Pastel Purple
+        '#D4F0F0',  # Pastel Cyan
+        '#FCE4EC',  # Light Pink
+    ]
 
-    ax.set_xlabel('Quantum State')
-    ax.set_ylabel('Count')
-    ax.set_title('Quantum Measurement Results')
+    # Format state labels with ket notation
+    formatted_states = [f'|{s}⟩' for s in states]
+
+    # Assign colors to bars
+    bar_colors = [pastel_colors[i % len(pastel_colors)] for i in range(len(states))]
+
+    fig, ax = plt.subplots(figsize=(8, 5), facecolor='#FEFEFE')
+    ax.set_facecolor('#FEFEFE')
+
+    bars = ax.bar(formatted_states, values, color=bar_colors, edgecolor='white', linewidth=2, width=0.6)
+
+    # Style the chart
+    ax.set_xlabel('Quantum State', fontsize=11, color='#555', fontweight='500')
+    ax.set_ylabel('Count', fontsize=11, color='#555', fontweight='500')
+    ax.set_title('Quantum Measurement Results', fontsize=14, color='#333', fontweight='600', pad=15)
+
+    # Remove top and right spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#ddd')
+    ax.spines['bottom'].set_color('#ddd')
+
+    # Style tick labels
+    ax.tick_params(axis='both', colors='#666', labelsize=10)
+
+    # Add grid lines
+    ax.yaxis.grid(True, linestyle='--', alpha=0.3, color='#ccc')
+    ax.set_axisbelow(True)
 
     # Add value labels on bars
     for bar, val in zip(bars, values):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
-                str(val), ha='center', va='bottom', fontsize=10)
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(values)*0.02,
+                str(val), ha='center', va='bottom', fontsize=11, fontweight='600', color='#555')
 
     plt.tight_layout()
 

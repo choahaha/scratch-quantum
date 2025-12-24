@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histogram Design Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .design-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .design-title {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .design-number {
+            background: rgba(255,255,255,0.2);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Common chart container */
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 200px;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 80px;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .bar:hover {
+            transform: scaleY(1.02);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .bar-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .axis-label {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* ========================================
+           Design 1: Scratch Blue Gradient
+           ======================================== */
+        .design-1 .chart-container {
+            background: linear-gradient(180deg, #f8faff 0%, #e8f0ff 100%);
+            border: 2px solid #4C97FF;
+        }
+
+        .design-1 .chart-title {
+            color: #4280D7;
+        }
+
+        .design-1 .bar-0 {
+            background: linear-gradient(180deg, #4C97FF 0%, #4280D7 100%);
+            box-shadow: 0 4px 15px rgba(76, 151, 255, 0.4);
+        }
+
+        .design-1 .bar-1 {
+            background: linear-gradient(180deg, #9966FF 0%, #774DCB 100%);
+            box-shadow: 0 4px 15px rgba(153, 102, 255, 0.4);
+        }
+
+        .design-1 .bar-value {
+            color: #4280D7;
+        }
+
+        /* ========================================
+           Design 2: Pastel Rainbow
+           ======================================== */
+        .design-2 .chart-container {
+            background: #FEFEFE;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .design-2 .bar-0 {
+            background: linear-gradient(180deg, #FFB3BA 0%, #FF8A94 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .design-2 .bar-1 {
+            background: linear-gradient(180deg, #BAFFC9 0%, #7ED491 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .design-2 .bar-value {
+            color: #555;
+        }
+
+        .design-2 .bar-label {
+            padding: 4px 12px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* ========================================
+           Design 3: Cyberpunk Neon
+           ======================================== */
+        .design-3 .chart-container {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border: 1px solid #0f3460;
+        }
+
+        .design-3 .chart-title {
+            color: #00fff5;
+            text-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
+        }
+
+        .design-3 .bar-0 {
+            background: linear-gradient(180deg, #00fff5 0%, #00b8b8 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 245, 0.6), inset 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .design-3 .bar-1 {
+            background: linear-gradient(180deg, #ff00ff 0%, #b800b8 100%);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), inset 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .design-3 .bar-value {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .design-3 .bar-label {
+            color: #aaa;
+        }
+
+        .design-3 .axis-label {
+            color: #666;
+        }
+
+        /* ========================================
+           Design 4: Minimal Monotone
+           ======================================== */
+        .design-4 .chart-container {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+        }
+
+        .design-4 .chart-title {
+            font-weight: 400;
+            color: #444;
+        }
+
+        .design-4 .bar-0 {
+            background: #2d2d2d;
+        }
+
+        .design-4 .bar-1 {
+            background: #6d6d6d;
+        }
+
+        .design-4 .bar-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .design-4 .bar {
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Vote buttons */
+        .vote-btn {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vote-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .vote-btn.selected {
+            background: #4C97FF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quantum Histogram Design Options</h1>
+
+    <div class="designs-grid">
+        <!-- Design 1: Scratch Blue Gradient -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">1</span>
+                Scratch Blue Gradient
+            </div>
+            <div class="design-1">
+                <div class="chart-container">
+                    <div class="chart-title">Quantum Measurement Results</div>
+                    <div class="chart">
+                        <div class="bar-group">
+                            <div class="bar bar-0" style="height: 160px;">
+                                <span class="bar-value">505</span>
+                            </div>
+                            <span class="bar-label">|0⟩</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar bar-1" style="height: 155px;">
+                                <span class="bar-value">495</span>
+                            </div>
+                            <span class="bar-label">|1⟩</span>
+                        </div>
+                    </div>
+                    <div class="axis-label">Quantum State</div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(1)">Select This Design</button>
+        </div>
+
+        <!-- Design 2: Pastel Rainbow -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">2</span>
+                Pastel Rainbow
+            </div>
+            <div class="design-2">
+                <div class="chart-container">
+                    <div class="chart-title">Quantum Measurement Results</div>
+                    <div class="chart">
+                        <div class="bar-group">
+                            <div class="bar bar-0" style="height: 160px;">
+                                <span class="bar-value">505</span>
+                            </div>
+                            <span class="bar-label">|0⟩</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar bar-1" style="height: 155px;">
+                                <span class="bar-value">495</span>
+                            </div>
+                            <span class="bar-label">|1⟩</span>
+                        </div>
+                    </div>
+                    <div class="axis-label">Quantum State</div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(2)">Select This Design</button>
+        </div>
+
+        <!-- Design 3: Cyberpunk Neon -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">3</span>
+                Cyberpunk Neon
+            </div>
+            <div class="design-3">
+                <div class="chart-container">
+                    <div class="chart-title">Quantum Measurement Results</div>
+                    <div class="chart">
+                        <div class="bar-group">
+                            <div class="bar bar-0" style="height: 160px;">
+                                <span class="bar-value">505</span>
+                            </div>
+                            <span class="bar-label">|0⟩</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar bar-1" style="height: 155px;">
+                                <span class="bar-value">495</span>
+                            </div>
+                            <span class="bar-label">|1⟩</span>
+                        </div>
+                    </div>
+                    <div class="axis-label">Quantum State</div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(3)">Select This Design</button>
+        </div>
+
+        <!-- Design 4: Minimal Monotone -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">4</span>
+                Minimal Monotone
+            </div>
+            <div class="design-4">
+                <div class="chart-container">
+                    <div class="chart-title">Quantum Measurement Results</div>
+                    <div class="chart">
+                        <div class="bar-group">
+                            <div class="bar bar-0" style="height: 160px;">
+                                <span class="bar-value">505</span>
+                            </div>
+                            <span class="bar-label">|0⟩</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar bar-1" style="height: 155px;">
+                                <span class="bar-value">495</span>
+                            </div>
+                            <span class="bar-label">|1⟩</span>
+                        </div>
+                    </div>
+                    <div class="axis-label">Quantum State</div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(4)">Select This Design</button>
+        </div>
+    </div>
+
+    <script>
+        function selectDesign(num) {
+            document.querySelectorAll('.vote-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            alert(`Design ${num} selected! Tell Claude: "디자인 ${num}번으로 해주세요"`);
+        }
+    </script>
+</body>
+</html>

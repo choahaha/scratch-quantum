@@ -302,6 +302,13 @@ Blockly.Msg.QUANTUM_GATE_CX = 'CNOT gate control %1 target %2';
 Blockly.Msg.QUANTUM_MEASUREALL = 'measure all qubits';
 Blockly.Msg.QUANTUM_RUN = 'run quantum circuit shots %1';
 Blockly.Msg.QUANTUM_GETRESULT = 'quantum measurement result';
+Blockly.Msg.QUANTUM_GETRESULTDATA = 'quantum measurement %1';
+Blockly.Msg.QUANTUM_RESULT_STATE = 'state';
+Blockly.Msg.QUANTUM_RESULT_COUNTS = 'counts';
+
+// Visualization blocks
+Blockly.Msg.CATEGORY_VISUALIZATION = 'Visualization';
+Blockly.Msg.VISUALIZATION_HISTOGRAM = 'show histogram of %1';
 
 // Context menus
 Blockly.Msg.DUPLICATE = 'Duplicate';

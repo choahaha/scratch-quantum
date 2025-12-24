@@ -186,13 +186,37 @@ Blockly.Blocks['quantum_run'] = {
 };
 
 // ============================================
-// 9. quantum_getResult - 측정 결과 (Reporter)
+// 9. quantum_getResult - 측정 결과 (간단한 텍스트)
 // ============================================
 Blockly.Blocks['quantum_getResult'] = {
   init: function() {
     this.jsonInit({
       "id": "quantum_getResult",
       "message0": Blockly.Msg.QUANTUM_GETRESULT,
+      "category": Blockly.Categories.quantum,
+      "extensions": ["colours_quantum", "output_string"]
+    });
+  }
+};
+
+// ============================================
+// 10. quantum_getResultData - 측정 결과 데이터 (드롭다운)
+// ============================================
+Blockly.Blocks['quantum_getResultData'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "quantum_getResultData",
+      "message0": Blockly.Msg.QUANTUM_GETRESULTDATA,
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "DATA_TYPE",
+          "options": [
+            [Blockly.Msg.QUANTUM_RESULT_STATE, 'state'],
+            [Blockly.Msg.QUANTUM_RESULT_COUNTS, 'counts']
+          ]
+        }
+      ],
       "category": Blockly.Categories.quantum,
       "extensions": ["colours_quantum", "output_string"]
     });

@@ -31,6 +31,7 @@ import DragLayer from '../../containers/drag-layer.jsx';
 import ConnectionModal from '../../containers/connection-modal.jsx';
 import TelemetryModal from '../telemetry-modal/telemetry-modal.jsx';
 import StudentGallery from '../../containers/student-gallery.jsx';
+import VisualizationModal from '../../containers/visualization-modal.jsx';
 
 import layout, {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 import {resolveStageSize} from '../../lib/screen-utils';
@@ -126,6 +127,7 @@ const GUIComponent = props => {
         soundsTabVisible,
         stageSizeMode,
         studentGalleryVisible,
+        visualizationModalVisible,
         targetIsStage,
         telemetryModalVisible,
         theme,
@@ -208,6 +210,9 @@ const GUIComponent = props => {
                 ) : null}
                 {studentGalleryVisible ? (
                     <StudentGallery />
+                ) : null}
+                {visualizationModalVisible ? (
+                    <VisualizationModal />
                 ) : null}
                 {costumeLibraryVisible ? (
                     <CostumeLibrary
@@ -451,6 +456,7 @@ GUIComponent.propTypes = {
     soundsTabVisible: PropTypes.bool,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     studentGalleryVisible: PropTypes.bool,
+    visualizationModalVisible: PropTypes.bool,
     targetIsStage: PropTypes.bool,
     telemetryModalVisible: PropTypes.bool,
     theme: PropTypes.string,

@@ -13,6 +13,7 @@ const MODAL_SOUND_RECORDER = 'soundRecorder';
 const MODAL_CONNECTION = 'connectionModal';
 const MODAL_TIPS_LIBRARY = 'tipsLibrary';
 const MODAL_STUDENT_GALLERY = 'studentGallery';
+const MODAL_VISUALIZATION = 'visualizationModal';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -26,7 +27,8 @@ const initialState = {
     [MODAL_SOUND_RECORDER]: false,
     [MODAL_CONNECTION]: false,
     [MODAL_TIPS_LIBRARY]: false,
-    [MODAL_STUDENT_GALLERY]: false
+    [MODAL_STUDENT_GALLERY]: false,
+    [MODAL_VISUALIZATION]: false
 };
 
 const reducer = function (state, action) {
@@ -128,6 +130,12 @@ const openStudentGallery = function () {
 const closeStudentGallery = function () {
     return closeModal(MODAL_STUDENT_GALLERY);
 };
+const openVisualizationModal = function () {
+    return openModal(MODAL_VISUALIZATION);
+};
+const closeVisualizationModal = function () {
+    return closeModal(MODAL_VISUALIZATION);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -154,5 +162,7 @@ export {
     closeTipsLibrary,
     closeConnectionModal,
     openStudentGallery,
-    closeStudentGallery
+    closeStudentGallery,
+    openVisualizationModal,
+    closeVisualizationModal
 };

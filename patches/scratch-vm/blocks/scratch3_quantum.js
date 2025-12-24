@@ -11,7 +11,8 @@ const SERVER_TIMEOUT_MS = 30000;
 // 전역 회로 상태 (모든 스프라이트에서 공유)
 let globalCircuit = {
     blocks: [],
-    result: ''
+    result: '',
+    counts: {}
 };
 
 class Scratch3QuantumBlocks {
@@ -29,7 +30,8 @@ class Scratch3QuantumBlocks {
             quantum_gateCX: this.gateCX,
             quantum_measureAll: this.measureAll,
             quantum_run: this.run,
-            quantum_getResult: this.getResult
+            quantum_getResult: this.getResult,
+            quantum_getResultData: this.getResultData
         };
     }
 
@@ -43,7 +45,8 @@ class Scratch3QuantumBlocks {
                     NUM_QUBITS: numQubits
                 }
             }],
-            result: ''
+            result: '',
+            counts: {}
         };
 
         log.log(`Quantum: Created circuit with ${numQubits} qubits`);
@@ -126,8 +129,10 @@ class Scratch3QuantumBlocks {
                 log.log('Quantum: Response:', data);
                 if (data.success) {
                     globalCircuit.result = data.result_text || data.result;
+                    globalCircuit.counts = data.counts || {};
                 } else {
                     globalCircuit.result = `Error: ${data.error}`;
+                    globalCircuit.counts = {};
                 }
             })
             .catch(error => {
@@ -137,6 +142,14 @@ class Scratch3QuantumBlocks {
     }
 
     getResult () {
+        return globalCircuit.result || '';
+    }
+
+    getResultData (args) {
+        const dataType = args.DATA_TYPE || 'state';
+        if (dataType === 'counts') {
+            return JSON.stringify(globalCircuit.counts || {});
+        }
         return globalCircuit.result || '';
     }
 }

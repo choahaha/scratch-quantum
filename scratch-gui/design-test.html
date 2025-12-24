@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualization Modal Design Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .design-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .design-title {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .design-number {
+            background: rgba(255,255,255,0.2);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Sample histogram image placeholder */
+        .sample-histogram {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sample-histogram::before {
+            content: '';
+            position: absolute;
+            bottom: 40px;
+            left: 20%;
+            width: 60px;
+            height: 80px;
+            background: #8C8C8C;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .sample-histogram::after {
+            content: '';
+            position: absolute;
+            bottom: 40px;
+            right: 20%;
+            width: 60px;
+            height: 100px;
+            background: #8C8C8C;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .sample-histogram span {
+            position: absolute;
+            bottom: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* ========================================
+           Design 1: Minimal White
+           ======================================== */
+        .modal-1 {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+
+        .modal-1 .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-1 .modal-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-1 .close-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .modal-1 .close-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .modal-1 .modal-body {
+            padding: 20px;
+        }
+
+        /* ========================================
+           Design 2: Dark Mode
+           ======================================== */
+        .modal-2 {
+            background: #1e1e2e;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid #2d2d44;
+            overflow: hidden;
+        }
+
+        .modal-2 .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #2d2d44;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #2d2d44, #1e1e2e);
+        }
+
+        .modal-2 .modal-header h3 {
+            font-size: 15px;
+            font-weight: 500;
+            color: #e0e0e0;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-2 .close-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #3d3d5c;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #a0a0a0;
+            transition: all 0.2s;
+        }
+
+        .modal-2 .close-btn:hover {
+            background: #4d4d6c;
+            color: #ff6b9d;
+        }
+
+        .modal-2 .modal-body {
+            padding: 20px;
+        }
+
+        .modal-2 .sample-histogram {
+            background: linear-gradient(to bottom, #2a2a3e, #1e1e2e);
+            border: 1px solid #3d3d5c;
+        }
+
+        .modal-2 .sample-histogram::before {
+            background: linear-gradient(to top, #6366f1, #8b5cf6);
+        }
+
+        .modal-2 .sample-histogram::after {
+            background: linear-gradient(to top, #06b6d4, #22d3ee);
+        }
+
+        .modal-2 .sample-histogram span {
+            color: #888;
+        }
+
+        /* ========================================
+           Design 3: Glassmorphism
+           ======================================== */
+        .modal-3 {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-3 .modal-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-3 .modal-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .modal-3 .close-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .modal-3 .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .modal-3 .modal-body {
+            padding: 22px;
+        }
+
+        .modal-3 .sample-histogram {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-3 .sample-histogram::before {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .modal-3 .sample-histogram::after {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .modal-3 .sample-histogram span {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ========================================
+           Design 4: Scratch Style
+           ======================================== */
+        .modal-4 {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 0 0 4px rgba(76, 151, 255, 0.3), 0 8px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .modal-4 .modal-header {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #4C97FF 0%, #4280D7 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-4 .modal-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.3px;
+        }
+
+        .modal-4 .close-btn {
+            width: 26px;
+            height: 26px;
+            border: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .modal-4 .close-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+
+        .modal-4 .modal-body {
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .modal-4 .sample-histogram {
+            background: white;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+        }
+
+        .modal-4 .sample-histogram::before {
+            background: #FFAB19;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .modal-4 .sample-histogram::after {
+            background: #4C97FF;
+            border-radius: 6px 6px 0 0;
+        }
+
+        /* Vote buttons */
+        .vote-btn {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .vote-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .vote-btn.selected {
+            background: #4C97FF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visualization Modal Design Options</h1>
+
+    <div class="designs-grid">
+        <!-- Design 1: Minimal White -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">1</span>
+                Minimal White
+            </div>
+            <div class="modal-1">
+                <div class="modal-header">
+                    <h3>Quantum Measurement Results</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="sample-histogram">
+                        <span>|0&rang; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |1&rang;</span>
+                    </div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(1)">Select This Design</button>
+        </div>
+
+        <!-- Design 2: Dark Mode -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">2</span>
+                Dark Mode
+            </div>
+            <div class="modal-2">
+                <div class="modal-header">
+                    <h3>Quantum Measurement Results</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="sample-histogram">
+                        <span>|0&rang; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |1&rang;</span>
+                    </div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(2)">Select This Design</button>
+        </div>
+
+        <!-- Design 3: Glassmorphism -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">3</span>
+                Glassmorphism
+            </div>
+            <div class="modal-3">
+                <div class="modal-header">
+                    <h3>Quantum Measurement Results</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="sample-histogram">
+                        <span>|0&rang; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |1&rang;</span>
+                    </div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(3)">Select This Design</button>
+        </div>
+
+        <!-- Design 4: Scratch Style -->
+        <div class="design-card">
+            <div class="design-title">
+                <span class="design-number">4</span>
+                Scratch Style
+            </div>
+            <div class="modal-4">
+                <div class="modal-header">
+                    <h3>Quantum Measurement Results</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="sample-histogram">
+                        <span>|0&rang; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |1&rang;</span>
+                    </div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="selectDesign(4)">Select This Design</button>
+        </div>
+    </div>
+
+    <script>
+        function selectDesign(num) {
+            document.querySelectorAll('.vote-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            alert(`Design ${num} selected! Tell Claude: "디자인 ${num}번으로 해주세요"`);
+        }
+    </script>
+</body>
+</html>
