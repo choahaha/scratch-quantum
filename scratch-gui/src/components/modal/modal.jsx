@@ -20,7 +20,7 @@ const ModalComponent = props => (
             [styles.fullScreen]: props.fullScreen
         })}
         contentLabel={props.contentLabel}
-        overlayClassName={styles.modalOverlay}
+        overlayClassName={classNames(styles.modalOverlay, props.overlayClassName)}
         onRequestClose={props.onRequestClose}
     >
         <Box
@@ -106,7 +106,8 @@ ModalComponent.propTypes = {
     headerImage: PropTypes.string,
     isRtl: PropTypes.bool,
     onHelp: PropTypes.func,
-    onRequestClose: PropTypes.func
+    onRequestClose: PropTypes.func,
+    overlayClassName: PropTypes.string
 };
 
 export default ModalComponent;

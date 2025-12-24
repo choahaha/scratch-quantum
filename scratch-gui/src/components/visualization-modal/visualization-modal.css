@@ -1,9 +1,17 @@
 @import "../../css/units.css";
 
+.modal-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 .modal-content {
     width: auto;
-    max-width: 90%;
+    max-width: 620px;
     max-height: 90%;
+    margin: 0;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -12,9 +20,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    min-width: 400px;
-    min-height: 300px;
+    padding: 16px;
     background: #fafafa;
 }
 

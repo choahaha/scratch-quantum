@@ -6,6 +6,7 @@ import styles from './visualization-modal.css';
 const VisualizationModalComponent = ({imageData, onRequestClose}) => (
     <Modal
         className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
         contentLabel="Quantum Measurement Results"
         onRequestClose={onRequestClose}
         id="visualizationModal"
