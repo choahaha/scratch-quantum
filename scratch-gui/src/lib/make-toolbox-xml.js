@@ -825,6 +825,7 @@ const visualization = function (isInitialSetup, isStage, targetId, colors) {
                 </shadow>
             </value>
         </block>
+        <block type="visualization_circuitDiagram"/>
         ${categorySeparator}
     </category>
     `;
