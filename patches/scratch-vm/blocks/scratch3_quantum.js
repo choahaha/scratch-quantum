@@ -18,6 +18,8 @@ let globalCircuit = {
 class Scratch3QuantumBlocks {
     constructor (runtime) {
         this.runtime = runtime;
+        // Share circuit state via runtime for visualization blocks
+        runtime.quantumCircuit = globalCircuit;
     }
 
     getPrimitives () {
@@ -38,16 +40,15 @@ class Scratch3QuantumBlocks {
     createCircuit (args) {
         const numQubits = Cast.toNumber(args.NUM_QUBITS);
 
-        globalCircuit = {
-            blocks: [{
-                opcode: 'quantum_createCircuit',
-                args: {
-                    NUM_QUBITS: numQubits
-                }
-            }],
-            result: '',
-            counts: {}
-        };
+        // Update existing object instead of reassigning (keeps runtime reference)
+        globalCircuit.blocks = [{
+            opcode: 'quantum_createCircuit',
+            args: {
+                NUM_QUBITS: numQubits
+            }
+        }];
+        globalCircuit.result = '';
+        globalCircuit.counts = {};
 
         log.log(`Quantum: Created circuit with ${numQubits} qubits`);
     }
