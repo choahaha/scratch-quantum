@@ -309,6 +309,7 @@ Blockly.Msg.QUANTUM_RESULT_COUNTS = 'counts';
 // Visualization blocks
 Blockly.Msg.CATEGORY_VISUALIZATION = 'Visualization';
 Blockly.Msg.VISUALIZATION_HISTOGRAM = 'show histogram of %1';
+Blockly.Msg.VISUALIZATION_CIRCUIT_DIAGRAM = 'draw quantum circuit';
 
 // Context menus
 Blockly.Msg.DUPLICATE = 'Duplicate';

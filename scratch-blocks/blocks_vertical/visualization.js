@@ -46,3 +46,17 @@ Blockly.Blocks['visualization_histogram'] = {
     });
   }
 };
+
+// ============================================
+// visualization_circuitDiagram - 양자회로 그리기
+// ============================================
+Blockly.Blocks['visualization_circuitDiagram'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "visualization_circuitDiagram",
+      "message0": Blockly.Msg.VISUALIZATION_CIRCUIT_DIAGRAM,
+      "category": Blockly.Categories.visualization,
+      "extensions": ["colours_visualization", "shape_statement"]
+    });
+  }
+};
