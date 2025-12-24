@@ -30,10 +30,14 @@ const AuthManagerHOC = function (WrappedComponent) {
 
             // Listen for auth state changes
             const {data: {subscription}} = supabase.auth.onAuthStateChange(
-                async (event, session) => {
+                (event, session) => {
                     if (session?.user) {
-                        const profile = await this.fetchProfile(session.user.id);
-                        this.props.dispatchSetUser(session.user, profile);
+                        this.props.dispatchSetUser(session.user, null);
+                        this.fetchProfile(session.user.id).then(profile => {
+                            if (profile) {
+                                this.props.dispatchSetUser(session.user, profile);
+                            }
+                        });
                     } else {
                         this.props.dispatchSetUser(null, null);
                     }
@@ -53,8 +57,14 @@ const AuthManagerHOC = function (WrappedComponent) {
             try {
                 const {data: {session}} = await supabase.auth.getSession();
                 if (session?.user) {
-                    const profile = await this.fetchProfile(session.user.id);
-                    this.props.dispatchSetUser(session.user, profile);
+                    // 먼저 유저 설정하여 로딩 해제
+                    this.props.dispatchSetUser(session.user, null);
+                    // 프로필은 백그라운드에서 로드
+                    this.fetchProfile(session.user.id).then(profile => {
+                        if (profile) {
+                            this.props.dispatchSetUser(session.user, profile);
+                        }
+                    });
                 } else {
                     this.props.dispatchSetUser(null, null);
                 }
