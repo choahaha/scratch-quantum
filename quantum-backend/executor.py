@@ -58,61 +58,86 @@ def create_histogram(data_str: str) -> str:
         # Try JSON anyway
         counts = json.loads(data_str)
 
-    # Create histogram with Pastel Rainbow style
+    # Create histogram with Scratch Blue Gradient style
     states = list(counts.keys())
     values = list(counts.values())
 
-    # Pastel rainbow colors
-    pastel_colors = [
-        '#FFB3BA',  # Pastel Pink
-        '#BAFFC9',  # Pastel Green
-        '#BAE1FF',  # Pastel Blue
-        '#FFFFBA',  # Pastel Yellow
-        '#FFD9BA',  # Pastel Orange
-        '#E0BBE4',  # Pastel Purple
-        '#D4F0F0',  # Pastel Cyan
-        '#FCE4EC',  # Light Pink
+    # Scratch Blue gradient colors
+    scratch_colors = [
+        '#4C97FF',  # Scratch Blue
+        '#9966FF',  # Scratch Purple
+        '#FFAB19',  # Scratch Orange
+        '#40BF4A',  # Scratch Green
+        '#FF6680',  # Scratch Pink
+        '#4CBFE6',  # Scratch Cyan
     ]
 
     # Format state labels with ket notation
     formatted_states = [f'|{s}⟩' for s in states]
 
     # Assign colors to bars
-    bar_colors = [pastel_colors[i % len(pastel_colors)] for i in range(len(states))]
+    bar_colors = [scratch_colors[i % len(scratch_colors)] for i in range(len(states))]
 
-    fig, ax = plt.subplots(figsize=(8, 5), facecolor='#FEFEFE')
-    ax.set_facecolor('#FEFEFE')
+    fig, ax = plt.subplots(figsize=(6, 4), facecolor='#f8faff')
+    ax.set_facecolor('#f8faff')
 
     bars = ax.bar(formatted_states, values, color=bar_colors, edgecolor='white', linewidth=2, width=0.6)
 
-    # Style the chart
+    # Style the chart (no title - shown in modal header)
     ax.set_xlabel('Quantum State', fontsize=11, color='#555', fontweight='500')
     ax.set_ylabel('Count', fontsize=11, color='#555', fontweight='500')
-    ax.set_title('Quantum Measurement Results', fontsize=14, color='#333', fontweight='600', pad=15)
 
     # Remove top and right spines
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.spines['left'].set_color('#ddd')
-    ax.spines['bottom'].set_color('#ddd')
+    ax.spines['left'].set_color('#ccc')
+    ax.spines['bottom'].set_color('#ccc')
 
     # Style tick labels
-    ax.tick_params(axis='both', colors='#666', labelsize=10)
+    ax.tick_params(axis='both', colors='#555', labelsize=10)
 
     # Add grid lines
-    ax.yaxis.grid(True, linestyle='--', alpha=0.3, color='#ccc')
+    ax.yaxis.grid(True, linestyle='--', alpha=0.3, color='#ddd')
     ax.set_axisbelow(True)
 
     # Add value labels on bars
     for bar, val in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(values)*0.02,
-                str(val), ha='center', va='bottom', fontsize=11, fontweight='600', color='#555')
+                str(val), ha='center', va='bottom', fontsize=11, fontweight='600', color='#333')
 
     plt.tight_layout()
 
     # Convert to base64
     buffer = BytesIO()
-    plt.savefig(buffer, format='png', dpi=100, bbox_inches='tight')
+    plt.savefig(buffer, format='png', dpi=150, bbox_inches='tight')
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    plt.close(fig)
+
+    return f"data:image/png;base64,{image_base64}"
+
+
+def create_circuit_diagram(blocks: List[Dict[str, Any]]) -> str:
+    """Create circuit diagram image from quantum blocks using qc.draw('mpl')"""
+    if not QISKIT_AVAILABLE:
+        raise ValueError("Qiskit is not installed")
+    if not MATPLOTLIB_AVAILABLE:
+        raise ValueError("matplotlib is not installed")
+
+    # Build the circuit
+    executor = QuantumExecutor()
+    executor._validate_blocks(blocks)
+    executor._build_circuit(blocks)
+
+    if executor.circuit is None:
+        raise ValueError("No circuit created. Use 'quantum_createCircuit' block first.")
+
+    # Draw the circuit using matplotlib backend
+    fig = executor.circuit.draw(output='mpl')
+
+    # Convert to base64
+    buffer = BytesIO()
+    fig.savefig(buffer, format='png', dpi=150, bbox_inches='tight', facecolor='white')
     buffer.seek(0)
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     plt.close(fig)
