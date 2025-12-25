@@ -15,6 +15,8 @@ import {updateMicIndicator} from '../reducers/mic-indicator';
 import {openVisualizationModal} from '../reducers/modals';
 import {setVisualizationData} from './visualization-state';
 import {saveVisualizationToSupabase} from './save-visualization';
+import {supabase} from './supabase-client.js';
+import dataURItoBlob from './data-uri-to-blob.js';
 
 /*
  * Higher Order Component to manage events emitted by the VM
@@ -30,7 +32,8 @@ const vmListenerHOC = function (WrappedComponent) {
                 'handleKeyUp',
                 'handleProjectChanged',
                 'handleTargetsUpdate',
-                'handleVisualizationShow'
+                'handleVisualizationShow',
+                'ensureStudentScreenExists'
             ]);
             // We have to start listening to the vm here rather than in
             // componentDidMount because the HOC mounts the wrapped component,
@@ -102,6 +105,60 @@ const vmListenerHOC = function (WrappedComponent) {
                     data.type,
                     data.imageData
                 );
+
+                // Ensure student has a screen card in the gallery
+                this.ensureStudentScreenExists();
+            }
+        }
+        async ensureStudentScreenExists () {
+            const userId = this.props.authUserId;
+            const username = this.props.authUsername;
+
+            if (!userId || !username) return;
+
+            try {
+                // Check if student already has a screen
+                const {data: existing} = await supabase
+                    .from('student_screens')
+                    .select('id')
+                    .eq('user_id', userId)
+                    .limit(1);
+
+                // If already exists, do nothing
+                if (existing && existing.length > 0) return;
+
+                // Otherwise, capture current stage and create a screen
+                const vm = this.props.vm;
+                vm.renderer.requestSnapshot(async dataURI => {
+                    try {
+                        const blob = dataURItoBlob(dataURI);
+                        const timestamp = Date.now();
+                        const filePath = `${userId}/${timestamp}.png`;
+
+                        await supabase.storage
+                            .from('screenshots')
+                            .upload(filePath, blob, {contentType: 'image/png'});
+
+                        const {data: urlData} = supabase.storage
+                            .from('screenshots')
+                            .getPublicUrl(filePath);
+
+                        await supabase
+                            .from('student_screens')
+                            .insert({
+                                user_id: userId,
+                                username: username,
+                                screenshot_url: urlData.publicUrl
+                            });
+
+                        console.log('Auto-created student screen for visualization');
+                    } catch (error) {
+                        console.error('Error creating student screen:', error);
+                    }
+                });
+                vm.renderer.draw();
+            } catch (error) {
+                console.error('Error checking student screen:', error);
             }
         }
         handleKeyDown (e) {

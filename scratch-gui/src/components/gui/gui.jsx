@@ -116,6 +116,7 @@ const GUIComponent = props => {
         onRequestCloseDebugModal,
         onRequestCloseTelemetryModal,
         onRequestCloseStudentGallery,
+        onRequestCloseVisualizationModal,
         onSeeCommunity,
         onShare,
         onShowPrivacyPolicy,

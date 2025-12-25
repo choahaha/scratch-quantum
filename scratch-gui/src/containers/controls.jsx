@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import ControlsComponent from '../components/controls/controls.jsx';
 import {supabase} from '../lib/supabase-client.js';
 import dataURItoBlob from '../lib/data-uri-to-blob.js';
+import captureBlocksAsImage from '../lib/blocks-to-image.js';
 
 class Controls extends React.Component {
     constructor (props) {
@@ -80,20 +81,41 @@ class Controls extends React.Component {
                     .getPublicUrl(filePath);
                 console.log('SendScreen: Public URL:', urlData.publicUrl);
 
-                // 프로젝트 JSON 가져오기
-                let projectJson = null;
+                // 블록 이미지 캡처
+                let blocksImageUrl = null;
                 try {
-                    projectJson = vm.toJSON();
-                    console.log('SendScreen: Got project JSON');
-                } catch (jsonError) {
-                    console.warn('SendScreen: Could not get project JSON:', jsonError);
+                    const blocksBlob = await captureBlocksAsImage();
+                    if (blocksBlob) {
+                        const blocksFilePath = `${userId}/blocks_${timestamp}.png`;
+                        console.log('SendScreen: Uploading blocks image to:', blocksFilePath);
+
+                        const {data: blocksUploadData, error: blocksUploadError} = await supabase.storage
+                            .from('screenshots')
+                            .upload(blocksFilePath, blocksBlob, {
+                                contentType: 'image/png',
+                                upsert: true
+                            });
+
+                        if (blocksUploadError) {
+                            console.warn('SendScreen: Blocks upload error:', blocksUploadError);
+                        } else {
+                            console.log('SendScreen: Blocks upload success:', blocksUploadData);
+                            const {data: blocksUrlData} = supabase.storage
+                                .from('screenshots')
+                                .getPublicUrl(blocksFilePath);
+                            blocksImageUrl = blocksUrlData.publicUrl;
+                            console.log('SendScreen: Blocks image URL:', blocksImageUrl);
+                        }
+                    }
+                } catch (blocksError) {
+                    console.warn('SendScreen: Could not capture blocks image:', blocksError);
                 }
 
                 const {data: insertData, error: insertError} = await supabase.from('student_screens').insert({
                     user_id: userId,
                     username: username,
                     screenshot_url: urlData.publicUrl,
-                    project_json: projectJson
+                    blocks_image_url: blocksImageUrl
                 });
 
                 if (insertError) {

@@ -14,12 +14,18 @@ class StudentGallery extends React.Component {
             'handleClose',
             'handleRefresh',
             'fetchScreens',
+            'fetchScreensQuiet',
+            'fetchVisualizationsQuiet',
             'handleRealtimeInsert',
-            'handleDeleteAll'
+            'handleDeleteAll',
+            'handleDeleteScreen',
+            'handleDeleteVisualization',
+            'handleDeleteStudent'
         ]);
         this.state = {
             loading: true,
             screens: [],
+            allScreens: {},
             visualizations: []
         };
         this.subscription = null;
@@ -88,14 +94,20 @@ class StudentGallery extends React.Component {
             }
 
             const latestByUser = {};
+            const allScreensByUser = {};
             data.forEach(screen => {
                 if (!latestByUser[screen.user_id]) {
                     latestByUser[screen.user_id] = screen;
                 }
+                if (!allScreensByUser[screen.user_id]) {
+                    allScreensByUser[screen.user_id] = [];
+                }
+                allScreensByUser[screen.user_id].push(screen);
             });
 
             this.setState({
                 screens: Object.values(latestByUser),
+                allScreens: allScreensByUser,
                 loading: false
             });
         } catch (error) {
@@ -105,6 +117,57 @@ class StudentGallery extends React.Component {
     }
 
     async fetchVisualizations () {
+        try {
+            const {data, error} = await supabase
+                .from('student_visualizations')
+                .select('*')
+                .order('created_at', {ascending: false});
+
+            if (error) {
+                console.error('Error fetching visualizations:', error);
+                return;
+            }
+
+            this.setState({visualizations: data || []});
+        } catch (error) {
+            console.error('Error fetching visualizations:', error);
+        }
+    }
+
+    async fetchScreensQuiet () {
+        try {
+            const {data, error} = await supabase
+                .from('student_screens')
+                .select('*')
+                .order('created_at', {ascending: false});
+
+            if (error) {
+                console.error('Error fetching screens:', error);
+                return;
+            }
+
+            const latestByUser = {};
+            const allScreensByUser = {};
+            data.forEach(screen => {
+                if (!latestByUser[screen.user_id]) {
+                    latestByUser[screen.user_id] = screen;
+                }
+                if (!allScreensByUser[screen.user_id]) {
+                    allScreensByUser[screen.user_id] = [];
+                }
+                allScreensByUser[screen.user_id].push(screen);
+            });
+
+            this.setState({
+                screens: Object.values(latestByUser),
+                allScreens: allScreensByUser
+            });
+        } catch (error) {
+            console.error('Error fetching screens:', error);
+        }
+    }
+
+    async fetchVisualizationsQuiet () {
         try {
             const {data, error} = await supabase
                 .from('student_visualizations')
@@ -167,16 +230,104 @@ class StudentGallery extends React.Component {
         }
     }
 
+    async handleDeleteScreen (screenId) {
+        console.log('=== handleDeleteScreen START ===');
+        console.log('screenId:', screenId);
+        if (!screenId) {
+            console.log('No screenId, returning');
+            return;
+        }
+        try {
+            console.log('Calling supabase delete...');
+            const {data, error} = await supabase
+                .from('student_screens')
+                .delete()
+                .eq('id', screenId)
+                .select();
+
+            console.log('Delete result - data:', data, 'error:', error);
+
+            if (error) {
+                console.error('Error deleting screen:', error);
+                alert('삭제 실패: ' + error.message);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                console.log('No rows deleted - might be RLS issue');
+                alert('삭제 실패: 권한이 없거나 항목을 찾을 수 없습니다.');
+                return;
+            }
+
+            console.log('Delete successful, fetching screens...');
+            // 화면 갱신 (loading 없이)
+            this.fetchScreensQuiet();
+            console.log('=== handleDeleteScreen END ===');
+        } catch (error) {
+            console.error('Exception in handleDeleteScreen:', error);
+            alert('삭제 중 오류: ' + error.message);
+        }
+    }
+
+    async handleDeleteVisualization (vizId) {
+        if (!vizId) return;
+        try {
+            const {error} = await supabase
+                .from('student_visualizations')
+                .delete()
+                .eq('id', vizId);
+
+            if (error) {
+                console.error('Error deleting visualization:', error);
+                return;
+            }
+
+            // 화면 갱신 (loading 없이)
+            this.fetchVisualizationsQuiet();
+        } catch (error) {
+            console.error('Error deleting visualization:', error);
+        }
+    }
+
+    async handleDeleteStudent (userId) {
+        if (!userId) return;
+        if (!window.confirm('이 학생의 모든 데이터를 삭제하시겠습니까?')) return;
+
+        try {
+            // 1. 해당 학생의 모든 스크린 삭제
+            await supabase
+                .from('student_screens')
+                .delete()
+                .eq('user_id', userId);
+
+            // 2. 해당 학생의 모든 시각화 삭제
+            await supabase
+                .from('student_visualizations')
+                .delete()
+                .eq('user_id', userId);
+
+            // 3. 화면 갱신
+            this.fetchScreensQuiet();
+            this.fetchVisualizationsQuiet();
+        } catch (error) {
+            console.error('Error deleting student data:', error);
+        }
+    }
+
     render () {
         return (
             <StudentGalleryComponent
                 isRtl={this.props.isRtl}
                 loading={this.state.loading}
                 screens={this.state.screens}
+                allScreens={this.state.allScreens}
                 visualizations={this.state.visualizations}
                 onRefresh={this.handleRefresh}
                 onRequestClose={this.handleClose}
                 onDeleteAll={this.handleDeleteAll}
+                onDeleteScreen={this.handleDeleteScreen}
+                onDeleteVisualization={this.handleDeleteVisualization}
+                onDeleteStudent={this.handleDeleteStudent}
             />
         );
     }

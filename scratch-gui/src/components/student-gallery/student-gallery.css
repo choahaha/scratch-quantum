@@ -8,20 +8,7 @@
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-}
-
-@media (max-width: 1200px) {
-    .gallery-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 900px) {
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 .gallery-item {
@@ -40,14 +27,36 @@
 .screenshot {
     width: 100%;
     aspect-ratio: 4 / 3;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
     display: block;
-    background: #f0f0f0;
+    background: white;
 }
 
 .item-info {
     padding: 0.5rem;
     border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-info-left {
+    flex: 1;
+}
+
+.card-delete-button {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem;
+    transition: color 0.2s;
+}
+
+.card-delete-button:hover {
+    color: #ff4444;
 }
 
 .username {
@@ -109,9 +118,31 @@
     background: $motion-tertiary;
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
 .header-buttons {
     display: flex;
     gap: 0.5rem;
+}
+
+.size-slider {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.slider-label {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.slider {
+    width: 100px;
+    cursor: pointer;
 }
 
 .delete-all-button {
@@ -189,7 +220,7 @@
     width: 100%;
     max-height: 55vh;
     object-fit: contain;
-    background: #f0f0f0;
+    background: white;
     border-radius: 0.25rem;
 }
 
@@ -246,7 +277,7 @@
     width: 100%;
     max-height: 60vh;
     object-fit: contain;
-    background: #f5f5f5;
+    background: white;
     border-radius: 0.25rem;
 }
 
@@ -347,10 +378,11 @@
 
 .viz-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding: 0.5rem 0;
     margin-bottom: 0.5rem;
+    gap: 0.5rem;
 }
 
 .viz-type {
@@ -407,4 +439,59 @@
     padding: 0.5rem;
     color: #666;
     font-size: 0.875rem;
+}
+
+/* Program Tab - Side by Side Layout */
+.program-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.program-images {
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.program-image-container {
+    flex: 1;
+    max-width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 0.25rem;
+    min-height: 200px;
+}
+
+.program-image {
+    max-width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+    border-radius: 0.25rem;
+}
+
+.no-blocks-placeholder {
+    color: #999;
+    font-style: italic;
+    padding: 2rem;
+    text-align: center;
+}
+
+.delete-item-button {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem;
+    transition: color 0.2s;
+}
+
+.delete-item-button:hover {
+    color: #ff4444;
 }

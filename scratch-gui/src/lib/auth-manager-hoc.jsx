@@ -139,7 +139,7 @@ const AuthManagerHOC = function (WrappedComponent) {
                 .insert({
                     id: authData.user.id,
                     username: username,
-                    email: authData.user.email,
+                    display_name: username,
                     role: 'student'
                 });
 

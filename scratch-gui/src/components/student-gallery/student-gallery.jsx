@@ -20,12 +20,18 @@ const StudentGalleryComponent = ({
     onRequestClose,
     onRefresh,
     onDeleteAll,
+    onDeleteScreen,
+    onDeleteVisualization,
+    onDeleteStudent,
     screens,
+    allScreens,
     visualizations
 }) => {
     const [selectedScreen, setSelectedScreen] = useState(null);
-    const [detailTab, setDetailTab] = useState('screen');
+    const [detailTab, setDetailTab] = useState('program');
+    const [screenIndex, setScreenIndex] = useState(0);
     const [vizIndex, setVizIndex] = useState(0);
+    const [cardSize, setCardSize] = useState(250);
     const uniqueStudents = new Set(screens.map(s => s.user_id)).size;
 
     const formatTime = timestamp => {
@@ -42,6 +48,12 @@ const StudentGalleryComponent = ({
     // Get visualizations for selected user
     const getUserVisualizations = userId => {
         return visualizations.filter(v => v.user_id === userId);
+    };
+
+    // Get latest visualization for thumbnail
+    const getLatestVisualization = userId => {
+        const userViz = visualizations.filter(v => v.user_id === userId);
+        return userViz.length > 0 ? userViz[0] : null;
     };
 
     return (
@@ -61,27 +73,41 @@ const StudentGalleryComponent = ({
                         values={{count: uniqueStudents}}
                     />
                 </span>
-                <div className={styles.headerButtons}>
-                    <button
-                        className={styles.refreshButton}
-                        onClick={onRefresh}
-                    >
-                        <FormattedMessage
-                            defaultMessage="Refresh"
-                            description="Button to refresh student screens"
-                            id="gui.studentGallery.refresh"
+                <div className={styles.headerControls}>
+                    <div className={styles.sizeSlider}>
+                        <span className={styles.sliderLabel}>{'작게'}</span>
+                        <input
+                            type="range"
+                            min="150"
+                            max="350"
+                            value={cardSize}
+                            onChange={e => setCardSize(Number(e.target.value))}
+                            className={styles.slider}
                         />
-                    </button>
-                    <button
-                        className={styles.deleteAllButton}
-                        onClick={onDeleteAll}
-                    >
-                        <FormattedMessage
-                            defaultMessage="Delete All"
-                            description="Button to delete all screens"
-                            id="gui.studentGallery.deleteAll"
-                        />
-                    </button>
+                        <span className={styles.sliderLabel}>{'크게'}</span>
+                    </div>
+                    <div className={styles.headerButtons}>
+                        <button
+                            className={styles.refreshButton}
+                            onClick={onRefresh}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Refresh"
+                                description="Button to refresh student screens"
+                                id="gui.studentGallery.refresh"
+                            />
+                        </button>
+                        <button
+                            className={styles.deleteAllButton}
+                            onClick={onDeleteAll}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Delete All"
+                                description="Button to delete all screens"
+                                id="gui.studentGallery.deleteAll"
+                            />
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className={styles.galleryContent}>
@@ -103,28 +129,48 @@ const StudentGalleryComponent = ({
                         />
                     </div>
                 ) : (
-                    <div className={styles.galleryGrid}>
-                        {screens.map(screen => (
-                            <div
-                                key={screen.id}
-                                className={styles.galleryItem}
-                                onClick={() => {
-                                    setSelectedScreen(screen);
-                                    setDetailTab('screen');
-                                    setVizIndex(0);
-                                }}
-                            >
-                                <img
-                                    className={styles.screenshot}
-                                    src={screen.screenshot_url}
-                                    alt={screen.username}
-                                />
-                                <div className={styles.itemInfo}>
-                                    <p className={styles.username}>{screen.username}</p>
-                                    <p className={styles.timestamp}>{formatTime(screen.created_at)}</p>
+                    <div
+                        className={styles.galleryGrid}
+                        style={{gridTemplateColumns: `repeat(auto-fill, minmax(${cardSize}px, 1fr))`}}
+                    >
+                        {screens.map(screen => {
+                            const latestViz = getLatestVisualization(screen.user_id);
+                            const thumbnailUrl = latestViz ? latestViz.image_url : screen.screenshot_url;
+                            return (
+                                <div
+                                    key={screen.id}
+                                    className={styles.galleryItem}
+                                    onClick={() => {
+                                        setSelectedScreen(screen);
+                                        setDetailTab('program');
+                                        setScreenIndex(0);
+                                        setVizIndex(0);
+                                    }}
+                                >
+                                    <img
+                                        className={styles.screenshot}
+                                        src={thumbnailUrl}
+                                        alt={screen.username}
+                                    />
+                                    <div className={styles.itemInfo}>
+                                        <div className={styles.itemInfoLeft}>
+                                            <p className={styles.username}>{screen.username}</p>
+                                            <p className={styles.timestamp}>{formatTime(screen.created_at)}</p>
+                                        </div>
+                                        <button
+                                            className={styles.cardDeleteButton}
+                                            onClick={e => {
+                                                e.stopPropagation();
+                                                onDeleteStudent(screen.user_id);
+                                            }}
+                                            title="삭제"
+                                        >
+                                            {'🗑️'}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
@@ -154,16 +200,10 @@ const StudentGalleryComponent = ({
                         {/* Tab navigation */}
                         <div className={styles.tabContainer}>
                             <button
-                                className={`${styles.tabButton} ${detailTab === 'screen' ? styles.tabActive : ''}`}
-                                onClick={() => setDetailTab('screen')}
+                                className={`${styles.tabButton} ${detailTab === 'program' ? styles.tabActive : ''}`}
+                                onClick={() => setDetailTab('program')}
                             >
-                                {'스크린샷'}
-                            </button>
-                            <button
-                                className={`${styles.tabButton} ${detailTab === 'blocks' ? styles.tabActive : ''}`}
-                                onClick={() => setDetailTab('blocks')}
-                            >
-                                {'블록'}
+                                {'프로그램'}
                             </button>
                             <button
                                 className={`${styles.tabButton} ${detailTab === 'visualization' ? styles.tabActive : ''}`}
@@ -180,29 +220,69 @@ const StudentGalleryComponent = ({
 
                         {/* Tab content */}
                         <div className={styles.tabContent}>
-                            {detailTab === 'screen' && (
-                                <div className={styles.tabPane}>
-                                    <img
-                                        src={selectedScreen.screenshot_url}
-                                        alt={selectedScreen.username}
-                                        className={styles.detailImage}
-                                    />
-                                </div>
-                            )}
-
-                            {detailTab === 'blocks' && (
-                                <div className={styles.tabPane}>
-                                    {selectedScreen.blocks_image_url ? (
-                                        <img
-                                            src={selectedScreen.blocks_image_url}
-                                            alt="Block code"
-                                            className={styles.blocksImage}
-                                        />
-                                    ) : (
-                                        <p className={styles.noContent}>{'블록 이미지가 없습니다.'}</p>
-                                    )}
-                                </div>
-                            )}
+                            {detailTab === 'program' && (() => {
+                                const userScreens = allScreens[selectedScreen.user_id] || [selectedScreen];
+                                const currentScreen = userScreens[screenIndex] || selectedScreen;
+                                return (
+                                    <div className={styles.tabPane}>
+                                        <div className={styles.vizContainer}>
+                                            <div className={styles.vizInfo}>
+                                                <span className={styles.vizTime}>
+                                                    {formatTime(currentScreen.created_at)}
+                                                </span>
+                                                <button
+                                                    className={styles.deleteItemButton}
+                                                    onClick={() => onDeleteScreen(currentScreen.id)}
+                                                    title="삭제"
+                                                >
+                                                    {'🗑️'}
+                                                </button>
+                                            </div>
+                                            <div className={styles.programWrapper}>
+                                                <button
+                                                    className={styles.navButton}
+                                                    onClick={() => setScreenIndex(Math.min(userScreens.length - 1, screenIndex + 1))}
+                                                    disabled={screenIndex === userScreens.length - 1}
+                                                >
+                                                    {'<'}
+                                                </button>
+                                                <div className={styles.programImages}>
+                                                    <div className={styles.programImageContainer}>
+                                                        <img
+                                                            src={currentScreen.screenshot_url}
+                                                            alt={currentScreen.username}
+                                                            className={styles.programImage}
+                                                        />
+                                                    </div>
+                                                    <div className={styles.programImageContainer}>
+                                                        {currentScreen.blocks_image_url ? (
+                                                            <img
+                                                                src={currentScreen.blocks_image_url}
+                                                                alt="Block code"
+                                                                className={styles.programImage}
+                                                            />
+                                                        ) : (
+                                                            <div className={styles.noBlocksPlaceholder}>
+                                                                {'블록 이미지 없음'}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    className={styles.navButton}
+                                                    onClick={() => setScreenIndex(Math.max(0, screenIndex - 1))}
+                                                    disabled={screenIndex === 0}
+                                                >
+                                                    {'>'}
+                                                </button>
+                                            </div>
+                                            <div className={styles.vizCounter}>
+                                                {screenIndex + 1} / {userScreens.length}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
 
                             {detailTab === 'visualization' && (() => {
                                 const userViz = getUserVisualizations(selectedScreen.user_id);
@@ -218,6 +298,13 @@ const StudentGalleryComponent = ({
                                                     <span className={styles.vizTime}>
                                                         {formatTime(currentViz.created_at)}
                                                     </span>
+                                                    <button
+                                                        className={styles.deleteItemButton}
+                                                        onClick={() => onDeleteVisualization(currentViz.id)}
+                                                        title="삭제"
+                                                    >
+                                                        {'🗑️'}
+                                                    </button>
                                                 </div>
                                                 <div className={styles.vizImageWrapper}>
                                                     <button
@@ -259,10 +346,14 @@ const StudentGalleryComponent = ({
 };
 
 StudentGalleryComponent.propTypes = {
+    allScreens: PropTypes.object,
     intl: intlShape.isRequired,
     isRtl: PropTypes.bool,
     loading: PropTypes.bool,
     onDeleteAll: PropTypes.func.isRequired,
+    onDeleteScreen: PropTypes.func.isRequired,
+    onDeleteStudent: PropTypes.func.isRequired,
+    onDeleteVisualization: PropTypes.func.isRequired,
     onRefresh: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
     screens: PropTypes.arrayOf(PropTypes.shape({
@@ -284,6 +375,7 @@ StudentGalleryComponent.propTypes = {
 };
 
 StudentGalleryComponent.defaultProps = {
+    allScreens: {},
     loading: false,
     screens: [],
     visualizations: []
