@@ -19,13 +19,16 @@ class StudentGallery extends React.Component {
         ]);
         this.state = {
             loading: true,
-            screens: []
+            screens: [],
+            visualizations: []
         };
         this.subscription = null;
+        this.visualizationSubscription = null;
     }
 
     componentDidMount () {
         this.fetchScreens();
+        this.fetchVisualizations();
         this.setupRealtimeSubscription();
     }
 
@@ -101,12 +104,31 @@ class StudentGallery extends React.Component {
         }
     }
 
+    async fetchVisualizations () {
+        try {
+            const {data, error} = await supabase
+                .from('student_visualizations')
+                .select('*')
+                .order('created_at', {ascending: false});
+
+            if (error) {
+                console.error('Error fetching visualizations:', error);
+                return;
+            }
+
+            this.setState({visualizations: data || []});
+        } catch (error) {
+            console.error('Error fetching visualizations:', error);
+        }
+    }
+
     handleClose () {
         this.props.onClose();
     }
 
     handleRefresh () {
         this.fetchScreens();
+        this.fetchVisualizations();
     }
 
     async handleDeleteAll () {
@@ -151,6 +173,7 @@ class StudentGallery extends React.Component {
                 isRtl={this.props.isRtl}
                 loading={this.state.loading}
                 screens={this.state.screens}
+                visualizations={this.state.visualizations}
                 onRefresh={this.handleRefresh}
                 onRequestClose={this.handleClose}
                 onDeleteAll={this.handleDeleteAll}

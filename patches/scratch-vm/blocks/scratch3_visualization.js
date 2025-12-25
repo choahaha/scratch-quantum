@@ -50,7 +50,8 @@ class Scratch3VisualizationBlocks {
                         if (this.runtime) {
                             this.runtime.emit('VISUALIZATION_SHOW', {
                                 imageData: result.image_base64,
-                                onClose: resolve
+                                onClose: resolve,
+                                type: 'histogram'
                             });
                         } else {
                             resolve();
@@ -96,7 +97,8 @@ class Scratch3VisualizationBlocks {
                         if (this.runtime) {
                             this.runtime.emit('VISUALIZATION_SHOW', {
                                 imageData: result.image_base64,
-                                onClose: resolve
+                                onClose: resolve,
+                                type: 'circuit'
                             });
                         } else {
                             resolve();

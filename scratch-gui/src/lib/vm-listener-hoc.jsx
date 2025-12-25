@@ -14,6 +14,7 @@ import {showExtensionAlert} from '../reducers/alerts';
 import {updateMicIndicator} from '../reducers/mic-indicator';
 import {openVisualizationModal} from '../reducers/modals';
 import {setVisualizationData} from './visualization-state';
+import {saveVisualizationToSupabase} from './save-visualization';
 
 /*
  * Higher Order Component to manage events emitted by the VM
@@ -92,6 +93,16 @@ const vmListenerHOC = function (WrappedComponent) {
             // Store data in global state and open modal
             setVisualizationData(data.imageData, data.onClose);
             this.props.onOpenVisualizationModal();
+
+            // Auto-save visualization to Supabase for admin dashboard
+            if (this.props.authUserId && data.type) {
+                saveVisualizationToSupabase(
+                    this.props.authUserId,
+                    this.props.authUsername,
+                    data.type,
+                    data.imageData
+                );
+            }
         }
         handleKeyDown (e) {
             // Don't capture keys intended for Blockly inputs.
@@ -154,6 +165,8 @@ const vmListenerHOC = function (WrappedComponent) {
     }
     VMListener.propTypes = {
         attachKeyboardEvents: PropTypes.bool,
+        authUserId: PropTypes.string,
+        authUsername: PropTypes.string,
         onBlockDragUpdate: PropTypes.func.isRequired,
         onGreenFlag: PropTypes.func,
         onKeyDown: PropTypes.func,
@@ -180,18 +193,25 @@ const vmListenerHOC = function (WrappedComponent) {
         attachKeyboardEvents: true,
         onGreenFlag: () => ({})
     };
-    const mapStateToProps = state => ({
-        projectChanged: state.scratchGui.projectChanged,
-        // Do not emit target or project updates in fullscreen or player only mode
-        // or when recording sounds (it leads to garbled recordings on low-power machines)
-        shouldUpdateTargets: !state.scratchGui.mode.isFullScreen && !state.scratchGui.mode.isPlayerOnly &&
-            !state.scratchGui.modals.soundRecorder,
-        // Do not update the projectChanged state in fullscreen or player only mode
-        shouldUpdateProjectChanged: !state.scratchGui.mode.isFullScreen && !state.scratchGui.mode.isPlayerOnly,
-        vm: state.scratchGui.vm,
-        username: state.session && state.session.session && state.session.session.user ?
-            state.session.session.user.username : ''
-    });
+    const mapStateToProps = state => {
+        const profile = state.scratchGui.auth ? state.scratchGui.auth.profile : null;
+        const user = state.scratchGui.auth ? state.scratchGui.auth.user : null;
+        return {
+            projectChanged: state.scratchGui.projectChanged,
+            // Do not emit target or project updates in fullscreen or player only mode
+            // or when recording sounds (it leads to garbled recordings on low-power machines)
+            shouldUpdateTargets: !state.scratchGui.mode.isFullScreen && !state.scratchGui.mode.isPlayerOnly &&
+                !state.scratchGui.modals.soundRecorder,
+            // Do not update the projectChanged state in fullscreen or player only mode
+            shouldUpdateProjectChanged: !state.scratchGui.mode.isFullScreen && !state.scratchGui.mode.isPlayerOnly,
+            vm: state.scratchGui.vm,
+            username: state.session && state.session.session && state.session.session.user ?
+                state.session.session.user.username : '',
+            // Auth user info for saving visualizations (use user.id as fallback when profile not loaded yet)
+            authUserId: profile?.id || user?.id || null,
+            authUsername: profile?.username || user?.user_metadata?.username || null
+        };
+    };
     const mapDispatchToProps = dispatch => ({
         onTargetsUpdate: data => {
             dispatch(updateTargets(data.targetList, data.editingTarget));

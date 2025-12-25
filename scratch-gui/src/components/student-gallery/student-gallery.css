@@ -152,10 +152,10 @@
     border-radius: 0.5rem;
     padding: 1.5rem;
     width: 90vw;
-    max-width: 1200px;
+    max-width: 900px;
     max-height: 85vh;
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
     overflow: hidden;
 }
 
@@ -239,4 +239,172 @@
 .no-code {
     color: #999;
     font-style: italic;
+}
+
+.blocks-image {
+    flex: 1;
+    width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    background: #f5f5f5;
+    border-radius: 0.25rem;
+}
+
+/* Detail Header */
+.detail-header {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-header .detail-username {
+    font-size: 1.25rem;
+}
+
+.detail-header .detail-time {
+    margin-top: 0.25rem;
+}
+
+/* Tab Navigation */
+.tab-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    color: #666;
+    border-radius: 0.25rem 0.25rem 0 0;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-button:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.tab-active {
+    background: $motion-primary;
+    color: white;
+}
+
+.tab-active:hover {
+    background: $motion-primary;
+    color: white;
+}
+
+.tab-badge {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.tab-active .tab-badge {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Tab Content */
+.tab-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.tab-pane {
+    height: 100%;
+}
+
+.tab-pane .detail-image {
+    max-height: 55vh;
+}
+
+.no-content {
+    text-align: center;
+    color: #999;
+    padding: 2rem;
+    font-style: italic;
+}
+
+/* Visualization Container */
+.viz-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.viz-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+}
+
+.viz-type {
+    font-weight: bold;
+    font-size: 1rem;
+    color: $motion-primary;
+}
+
+.viz-time {
+    font-size: 0.875rem;
+    color: #888;
+}
+
+.viz-image-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.nav-button {
+    background: $motion-primary;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.nav-button:hover:not(:disabled) {
+    background: $motion-tertiary;
+}
+
+.nav-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.viz-image-wrapper .detail-image {
+    flex: 1;
+    max-height: 50vh;
+}
+
+.viz-counter {
+    text-align: center;
+    padding: 0.5rem;
+    color: #666;
+    font-size: 0.875rem;
 }

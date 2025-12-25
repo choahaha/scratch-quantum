@@ -20,9 +20,12 @@ const StudentGalleryComponent = ({
     onRequestClose,
     onRefresh,
     onDeleteAll,
-    screens
+    screens,
+    visualizations
 }) => {
     const [selectedScreen, setSelectedScreen] = useState(null);
+    const [detailTab, setDetailTab] = useState('screen');
+    const [vizIndex, setVizIndex] = useState(0);
     const uniqueStudents = new Set(screens.map(s => s.user_id)).size;
 
     const formatTime = timestamp => {
@@ -34,6 +37,11 @@ const StudentGalleryComponent = ({
             hour: '2-digit',
             minute: '2-digit'
         });
+    };
+
+    // Get visualizations for selected user
+    const getUserVisualizations = userId => {
+        return visualizations.filter(v => v.user_id === userId);
     };
 
     return (
@@ -100,7 +108,11 @@ const StudentGalleryComponent = ({
                             <div
                                 key={screen.id}
                                 className={styles.galleryItem}
-                                onClick={() => setSelectedScreen(screen)}
+                                onClick={() => {
+                                    setSelectedScreen(screen);
+                                    setDetailTab('screen');
+                                    setVizIndex(0);
+                                }}
                             >
                                 <img
                                     className={styles.screenshot}
@@ -132,26 +144,112 @@ const StudentGalleryComponent = ({
                         >
                             {'✕'}
                         </button>
-                        <div className={styles.detailLeft}>
-                            <img
-                                src={selectedScreen.screenshot_url}
-                                alt={selectedScreen.username}
-                                className={styles.detailImage}
-                            />
-                            <div className={styles.detailInfo}>
-                                <p className={styles.detailUsername}>{selectedScreen.username}</p>
-                                <p className={styles.detailTime}>{formatTime(selectedScreen.created_at)}</p>
-                            </div>
+
+                        {/* User info header */}
+                        <div className={styles.detailHeader}>
+                            <p className={styles.detailUsername}>{selectedScreen.username}</p>
+                            <p className={styles.detailTime}>{formatTime(selectedScreen.created_at)}</p>
                         </div>
-                        <div className={styles.detailRight}>
-                            <h3>{'프로젝트 코드'}</h3>
-                            {selectedScreen.project_json ? (
-                                <pre className={styles.codeBlock}>
-                                    {JSON.stringify(selectedScreen.project_json, null, 2)}
-                                </pre>
-                            ) : (
-                                <p className={styles.noCode}>{'코드 데이터가 없습니다.'}</p>
+
+                        {/* Tab navigation */}
+                        <div className={styles.tabContainer}>
+                            <button
+                                className={`${styles.tabButton} ${detailTab === 'screen' ? styles.tabActive : ''}`}
+                                onClick={() => setDetailTab('screen')}
+                            >
+                                {'스크린샷'}
+                            </button>
+                            <button
+                                className={`${styles.tabButton} ${detailTab === 'blocks' ? styles.tabActive : ''}`}
+                                onClick={() => setDetailTab('blocks')}
+                            >
+                                {'블록'}
+                            </button>
+                            <button
+                                className={`${styles.tabButton} ${detailTab === 'visualization' ? styles.tabActive : ''}`}
+                                onClick={() => setDetailTab('visualization')}
+                            >
+                                {'시각화'}
+                                {getUserVisualizations(selectedScreen.user_id).length > 0 && (
+                                    <span className={styles.tabBadge}>
+                                        {getUserVisualizations(selectedScreen.user_id).length}
+                                    </span>
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Tab content */}
+                        <div className={styles.tabContent}>
+                            {detailTab === 'screen' && (
+                                <div className={styles.tabPane}>
+                                    <img
+                                        src={selectedScreen.screenshot_url}
+                                        alt={selectedScreen.username}
+                                        className={styles.detailImage}
+                                    />
+                                </div>
                             )}
+
+                            {detailTab === 'blocks' && (
+                                <div className={styles.tabPane}>
+                                    {selectedScreen.blocks_image_url ? (
+                                        <img
+                                            src={selectedScreen.blocks_image_url}
+                                            alt="Block code"
+                                            className={styles.blocksImage}
+                                        />
+                                    ) : (
+                                        <p className={styles.noContent}>{'블록 이미지가 없습니다.'}</p>
+                                    )}
+                                </div>
+                            )}
+
+                            {detailTab === 'visualization' && (() => {
+                                const userViz = getUserVisualizations(selectedScreen.user_id);
+                                const currentViz = userViz[vizIndex];
+                                return (
+                                    <div className={styles.tabPane}>
+                                        {userViz.length > 0 ? (
+                                            <div className={styles.vizContainer}>
+                                                <div className={styles.vizInfo}>
+                                                    <span className={styles.vizType}>
+                                                        {currentViz.visualization_type === 'histogram' ? '히스토그램' : '회로도'}
+                                                    </span>
+                                                    <span className={styles.vizTime}>
+                                                        {formatTime(currentViz.created_at)}
+                                                    </span>
+                                                </div>
+                                                <div className={styles.vizImageWrapper}>
+                                                    <button
+                                                        className={styles.navButton}
+                                                        onClick={() => setVizIndex(Math.min(userViz.length - 1, vizIndex + 1))}
+                                                        disabled={vizIndex === userViz.length - 1}
+                                                    >
+                                                        {'<'}
+                                                    </button>
+                                                    <img
+                                                        src={currentViz.image_url}
+                                                        alt={currentViz.visualization_type}
+                                                        className={styles.detailImage}
+                                                    />
+                                                    <button
+                                                        className={styles.navButton}
+                                                        onClick={() => setVizIndex(Math.max(0, vizIndex - 1))}
+                                                        disabled={vizIndex === 0}
+                                                    >
+                                                        {'>'}
+                                                    </button>
+                                                </div>
+                                                <div className={styles.vizCounter}>
+                                                    {vizIndex + 1} / {userViz.length}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <p className={styles.noContent}>{'시각화 이미지가 없습니다.'}</p>
+                                        )}
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>
@@ -172,14 +270,23 @@ StudentGalleryComponent.propTypes = {
         user_id: PropTypes.string,
         username: PropTypes.string,
         screenshot_url: PropTypes.string,
-        created_at: PropTypes.string,
-        project_json: PropTypes.object
+        blocks_image_url: PropTypes.string,
+        created_at: PropTypes.string
+    })),
+    visualizations: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string,
+        user_id: PropTypes.string,
+        username: PropTypes.string,
+        visualization_type: PropTypes.string,
+        image_url: PropTypes.string,
+        created_at: PropTypes.string
     }))
 };
 
 StudentGalleryComponent.defaultProps = {
     loading: false,
-    screens: []
+    screens: [],
+    visualizations: []
 };
 
 export default injectIntl(StudentGalleryComponent);
