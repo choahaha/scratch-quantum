@@ -12,7 +12,8 @@ const SERVER_TIMEOUT_MS = 30000;
 let globalCircuit = {
     blocks: [],
     result: '',
-    counts: {}
+    counts: {},
+    shotsDetail: []
 };
 
 class Scratch3QuantumBlocks {
@@ -33,7 +34,8 @@ class Scratch3QuantumBlocks {
             quantum_measureAll: this.measureAll,
             quantum_run: this.run,
             quantum_getResult: this.getResult,
-            quantum_getResultData: this.getResultData
+            quantum_getResultData: this.getResultData,
+            quantum_getShotResult: this.getShotResult
         };
     }
 
@@ -49,6 +51,7 @@ class Scratch3QuantumBlocks {
         }];
         globalCircuit.result = '';
         globalCircuit.counts = {};
+        globalCircuit.shotsDetail = [];
 
         log.log(`Quantum: Created circuit with ${numQubits} qubits`);
     }
@@ -131,6 +134,7 @@ class Scratch3QuantumBlocks {
                 if (data.success) {
                     globalCircuit.result = data.result_text || data.result;
                     globalCircuit.counts = data.counts || {};
+                    globalCircuit.shotsDetail = data.shots_detail || [];
                 } else {
                     globalCircuit.result = `Error: ${data.error}`;
                     globalCircuit.counts = {};
@@ -152,6 +156,16 @@ class Scratch3QuantumBlocks {
             return JSON.stringify(globalCircuit.counts || {});
         }
         return globalCircuit.result || '';
+    }
+
+    getShotResult (args) {
+        const index = Cast.toNumber(args.INDEX);
+        const detail = globalCircuit.shotsDetail;
+        if (!detail || detail.length === 0) return '';
+        // 1-based index (Scratch 스타일)
+        const i = Math.round(index) - 1;
+        if (i < 0 || i >= detail.length) return '';
+        return detail[i];
     }
 }
 

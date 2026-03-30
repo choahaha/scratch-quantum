@@ -806,6 +806,14 @@ const quantum = function (isInitialSetup, isStage, targetId, colors) {
         ${blockSeparator}
         <block type="quantum_getResult"/>
         <block type="quantum_getResultData"/>
+        ${blockSeparator}
+        <block type="quantum_getShotResult">
+            <value name="INDEX">
+                <shadow type="math_number">
+                    <field name="NUM">1</field>
+                </shadow>
+            </value>
+        </block>
         ${categorySeparator}
     </category>
     `;

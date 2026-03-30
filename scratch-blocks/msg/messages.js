@@ -305,6 +305,7 @@ Blockly.Msg.QUANTUM_GETRESULT = 'get result';
 Blockly.Msg.QUANTUM_GETRESULTDATA = 'get %1';
 Blockly.Msg.QUANTUM_RESULT_STATE = 'state';
 Blockly.Msg.QUANTUM_RESULT_COUNTS = 'counts';
+Blockly.Msg.QUANTUM_GETSHOTRESULT = 'shot result %1';
 
 // Visualization blocks
 Blockly.Msg.CATEGORY_VISUALIZATION = 'Visualization';

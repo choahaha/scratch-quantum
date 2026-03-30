@@ -5490,6 +5490,7 @@ Blockly.ScratchMsgs.locales["en"] =
     "QUANTUM_GETRESULTDATA": "get %1",
     "QUANTUM_RESULT_STATE": "state",
     "QUANTUM_RESULT_COUNTS": "counts",
+    "QUANTUM_GETSHOTRESULT": "shot result %1",
     "CATEGORY_VISUALIZATION": "Visualization",
     "VISUALIZATION_HISTOGRAM": "show histogram of %1",
     "VISUALIZATION_CIRCUIT_DIAGRAM": "draw quantum circuit"
@@ -8963,6 +8964,7 @@ Blockly.ScratchMsgs.locales["ko"] =
     "QUANTUM_GETRESULTDATA": "%1 가져오기",
     "QUANTUM_RESULT_STATE": "상태",
     "QUANTUM_RESULT_COUNTS": "횟수",
+    "QUANTUM_GETSHOTRESULT": "shot 결과 %1",
     "CATEGORY_VISUALIZATION": "시각화",
     "VISUALIZATION_HISTOGRAM": "%1 히스토그램 보기",
     "VISUALIZATION_CIRCUIT_DIAGRAM": "양자회로 그리기"
