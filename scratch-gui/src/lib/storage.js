@@ -9,6 +9,13 @@ import defaultProject from './default-project';
 class Storage extends ScratchStorage {
     constructor () {
         super();
+        // Replace web helper's assetTool to skip web worker
+        // (fetch-worker chunk is not available in the build output)
+        this._helpers.forEach(h => {
+            if (h.helper && h.helper.assetTool && h.helper.projectTool) {
+                h.helper.assetTool = h.helper.projectTool;
+            }
+        });
         this.cacheDefaultProject();
     }
     addOfficialScratchWebStores () {
