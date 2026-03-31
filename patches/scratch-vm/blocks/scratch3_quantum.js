@@ -35,7 +35,8 @@ class Scratch3QuantumBlocks {
             quantum_run: this.run,
             quantum_getResult: this.getResult,
             quantum_getResultData: this.getResultData,
-            quantum_getShotResult: this.getShotResult
+            quantum_getShotResult: this.getShotResult,
+            quantum_getQubitOfShot: this.getQubitOfShot
         };
     }
 
@@ -166,6 +167,22 @@ class Scratch3QuantumBlocks {
         const i = Math.round(index) - 1;
         if (i < 0 || i >= detail.length) return '';
         return detail[i];
+    }
+
+    getQubitOfShot (args) {
+        const qubit = Cast.toNumber(args.QUBIT);
+        const shotIndex = Cast.toNumber(args.SHOT);
+        const detail = globalCircuit.shotsDetail;
+        if (!detail || detail.length === 0) return '';
+        // 1-based shot index (Scratch 스타일)
+        const i = Math.round(shotIndex) - 1;
+        if (i < 0 || i >= detail.length) return '';
+        const bitString = detail[i];
+        // Qiskit 비트 순서: 오른쪽이 qubit 0
+        const q = Math.round(qubit);
+        const bitIndex = bitString.length - 1 - q;
+        if (bitIndex < 0 || bitIndex >= bitString.length) return '';
+        return bitString[bitIndex];
     }
 }
 

@@ -220,6 +220,30 @@ Blockly.Blocks['quantum_getShotResult'] = {
 };
 
 // ============================================
+// 12. quantum_getQubitOfShot - shot N에서 qubit Q 결과
+// ============================================
+Blockly.Blocks['quantum_getQubitOfShot'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "quantum_getQubitOfShot",
+      "message0": Blockly.Msg.QUANTUM_GETQUBITOFSHOT,
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "QUBIT"
+        },
+        {
+          "type": "input_value",
+          "name": "SHOT"
+        }
+      ],
+      "category": Blockly.Categories.quantum,
+      "extensions": ["colours_quantum", "output_string"]
+    });
+  }
+};
+
+// ============================================
 // 10. quantum_getResultData - 측정 결과 데이터 (드롭다운)
 // ============================================
 Blockly.Blocks['quantum_getResultData'] = {
