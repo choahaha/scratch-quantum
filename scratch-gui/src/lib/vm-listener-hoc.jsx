@@ -338,8 +338,8 @@ const vmListenerHOC = function (WrappedComponent) {
             // Auth user info for saving visualizations (use user.id as fallback when profile not loaded yet)
             authUserId: profile?.id || user?.id || null,
             authUsername: profile?.username || user?.user_metadata?.username || null,
-            // Treat as a student unless the loaded profile is explicitly an admin.
-            isStudent: profile ? profile.role !== 'admin' : !!user
+            // Only explicit students auto-save screens; teachers/admins do not.
+            isStudent: profile ? profile.role === 'student' : !!user
         };
     };
     const mapDispatchToProps = dispatch => ({

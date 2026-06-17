@@ -14,6 +14,7 @@ const MODAL_CONNECTION = 'connectionModal';
 const MODAL_TIPS_LIBRARY = 'tipsLibrary';
 const MODAL_STUDENT_GALLERY = 'studentGallery';
 const MODAL_VISUALIZATION = 'visualizationModal';
+const MODAL_USER_MANAGEMENT = 'userManagement';
 
 const initialState = {
     [MODAL_BACKDROP_LIBRARY]: false,
@@ -28,7 +29,8 @@ const initialState = {
     [MODAL_CONNECTION]: false,
     [MODAL_TIPS_LIBRARY]: false,
     [MODAL_STUDENT_GALLERY]: false,
-    [MODAL_VISUALIZATION]: false
+    [MODAL_VISUALIZATION]: false,
+    [MODAL_USER_MANAGEMENT]: false
 };
 
 const reducer = function (state, action) {
@@ -136,6 +138,12 @@ const openVisualizationModal = function () {
 const closeVisualizationModal = function () {
     return closeModal(MODAL_VISUALIZATION);
 };
+const openUserManagement = function () {
+    return openModal(MODAL_USER_MANAGEMENT);
+};
+const closeUserManagement = function () {
+    return closeModal(MODAL_USER_MANAGEMENT);
+};
 export {
     reducer as default,
     initialState as modalsInitialState,
@@ -164,5 +172,7 @@ export {
     openStudentGallery,
     closeStudentGallery,
     openVisualizationModal,
-    closeVisualizationModal
+    closeVisualizationModal,
+    openUserManagement,
+    closeUserManagement
 };

@@ -27,6 +27,7 @@ const AccountNavComponent = ({
     onClose,
     onLogOut,
     onOpenStudentGallery,
+    onOpenUserManagement,
     thumbnailUrl,
     username
 }) => (
@@ -71,10 +72,10 @@ const AccountNavComponent = ({
                             id="gui.accountMenu.studentScreens"
                         />
                     </MenuItemContainer>
-                    <MenuItemContainer href="/admin/users">
+                    <MenuItemContainer onClick={onOpenUserManagement}>
                         <FormattedMessage
-                            defaultMessage="User Management"
-                            description="Text to link to user management page"
+                            defaultMessage="Class Management"
+                            description="Text to open the class / user management modal"
                             id="gui.accountMenu.userManagement"
                         />
                     </MenuItemContainer>
@@ -103,6 +104,7 @@ AccountNavComponent.propTypes = {
     onClose: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenStudentGallery: PropTypes.func,
+    onOpenUserManagement: PropTypes.func,
     thumbnailUrl: PropTypes.string,
     username: PropTypes.string
 };
