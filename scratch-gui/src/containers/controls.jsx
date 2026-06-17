@@ -90,7 +90,7 @@ const mapStateToProps = state => {
         isStarted: state.scratchGui.vmStatus.running,
         projectRunning: state.scratchGui.vmStatus.running,
         turbo: state.scratchGui.vmStatus.turbo,
-        isStudent: !!profile && profile.role === 'student',
+        isStudent: !!profile && profile.role !== 'admin' && profile.role !== 'teacher',
         userId: profile ? profile.id : null,
         username: profile ? profile.username : null
     };
