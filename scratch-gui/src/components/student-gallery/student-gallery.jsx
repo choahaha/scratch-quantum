@@ -36,7 +36,7 @@ const StudentGalleryComponent = ({
 
     const formatTime = timestamp => {
         const date = new Date(timestamp);
-        return date.toLocaleString('ko-KR', {
+        return date.toLocaleString('en-US', {
             timeZone: 'Asia/Seoul',
             month: '2-digit',
             day: '2-digit',
@@ -75,7 +75,7 @@ const StudentGalleryComponent = ({
                 </span>
                 <div className={styles.headerControls}>
                     <div className={styles.sizeSlider}>
-                        <span className={styles.sliderLabel}>{'작게'}</span>
+                        <span className={styles.sliderLabel}>{'Small'}</span>
                         <input
                             type="range"
                             min="150"
@@ -84,7 +84,7 @@ const StudentGalleryComponent = ({
                             onChange={e => setCardSize(Number(e.target.value))}
                             className={styles.slider}
                         />
-                        <span className={styles.sliderLabel}>{'크게'}</span>
+                        <span className={styles.sliderLabel}>{'Large'}</span>
                     </div>
                     <div className={styles.headerButtons}>
                         <button
@@ -163,7 +163,7 @@ const StudentGalleryComponent = ({
                                                 e.stopPropagation();
                                                 onDeleteStudent(screen.user_id);
                                             }}
-                                            title="삭제"
+                                            title="Delete"
                                         >
                                             {'🗑️'}
                                         </button>
@@ -203,13 +203,13 @@ const StudentGalleryComponent = ({
                                 className={`${styles.tabButton} ${detailTab === 'program' ? styles.tabActive : ''}`}
                                 onClick={() => setDetailTab('program')}
                             >
-                                {'프로그램'}
+                                {'Program'}
                             </button>
                             <button
                                 className={`${styles.tabButton} ${detailTab === 'visualization' ? styles.tabActive : ''}`}
                                 onClick={() => setDetailTab('visualization')}
                             >
-                                {'시각화'}
+                                {'Visualization'}
                                 {getUserVisualizations(selectedScreen.user_id).length > 0 && (
                                     <span className={styles.tabBadge}>
                                         {getUserVisualizations(selectedScreen.user_id).length}
@@ -233,7 +233,7 @@ const StudentGalleryComponent = ({
                                                 <button
                                                     className={styles.deleteItemButton}
                                                     onClick={() => onDeleteScreen(currentScreen.id)}
-                                                    title="삭제"
+                                                    title="Delete"
                                                 >
                                                     {'🗑️'}
                                                 </button>
@@ -263,7 +263,7 @@ const StudentGalleryComponent = ({
                                                             />
                                                         ) : (
                                                             <div className={styles.noBlocksPlaceholder}>
-                                                                {'블록 이미지 없음'}
+                                                                {'No block image'}
                                                             </div>
                                                         )}
                                                     </div>
@@ -293,7 +293,7 @@ const StudentGalleryComponent = ({
                                             <div className={styles.vizContainer}>
                                                 <div className={styles.vizInfo}>
                                                     <span className={styles.vizType}>
-                                                        {currentViz.visualization_type === 'histogram' ? '히스토그램' : '회로도'}
+                                                        {currentViz.visualization_type === 'histogram' ? 'Histogram' : 'Circuit diagram'}
                                                     </span>
                                                     <span className={styles.vizTime}>
                                                         {formatTime(currentViz.created_at)}
@@ -301,7 +301,7 @@ const StudentGalleryComponent = ({
                                                     <button
                                                         className={styles.deleteItemButton}
                                                         onClick={() => onDeleteVisualization(currentViz.id)}
-                                                        title="삭제"
+                                                        title="Delete"
                                                     >
                                                         {'🗑️'}
                                                     </button>
@@ -332,7 +332,7 @@ const StudentGalleryComponent = ({
                                                 </div>
                                             </div>
                                         ) : (
-                                            <p className={styles.noContent}>{'시각화 이미지가 없습니다.'}</p>
+                                            <p className={styles.noContent}>{'No visualization images.'}</p>
                                         )}
                                     </div>
                                 );

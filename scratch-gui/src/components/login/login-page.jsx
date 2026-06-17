@@ -33,7 +33,7 @@ class LoginPage extends React.Component {
         const {username, password} = this.state;
 
         if (!username || !password) {
-            this.setState({error: '아이디와 비밀번호를 입력해주세요.'});
+            this.setState({error: 'Please enter your username and password.'});
             return;
         }
 
@@ -41,7 +41,7 @@ class LoginPage extends React.Component {
         this.props.onLogin(username, password)
             .catch(err => {
                 this.setState({
-                    error: err.message || '로그인에 실패했습니다.',
+                    error: err.message || 'Login failed.',
                     isSubmitting: false
                 });
             });
@@ -71,7 +71,7 @@ class LoginPage extends React.Component {
                                 className={styles.label}
                                 htmlFor="username"
                             >
-                                아이디
+                                Username
                             </label>
                             <input
                                 className={styles.input}
@@ -79,7 +79,7 @@ class LoginPage extends React.Component {
                                 type="text"
                                 value={username}
                                 onChange={this.handleUsernameChange}
-                                placeholder="아이디를 입력하세요"
+                                placeholder="Enter your username"
                                 disabled={isSubmitting}
                             />
                         </div>
@@ -89,7 +89,7 @@ class LoginPage extends React.Component {
                                 className={styles.label}
                                 htmlFor="password"
                             >
-                                비밀번호
+                                Password
                             </label>
                             <input
                                 className={styles.input}
@@ -97,7 +97,7 @@ class LoginPage extends React.Component {
                                 type="password"
                                 value={password}
                                 onChange={this.handlePasswordChange}
-                                placeholder="비밀번호를 입력하세요"
+                                placeholder="Enter your password"
                                 disabled={isSubmitting}
                             />
                         </div>
@@ -113,18 +113,18 @@ class LoginPage extends React.Component {
                             type="submit"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? '로그인 중...' : '로그인'}
+                            {isSubmitting ? 'Logging in...' : 'Log in'}
                         </button>
                     </form>
 
                     <div className={styles.registerSection}>
-                        <span>계정이 없나요? </span>
+                        <span>{'Don\'t have an account? '}</span>
                         <button
                             className={styles.registerLink}
                             onClick={this.handleRegisterClick}
                             type="button"
                         >
-                            회원가입
+                            Sign up
                         </button>
                     </div>
                 </div>

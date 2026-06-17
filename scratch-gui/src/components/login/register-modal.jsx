@@ -45,17 +45,17 @@ class RegisterModal extends React.Component {
         const {username, displayName, password, confirmPassword} = this.state;
 
         if (!username || !displayName || !password || !confirmPassword) {
-            this.setState({error: '모든 필드를 입력해주세요.'});
+            this.setState({error: 'Please fill in all fields.'});
             return;
         }
 
         if (password !== confirmPassword) {
-            this.setState({error: '비밀번호가 일치하지 않습니다.'});
+            this.setState({error: 'Passwords do not match.'});
             return;
         }
 
         if (password.length < 6) {
-            this.setState({error: '비밀번호는 6자 이상이어야 합니다.'});
+            this.setState({error: 'Password must be at least 6 characters.'});
             return;
         }
 
@@ -66,7 +66,7 @@ class RegisterModal extends React.Component {
             })
             .catch(err => {
                 this.setState({
-                    error: err.message || '회원가입에 실패했습니다.',
+                    error: err.message || 'Sign-up failed.',
                     isSubmitting: false
                 });
             });
@@ -83,7 +83,7 @@ class RegisterModal extends React.Component {
             <div className={styles.overlay}>
                 <div className={styles.modal}>
                     <div className={styles.header}>
-                        <h2 className={styles.headerTitle}>회원가입</h2>
+                        <h2 className={styles.headerTitle}>Sign up</h2>
                         <button
                             className={styles.closeButton}
                             onClick={this.handleClose}
@@ -102,7 +102,7 @@ class RegisterModal extends React.Component {
                                 className={styles.label}
                                 htmlFor="reg-username"
                             >
-                                아이디
+                                Username
                             </label>
                             <input
                                 className={styles.input}
@@ -110,7 +110,7 @@ class RegisterModal extends React.Component {
                                 type="text"
                                 value={username}
                                 onChange={this.handleUsernameChange}
-                                placeholder="아이디를 입력하세요"
+                                placeholder="Enter your username"
                                 disabled={isSubmitting}
                             />
                         </div>
@@ -120,7 +120,7 @@ class RegisterModal extends React.Component {
                                 className={styles.label}
                                 htmlFor="reg-displayname"
                             >
-                                이름
+                                Name
                             </label>
                             <input
                                 className={styles.input}
@@ -128,7 +128,7 @@ class RegisterModal extends React.Component {
                                 type="text"
                                 value={displayName}
                                 onChange={this.handleDisplayNameChange}
-                                placeholder="이름을 입력하세요"
+                                placeholder="Enter your name"
                                 disabled={isSubmitting}
                             />
                         </div>
@@ -138,7 +138,7 @@ class RegisterModal extends React.Component {
                                 className={styles.label}
                                 htmlFor="reg-password"
                             >
-                                비밀번호
+                                Password
                             </label>
                             <input
                                 className={styles.input}
@@ -146,7 +146,7 @@ class RegisterModal extends React.Component {
                                 type="password"
                                 value={password}
                                 onChange={this.handlePasswordChange}
-                                placeholder="비밀번호를 입력하세요"
+                                placeholder="Enter your password"
                                 disabled={isSubmitting}
                             />
                         </div>
@@ -156,7 +156,7 @@ class RegisterModal extends React.Component {
                                 className={styles.label}
                                 htmlFor="reg-confirm"
                             >
-                                비밀번호 확인
+                                Confirm password
                             </label>
                             <input
                                 className={styles.input}
@@ -164,7 +164,7 @@ class RegisterModal extends React.Component {
                                 type="password"
                                 value={confirmPassword}
                                 onChange={this.handleConfirmPasswordChange}
-                                placeholder="비밀번호를 다시 입력하세요"
+                                placeholder="Re-enter your password"
                                 disabled={isSubmitting}
                             />
                         </div>
@@ -180,7 +180,7 @@ class RegisterModal extends React.Component {
                             type="submit"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? '가입 중...' : '가입하기'}
+                            {isSubmitting ? 'Signing up...' : 'Sign up'}
                         </button>
                     </form>
                 </div>
