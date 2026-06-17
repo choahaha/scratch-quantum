@@ -10,7 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import AccountNavComponent from '../components/menu-bar/account-nav.jsx';
-import {openStudentGallery} from '../reducers/modals';
+import {openStudentGallery, openUserManagement} from '../reducers/modals';
 
 const AccountNav = function (props) {
     const {
@@ -27,6 +27,7 @@ AccountNav.propTypes = {
     isAdmin: PropTypes.bool,
     isRtl: PropTypes.bool,
     onOpenStudentGallery: PropTypes.func,
+    onOpenUserManagement: PropTypes.func,
     thumbnailUrl: PropTypes.string,
     username: PropTypes.string
 };
@@ -38,7 +39,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onOpenStudentGallery: () => dispatch(openStudentGallery())
+    onOpenStudentGallery: () => dispatch(openStudentGallery()),
+    onOpenUserManagement: () => dispatch(openUserManagement())
 });
 
 export default injectIntl(connect(

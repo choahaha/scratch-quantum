@@ -29,7 +29,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 import SettingsMenu from './settings-menu.jsx';
 
-import {openTipsLibrary, openDebugModal, openStudentGallery} from '../../reducers/modals';
+import {openTipsLibrary, openDebugModal, openStudentGallery, openUserManagement} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -845,10 +845,10 @@ class MenuBar extends React.Component {
                                                         id="gui.accountMenu.studentScreens"
                                                     />
                                                 </MenuItem>
-                                                <MenuItem href="/admin/users">
+                                                <MenuItem onClick={this.props.onOpenUserManagement}>
                                                     <FormattedMessage
-                                                        defaultMessage="User Management"
-                                                        description="Text to link to user management page"
+                                                        defaultMessage="Class Management"
+                                                        description="Text to open the class / user management modal"
                                                         id="gui.accountMenu.userManagement"
                                                     />
                                                 </MenuItem>
@@ -991,6 +991,7 @@ MenuBar.propTypes = {
     onRequestCloseMode: PropTypes.func,
     onRequestCloseSettings: PropTypes.func,
     onRequestOpenAbout: PropTypes.func,
+    onOpenUserManagement: PropTypes.func,
     onSeeCommunity: PropTypes.func,
     onSetTimeTravelMode: PropTypes.func,
     onShare: PropTypes.func,
@@ -1051,6 +1052,7 @@ const mapDispatchToProps = dispatch => ({
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
     onOpenDebugModal: () => dispatch(openDebugModal()),
     onOpenStudentGallery: () => dispatch(openStudentGallery()),
+    onOpenUserManagement: () => dispatch(openUserManagement()),
     onClickAccount: () => dispatch(openAccountMenu()),
     onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),

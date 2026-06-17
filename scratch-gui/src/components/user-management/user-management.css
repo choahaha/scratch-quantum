@@ -1,0 +1,376 @@
+/* Design language mirrors the login page + admin dashboard (design 5):
+   deep-indigo header, indigo primary, rounded pills, Segoe UI. */
+
+/* Dark navy modal header, unified with the login/dashboard chrome */
+.modal-header {
+    background: #1e1b4b;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #f3f4f6;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1f2937;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toolbar                                                             */
+/* ------------------------------------------------------------------ */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 24px;
+    background: #fafafe;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.statTotal {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin-right: 4px;
+}
+
+.statPill {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3730a3;
+    background: #eef2ff;
+    border: 1px solid #e0e7ff;
+    border-radius: 999px;
+    padding: 3px 11px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.toolbarSpacer {
+    flex: 1;
+}
+
+.search,
+.classFilter {
+    height: 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0 11px;
+    font-size: 0.88rem;
+    color: #1f2937;
+    background: #fff;
+    font-family: inherit;
+}
+
+.search {
+    width: 220px;
+}
+
+.search:focus,
+.classFilter:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.refreshButton,
+.addClassButton {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.addClassButton {
+    border: none;
+    background: #4f46e5;
+    color: #fff;
+}
+
+.addClassButton:hover {
+    background: #4338ca;
+}
+
+.refreshButton {
+    border: 1px solid #c7d2fe;
+    background: #fff;
+    color: #4f46e5;
+}
+
+.refreshButton:hover {
+    background: #eef2ff;
+}
+
+/* Inline "add class" editor (toolbar + per-row) */
+.addClassBox {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.addClassInput {
+    height: 36px;
+    width: 160px;
+    border: 1px solid #4f46e5;
+    border-radius: 8px;
+    padding: 0 11px;
+    font-size: 0.88rem;
+    color: #1f2937;
+    background: #fff;
+    font-family: inherit;
+}
+
+.addClassInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.addClassConfirm {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: none;
+    background: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.addClassConfirm:hover {
+    background: #4338ca;
+}
+
+.addClassCancel {
+    height: 36px;
+    width: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.addClassCancel:hover {
+    background: #f3f4f6;
+}
+
+.error {
+    margin: 12px 24px 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    font-size: 0.85rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Table                                                               */
+/* ------------------------------------------------------------------ */
+.tableWrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 28px;
+}
+
+.loading,
+.empty {
+    text-align: center;
+    color: #6b7280;
+    padding: 60px 0;
+    font-size: 1rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(30, 27, 75, 0.04);
+}
+
+.table th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    background: #fafafe;
+    padding: 13px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 700;
+}
+
+.table td {
+    padding: 11px 18px;
+    border-bottom: 1px solid #f1f1f5;
+    font-size: 0.9rem;
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #fafafe;
+}
+
+.saving {
+    opacity: 0.55;
+}
+
+.idCell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #4f46e5;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+
+.username {
+    font-weight: 600;
+}
+
+.selfBadge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #4f46e5;
+    background: #eef2ff;
+    border-radius: 4px;
+    padding: 1px 6px;
+}
+
+.nameCell {
+    color: #4b5563;
+}
+
+/* ------------------------------------------------------------------ */
+/* Pretty dropdowns (Variant B: neutral pill + status dot)            */
+/* ------------------------------------------------------------------ */
+.roleSelect,
+.classSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background-color: #fff;
+    color: #1f2937;
+    font-size: 0.84rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0 32px 0 14px;
+    background-repeat: no-repeat;
+    background-position: right 11px center;
+    background-size: 11px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%236b7280' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.roleSelect:focus,
+.classSelect:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.roleSelect:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+    background-color: #f9fafb;
+}
+
+.classSelect {
+    min-width: 130px;
+}
+
+/* role status dot, overlaid at the left of the role select */
+.dotWrap {
+    position: relative;
+    display: inline-block;
+}
+
+.roleSelect {
+    padding-left: 28px;
+}
+
+.dot {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.dot_student {
+    background: #10b981;
+}
+
+.dot_teacher {
+    background: #6366f1;
+}
+
+.dot_admin {
+    background: #f43f5e;
+}
+
+/* per-row inline new-class input */
+.classInput {
+    height: 34px;
+    width: 130px;
+    border-radius: 8px;
+    border: 1px solid #4f46e5;
+    padding: 0 10px;
+    font-size: 0.85rem;
+    color: #1f2937;
+    background: #fff;
+    font-family: inherit;
+}
+
+.classInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
