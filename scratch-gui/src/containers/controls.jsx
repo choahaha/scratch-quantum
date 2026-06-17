@@ -5,9 +5,7 @@ import VM from 'scratch-vm';
 import {connect} from 'react-redux';
 
 import ControlsComponent from '../components/controls/controls.jsx';
-import {supabase} from '../lib/supabase-client.js';
-import dataURItoBlob from '../lib/data-uri-to-blob.js';
-import captureBlocksAsImage from '../lib/blocks-to-image.js';
+import {saveStudentScreen} from '../lib/save-student-screen.js';
 
 class Controls extends React.Component {
     constructor (props) {
@@ -42,95 +40,13 @@ class Controls extends React.Component {
 
         this.setState({sendActive: true});
 
-        const vm = this.props.vm;
-        const userId = this.props.userId;
-        const username = this.props.username;
-
-        console.log('SendScreen: Starting...', {userId, username, hasRenderer: !!vm.renderer});
-
-        if (!vm.renderer || !userId) {
-            console.warn('SendScreen: Missing renderer or userId');
+        saveStudentScreen({
+            vm: this.props.vm,
+            userId: this.props.userId,
+            username: this.props.username
+        }).then(() => {
             this.setState({sendActive: false});
-            return;
-        }
-
-        vm.renderer.requestSnapshot(async dataURI => {
-            console.log('SendScreen: Got snapshot, length:', dataURI ? dataURI.length : 0);
-            try {
-                const blob = dataURItoBlob(dataURI);
-                const timestamp = Date.now();
-                const filePath = `${userId}/${timestamp}.png`;
-                console.log('SendScreen: Uploading to:', filePath);
-
-                const {data: uploadData, error: uploadError} = await supabase.storage
-                    .from('screenshots')
-                    .upload(filePath, blob, {
-                        contentType: 'image/png',
-                        upsert: true
-                    });
-
-                if (uploadError) {
-                    console.error('SendScreen: Upload error:', uploadError);
-                    this.setState({sendActive: false});
-                    return;
-                }
-                console.log('SendScreen: Upload success:', uploadData);
-
-                const {data: urlData} = supabase.storage
-                    .from('screenshots')
-                    .getPublicUrl(filePath);
-                console.log('SendScreen: Public URL:', urlData.publicUrl);
-
-                // 블록 이미지 캡처
-                let blocksImageUrl = null;
-                try {
-                    const blocksBlob = await captureBlocksAsImage();
-                    if (blocksBlob) {
-                        const blocksFilePath = `${userId}/blocks_${timestamp}.png`;
-                        console.log('SendScreen: Uploading blocks image to:', blocksFilePath);
-
-                        const {data: blocksUploadData, error: blocksUploadError} = await supabase.storage
-                            .from('screenshots')
-                            .upload(blocksFilePath, blocksBlob, {
-                                contentType: 'image/png',
-                                upsert: true
-                            });
-
-                        if (blocksUploadError) {
-                            console.warn('SendScreen: Blocks upload error:', blocksUploadError);
-                        } else {
-                            console.log('SendScreen: Blocks upload success:', blocksUploadData);
-                            const {data: blocksUrlData} = supabase.storage
-                                .from('screenshots')
-                                .getPublicUrl(blocksFilePath);
-                            blocksImageUrl = blocksUrlData.publicUrl;
-                            console.log('SendScreen: Blocks image URL:', blocksImageUrl);
-                        }
-                    }
-                } catch (blocksError) {
-                    console.warn('SendScreen: Could not capture blocks image:', blocksError);
-                }
-
-                const {data: insertData, error: insertError} = await supabase.from('student_screens').insert({
-                    user_id: userId,
-                    username: username,
-                    screenshot_url: urlData.publicUrl,
-                    blocks_image_url: blocksImageUrl
-                });
-
-                if (insertError) {
-                    console.error('SendScreen: Insert error:', insertError);
-                } else {
-                    console.log('SendScreen: Insert success:', insertData);
-                }
-
-                this.setState({sendActive: false});
-            } catch (error) {
-                console.error('SendScreen: Error:', error);
-                this.setState({sendActive: false});
-            }
         });
-        vm.renderer.draw();
     }
     render () {
         const {

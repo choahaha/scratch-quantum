@@ -15,8 +15,17 @@ import {updateMicIndicator} from '../reducers/mic-indicator';
 import {openVisualizationModal} from '../reducers/modals';
 import {setVisualizationData} from './visualization-state';
 import {saveVisualizationToSupabase} from './save-visualization';
+import {saveStudentScreen} from './save-student-screen.js';
 import {supabase} from './supabase-client.js';
 import dataURItoBlob from './data-uri-to-blob.js';
+
+// Minimum gap between automatic green-flag saves (ms) to avoid spamming the
+// dashboard when a student presses the green flag repeatedly.
+const GREEN_FLAG_SAVE_THROTTLE_MS = 1000;
+
+// When a sprite says/thinks something during a green-flag run, wait briefly so
+// the renderer has drawn the speech bubble before we capture the screenshot.
+const SAY_CAPTURE_DELAY_MS = 300;
 
 /*
  * Higher Order Component to manage events emitted by the VM
@@ -33,8 +42,15 @@ const vmListenerHOC = function (WrappedComponent) {
                 'handleProjectChanged',
                 'handleTargetsUpdate',
                 'handleVisualizationShow',
+                'handleGreenFlagStart',
+                'handleRunStopAutoSave',
+                'handleSayBubble',
                 'ensureStudentScreenExists'
             ]);
+            // Track green-flag runs so we can auto-save the program to the
+            // dashboard once the run finishes (throttled).
+            this.greenFlagSavePending = false;
+            this.lastGreenFlagSaveTime = 0;
             // We have to start listening to the vm here rather than in
             // componentDidMount because the HOC mounts the wrapped component,
             // so the HOC componentDidMount triggers after the wrapped component
@@ -51,9 +67,15 @@ const vmListenerHOC = function (WrappedComponent) {
             this.props.vm.on('PROJECT_CHANGED', this.handleProjectChanged);
             this.props.vm.on('RUNTIME_STARTED', this.props.onRuntimeStarted);
             this.props.vm.on('PROJECT_START', this.props.onGreenFlag);
+            // Auto-save the program to the dashboard on green-flag runs.
+            this.props.vm.on('PROJECT_START', this.handleGreenFlagStart);
+            this.props.vm.on('PROJECT_RUN_STOP', this.handleRunStopAutoSave);
             this.props.vm.on('PERIPHERAL_CONNECTION_LOST_ERROR', this.props.onShowExtensionAlert);
             this.props.vm.on('MIC_LISTENING', this.props.onMicListeningUpdate);
             this.props.vm.runtime.on('VISUALIZATION_SHOW', this.handleVisualizationShow);
+            // Capture the screenshot while a speech bubble is on screen, so a
+            // "say ... for N seconds" result is included in the dashboard image.
+            this.props.vm.runtime.on('SAY', this.handleSayBubble);
 
         }
         componentDidMount () {
@@ -77,6 +99,7 @@ const vmListenerHOC = function (WrappedComponent) {
         componentWillUnmount () {
             this.props.vm.removeListener('PERIPHERAL_CONNECTION_LOST_ERROR', this.props.onShowExtensionAlert);
             this.props.vm.runtime.removeListener('VISUALIZATION_SHOW', this.handleVisualizationShow);
+            this.props.vm.runtime.removeListener('SAY', this.handleSayBubble);
             if (this.props.attachKeyboardEvents) {
                 document.removeEventListener('keydown', this.handleKeyDown);
                 document.removeEventListener('keyup', this.handleKeyUp);
@@ -109,6 +132,53 @@ const vmListenerHOC = function (WrappedComponent) {
                 // Ensure student has a screen card in the gallery
                 this.ensureStudentScreenExists();
             }
+        }
+        handleGreenFlagStart () {
+            // Mark that the next run was triggered by the green flag, so we
+            // save the program to the dashboard for this run.
+            this.greenFlagSavePending = true;
+        }
+        // Save the current stage + blocks to the dashboard for a green-flag run.
+        // Consumes the pending flag so a run produces at most one auto-save,
+        // gated to students and throttled against rapid green-flag presses.
+        // @param {number} delayMs - wait before capturing (lets a speech bubble render)
+        triggerGreenFlagSave (delayMs) {
+            if (!this.greenFlagSavePending) return;
+
+            // Only students auto-save, and only when signed in.
+            if (!this.props.isStudent || !this.props.authUserId) return;
+
+            // Throttle repeated green-flag presses.
+            const now = Date.now();
+            if (now - this.lastGreenFlagSaveTime < GREEN_FLAG_SAVE_THROTTLE_MS) return;
+
+            this.greenFlagSavePending = false;
+            this.lastGreenFlagSaveTime = now;
+
+            const save = () => saveStudentScreen({
+                vm: this.props.vm,
+                userId: this.props.authUserId,
+                username: this.props.authUsername
+            });
+            if (delayMs > 0) {
+                setTimeout(save, delayMs);
+            } else {
+                save();
+            }
+        }
+        handleSayBubble (target, type, message) {
+            // Ignore bubble clears (empty message) and non-green-flag runs.
+            if (!this.greenFlagSavePending) return;
+            if (typeof message !== 'string' || message.trim() === '') return;
+            // Capture once the bubble has been drawn, while it is still visible.
+            this.triggerGreenFlagSave(SAY_CAPTURE_DELAY_MS);
+        }
+        handleRunStopAutoSave () {
+            // Fallback: if nothing was said during the run, capture at the end.
+            this.triggerGreenFlagSave(0);
+            // The run is over — never carry the pending flag into a later run
+            // (e.g. one that was throttled, or a non-green-flag script).
+            this.greenFlagSavePending = false;
         }
         async ensureStudentScreenExists () {
             const userId = this.props.authUserId;
@@ -224,6 +294,7 @@ const vmListenerHOC = function (WrappedComponent) {
         attachKeyboardEvents: PropTypes.bool,
         authUserId: PropTypes.string,
         authUsername: PropTypes.string,
+        isStudent: PropTypes.bool,
         onBlockDragUpdate: PropTypes.func.isRequired,
         onGreenFlag: PropTypes.func,
         onKeyDown: PropTypes.func,
@@ -266,7 +337,9 @@ const vmListenerHOC = function (WrappedComponent) {
                 state.session.session.user.username : '',
             // Auth user info for saving visualizations (use user.id as fallback when profile not loaded yet)
             authUserId: profile?.id || user?.id || null,
-            authUsername: profile?.username || user?.user_metadata?.username || null
+            authUsername: profile?.username || user?.user_metadata?.username || null,
+            // Treat as a student unless the loaded profile is explicitly an admin.
+            isStudent: profile ? profile.role !== 'admin' : !!user
         };
     };
     const mapDispatchToProps = dispatch => ({
