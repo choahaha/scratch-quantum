@@ -474,10 +474,13 @@ const UserManagementComponent = ({
                                             className={styles.editInput}
                                             type="text"
                                             value={classDrafts[name] || ''}
-                                            onChange={e => setClassDrafts(prev => ({
-                                                ...prev,
-                                                [name]: e.target.value
-                                            }))}
+                                            onChange={e => {
+                                                const value = e.target.value;
+                                                setClassDrafts(prev => ({
+                                                    ...prev,
+                                                    [name]: value
+                                                }));
+                                            }}
                                             onKeyDown={e => {
                                                 if (e.key === 'Enter') handleRenameClass(name);
                                             }}
