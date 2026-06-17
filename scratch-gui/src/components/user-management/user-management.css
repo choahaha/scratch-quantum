@@ -307,12 +307,16 @@
 }
 
 .actionsHead {
-    text-align: right;
+    text-align: left;
 }
 
 .actionsCell {
-    text-align: right;
+    text-align: left;
     white-space: nowrap;
+}
+
+.actionsCell > :first-child {
+    margin-left: 0;
 }
 
 .iconButton {
