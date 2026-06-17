@@ -156,7 +156,13 @@ const AuthManagerHOC = function (WrappedComponent) {
         }
 
         async handleLogout () {
-            await supabase.auth.signOut();
+            // Clear the local session immediately (no server round-trip) so logout
+            // works even if the network call hangs/fails. Always reload afterwards.
+            try {
+                await supabase.auth.signOut({scope: 'local'});
+            } catch (e) {
+                console.warn('Logout error (continuing to reload):', e);
+            }
             // Reload the page to clear all VM state and blocks
             window.location.reload();
         }

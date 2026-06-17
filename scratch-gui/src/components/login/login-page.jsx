@@ -60,7 +60,7 @@ class LoginPage extends React.Component {
                     <div className={styles.brandLogo}>{'⟨ Scratch Quantum ⟩'}</div>
                     <div className={styles.brandMid}>
                         <h2 className={styles.brandHeadline}>
-                            {'Build quantum circuits, block by block.'}
+                            {'Build quantum circuits,'}<br />{'block by block.'}
                         </h2>
                         <p className={styles.brandSub}>{'Sign in to start experimenting.'}</p>
                         <svg
