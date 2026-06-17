@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {defineMessages, injectIntl, intlShape, FormattedMessage} from 'react-intl';
 
 import Modal from '../../containers/modal.jsx';
@@ -37,56 +37,95 @@ const UserManagementComponent = ({
     onRequestClose,
     onRefresh,
     onChangeRole,
-    onChangeClass
+    onUpdateUser,
+    onDeleteUser,
+    onRenameClass,
+    onDeleteClass
 }) => {
     const [query, setQuery] = useState('');
     const [classFilter, setClassFilter] = useState('');
-    // Classes created in this session that have no members assigned yet.
-    const [extraClasses, setExtraClasses] = useState([]);
-    const [addingClass, setAddingClass] = useState(false);
-    const [newClassName, setNewClassName] = useState('');
-    // Row id currently typing a brand-new class via the "+ New" dropdown option.
-    const [inlineClassRow, setInlineClassRow] = useState(null);
-    const [inlineClassValue, setInlineClassValue] = useState('');
+    // Row currently being edited, plus its draft name/class values.
+    const [editingId, setEditingId] = useState(null);
+    const [editName, setEditName] = useState('');
+    const [editClass, setEditClass] = useState('');
+    // Class manager panel (bulk rename / delete of whole classes).
+    const [managingClasses, setManagingClasses] = useState(false);
+    const [classDrafts, setClassDrafts] = useState({});
 
-    // Union of class names found on users plus any added this session, sorted.
+    // Distinct class names found on users, sorted (powers the filter + datalist).
     const classNames = useMemo(() => {
-        const set = new Set(extraClasses);
+        const set = new Set();
         users.forEach(u => {
             if (u.class_name) set.add(u.class_name);
         });
         return Array.from(set).sort();
-    }, [users, extraClasses]);
+    }, [users]);
 
-    const addClass = name => {
-        const trimmed = name.trim();
-        if (!trimmed) return;
-        if (!classNames.includes(trimmed)) {
-            setExtraClasses(prev => (prev.includes(trimmed) ? prev : [...prev, trimmed]));
-        }
-        return trimmed;
+    // Keep the class-manager draft inputs in sync with the actual classes.
+    useEffect(() => {
+        if (!managingClasses) return;
+        const drafts = {};
+        classNames.forEach(name => {
+            drafts[name] = name;
+        });
+        setClassDrafts(drafts);
+    }, [classNames, managingClasses]);
+
+    const memberCount = name => users.filter(u => u.class_name === name).length;
+
+    const handleRenameClass = oldName => {
+        const next = (classDrafts[oldName] || '').trim();
+        if (!next || next === oldName) return;
+        onRenameClass(oldName, next);
     };
 
-    const handleAddClassConfirm = () => {
-        addClass(newClassName);
-        setNewClassName('');
-        setAddingClass(false);
-    };
-
-    const handleRowClassChange = (user, value) => {
-        if (value === '__add__') {
-            setInlineClassRow(user.id);
-            setInlineClassValue('');
+    const handleDeleteClass = name => {
+        // eslint-disable-next-line no-alert
+        if (!window.confirm(intl.formatMessage(
+            {
+                id: 'gui.userManagement.confirmDeleteClass',
+                defaultMessage: 'Remove class "{name}"? Its {count} member(s) will be unassigned.'
+            },
+            {name, count: memberCount(name)}
+        ))) {
             return;
         }
-        onChangeClass(user.id, value);
+        onDeleteClass(name);
     };
 
-    const handleInlineClassConfirm = userId => {
-        const name = addClass(inlineClassValue);
-        if (name) onChangeClass(userId, name);
-        setInlineClassRow(null);
-        setInlineClassValue('');
+    const startEdit = user => {
+        setEditingId(user.id);
+        setEditName(user.display_name || '');
+        setEditClass(user.class_name || '');
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditName('');
+        setEditClass('');
+    };
+
+    const saveEdit = userId => {
+        Promise.resolve(onUpdateUser(userId, {
+            display_name: editName,
+            class_name: editClass
+        })).then(ok => {
+            if (ok !== false) cancelEdit();
+        });
+    };
+
+    const handleDelete = user => {
+        // eslint-disable-next-line no-alert
+        if (!window.confirm(intl.formatMessage(
+            {
+                id: 'gui.userManagement.confirmDelete',
+                defaultMessage: 'Delete account "{name}" and all of its data? This cannot be undone.'
+            },
+            {name: user.username}
+        ))) {
+            return;
+        }
+        onDeleteUser(user.id);
     };
 
     const filtered = useMemo(() => {
@@ -157,58 +196,16 @@ const UserManagementComponent = ({
                             ))}
                         </select>
                         <span className={styles.toolbarSpacer} />
-                        {addingClass ? (
-                            <span className={styles.addClassBox}>
-                                <input
-                                    autoFocus
-                                    className={styles.addClassInput}
-                                    type="text"
-                                    value={newClassName}
-                                    placeholder={intl.formatMessage({
-                                        id: 'gui.userManagement.newClassPlaceholder',
-                                        defaultMessage: 'New class name'
-                                    })}
-                                    onChange={e => setNewClassName(e.target.value)}
-                                    onKeyDown={e => {
-                                        if (e.key === 'Enter') handleAddClassConfirm();
-                                        if (e.key === 'Escape') {
-                                            setAddingClass(false);
-                                            setNewClassName('');
-                                        }
-                                    }}
-                                />
-                                <button
-                                    className={styles.addClassConfirm}
-                                    onClick={handleAddClassConfirm}
-                                >
-                                    <FormattedMessage
-                                        defaultMessage="Add"
-                                        description="Confirm adding a new class"
-                                        id="gui.userManagement.addClassConfirm"
-                                    />
-                                </button>
-                                <button
-                                    className={styles.addClassCancel}
-                                    onClick={() => {
-                                        setAddingClass(false);
-                                        setNewClassName('');
-                                    }}
-                                >
-                                    {'✕'}
-                                </button>
-                            </span>
-                        ) : (
-                            <button
-                                className={styles.addClassButton}
-                                onClick={() => setAddingClass(true)}
-                            >
-                                <FormattedMessage
-                                    defaultMessage="+ Add class"
-                                    description="Button to create a new class"
-                                    id="gui.userManagement.addClass"
-                                />
-                            </button>
-                        )}
+                        <button
+                            className={styles.refreshButton}
+                            onClick={() => setManagingClasses(true)}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Manage classes"
+                                description="Button to open the class manager (rename/delete classes)"
+                                id="gui.userManagement.manageClasses"
+                            />
+                        </button>
                         <button
                             className={styles.refreshButton}
                             onClick={onRefresh}
@@ -275,6 +272,13 @@ const UserManagementComponent = ({
                                             id="gui.userManagement.colClass"
                                         />
                                     </th>
+                                    <th className={styles.actionsHead}>
+                                        <FormattedMessage
+                                            defaultMessage="Actions"
+                                            description="Row actions column header"
+                                            id="gui.userManagement.colActions"
+                                        />
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -282,6 +286,7 @@ const UserManagementComponent = ({
                                     const isSelf = user.id === currentUserId;
                                     const initial = (user.username || '?').charAt(0).toUpperCase();
                                     const role = user.role || 'student';
+                                    const isEditing = editingId === user.id;
                                     return (
                                         <tr
                                             key={user.id}
@@ -302,7 +307,21 @@ const UserManagementComponent = ({
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className={styles.nameCell}>{user.display_name}</td>
+                                            <td className={styles.nameCell}>
+                                                {isEditing ? (
+                                                    <input
+                                                        autoFocus
+                                                        className={styles.editInput}
+                                                        type="text"
+                                                        value={editName}
+                                                        onChange={e => setEditName(e.target.value)}
+                                                        onKeyDown={e => {
+                                                            if (e.key === 'Enter') saveEdit(user.id);
+                                                            if (e.key === 'Escape') cancelEdit();
+                                                        }}
+                                                    />
+                                                ) : user.display_name}
+                                            </td>
                                             <td>
                                                 <span className={styles.dotWrap}>
                                                     <span className={`${styles.dot} ${styles[`dot_${role}`]}`} />
@@ -325,57 +344,79 @@ const UserManagementComponent = ({
                                                 </span>
                                             </td>
                                             <td>
-                                                {inlineClassRow === user.id ? (
-                                                    <span className={styles.addClassBox}>
-                                                        <input
-                                                            autoFocus
-                                                            className={styles.classInput}
-                                                            type="text"
-                                                            value={inlineClassValue}
-                                                            placeholder={intl.formatMessage({
-                                                                id: 'gui.userManagement.newClassPlaceholder',
-                                                                defaultMessage: 'New class name'
-                                                            })}
-                                                            onChange={e => setInlineClassValue(e.target.value)}
-                                                            onKeyDown={e => {
-                                                                if (e.key === 'Enter') handleInlineClassConfirm(user.id);
-                                                                if (e.key === 'Escape') setInlineClassRow(null);
-                                                            }}
-                                                        />
+                                                {isEditing ? (
+                                                    <input
+                                                        className={styles.editInput}
+                                                        type="text"
+                                                        list="user-management-classes"
+                                                        value={editClass}
+                                                        placeholder={intl.formatMessage({
+                                                            id: 'gui.userManagement.classPlaceholder',
+                                                            defaultMessage: 'Class name'
+                                                        })}
+                                                        onChange={e => setEditClass(e.target.value)}
+                                                        onKeyDown={e => {
+                                                            if (e.key === 'Enter') saveEdit(user.id);
+                                                            if (e.key === 'Escape') cancelEdit();
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <span className={user.class_name ? '' : styles.classEmpty}>
+                                                        {user.class_name || '—'}
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className={styles.actionsCell}>
+                                                {isEditing ? (
+                                                    <React.Fragment>
                                                         <button
-                                                            className={styles.addClassConfirm}
-                                                            onClick={() => handleInlineClassConfirm(user.id)}
+                                                            className={styles.saveButton}
+                                                            onClick={() => saveEdit(user.id)}
                                                         >
                                                             <FormattedMessage
-                                                                defaultMessage="Add"
-                                                                description="Confirm adding a new class"
-                                                                id="gui.userManagement.addClassConfirm"
+                                                                defaultMessage="Save"
+                                                                description="Save edited member"
+                                                                id="gui.userManagement.save"
                                                             />
                                                         </button>
                                                         <button
-                                                            className={styles.addClassCancel}
-                                                            onClick={() => setInlineClassRow(null)}
+                                                            className={styles.iconButton}
+                                                            title={intl.formatMessage({
+                                                                id: 'gui.userManagement.cancel',
+                                                                defaultMessage: 'Cancel'
+                                                            })}
+                                                            onClick={cancelEdit}
                                                         >
                                                             {'✕'}
                                                         </button>
-                                                    </span>
+                                                    </React.Fragment>
                                                 ) : (
-                                                    <select
-                                                        className={styles.classSelect}
-                                                        value={user.class_name || ''}
-                                                        onChange={e => handleRowClassChange(user, e.target.value)}
-                                                    >
-                                                        <option value="">{'-'}</option>
-                                                        {classNames.map(name => (
-                                                            <option key={name} value={name}>{name}</option>
-                                                        ))}
-                                                        <option value="__add__">
-                                                            {intl.formatMessage({
-                                                                id: 'gui.userManagement.newClassOption',
-                                                                defaultMessage: '+ New class…'
+                                                    <React.Fragment>
+                                                        <button
+                                                            className={styles.iconButton}
+                                                            title={intl.formatMessage({
+                                                                id: 'gui.userManagement.edit',
+                                                                defaultMessage: 'Edit'
                                                             })}
-                                                        </option>
-                                                    </select>
+                                                            onClick={() => startEdit(user)}
+                                                        >
+                                                            {'✏️'}
+                                                        </button>
+                                                        <button
+                                                            className={`${styles.iconButton} ${styles.deleteButton}`}
+                                                            disabled={isSelf}
+                                                            title={isSelf ? intl.formatMessage({
+                                                                id: 'gui.userManagement.cannotDeleteSelf',
+                                                                defaultMessage: 'You cannot delete your own account'
+                                                            }) : intl.formatMessage({
+                                                                id: 'gui.userManagement.delete',
+                                                                defaultMessage: 'Delete account'
+                                                            })}
+                                                            onClick={() => handleDelete(user)}
+                                                        >
+                                                            {'✕'}
+                                                        </button>
+                                                    </React.Fragment>
                                                 )}
                                             </td>
                                         </tr>
@@ -384,7 +425,100 @@ const UserManagementComponent = ({
                             </tbody>
                         </table>
                     )}
+                    <datalist id="user-management-classes">
+                        {classNames.map(name => (
+                            <option key={name} value={name} />
+                        ))}
+                    </datalist>
                 </div>
+
+                {managingClasses && (
+                    <div
+                        className={styles.managerOverlay}
+                        onClick={() => setManagingClasses(false)}
+                    >
+                        <div
+                            className={styles.managerPanel}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className={styles.managerHeader}>
+                                <span className={styles.managerTitle}>
+                                    <FormattedMessage
+                                        defaultMessage="Manage classes"
+                                        description="Title of the class manager panel"
+                                        id="gui.userManagement.manageClassesTitle"
+                                    />
+                                </span>
+                                <button
+                                    className={styles.iconButton}
+                                    onClick={() => setManagingClasses(false)}
+                                >
+                                    {'✕'}
+                                </button>
+                            </div>
+                            <div className={styles.managerBody}>
+                                {classNames.length === 0 ? (
+                                    <p className={styles.managerEmpty}>
+                                        <FormattedMessage
+                                            defaultMessage="No classes yet. Assign a class to a member first."
+                                            description="Empty state for the class manager"
+                                            id="gui.userManagement.noClasses"
+                                        />
+                                    </p>
+                                ) : classNames.map(name => (
+                                    <div
+                                        key={name}
+                                        className={styles.classRow}
+                                    >
+                                        <input
+                                            className={styles.editInput}
+                                            type="text"
+                                            value={classDrafts[name] || ''}
+                                            onChange={e => setClassDrafts(prev => ({
+                                                ...prev,
+                                                [name]: e.target.value
+                                            }))}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') handleRenameClass(name);
+                                            }}
+                                        />
+                                        <span className={styles.classCount}>
+                                            <FormattedMessage
+                                                defaultMessage="{count} member(s)"
+                                                description="Member count for a class"
+                                                id="gui.userManagement.classMemberCount"
+                                                values={{count: memberCount(name)}}
+                                            />
+                                        </span>
+                                        <button
+                                            className={styles.saveButton}
+                                            disabled={!classDrafts[name] ||
+                                                classDrafts[name].trim() === name ||
+                                                classDrafts[name].trim() === ''}
+                                            onClick={() => handleRenameClass(name)}
+                                        >
+                                            <FormattedMessage
+                                                defaultMessage="Rename"
+                                                description="Rename a class"
+                                                id="gui.userManagement.rename"
+                                            />
+                                        </button>
+                                        <button
+                                            className={`${styles.iconButton} ${styles.deleteButton}`}
+                                            title={intl.formatMessage({
+                                                id: 'gui.userManagement.deleteClass',
+                                                defaultMessage: 'Delete class'
+                                            })}
+                                            onClick={() => handleDeleteClass(name)}
+                                        >
+                                            {'✕'}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </Modal>
     );
@@ -396,10 +530,13 @@ UserManagementComponent.propTypes = {
     intl: intlShape.isRequired,
     isRtl: PropTypes.bool,
     loading: PropTypes.bool,
-    onChangeClass: PropTypes.func.isRequired,
     onChangeRole: PropTypes.func.isRequired,
+    onDeleteClass: PropTypes.func.isRequired,
+    onDeleteUser: PropTypes.func.isRequired,
     onRefresh: PropTypes.func.isRequired,
+    onRenameClass: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func.isRequired,
+    onUpdateUser: PropTypes.func.isRequired,
     savingId: PropTypes.string,
     users: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string,

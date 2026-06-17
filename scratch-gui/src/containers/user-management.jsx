@@ -15,7 +15,10 @@ class UserManagement extends React.Component {
             'handleRefresh',
             'fetchUsers',
             'handleChangeRole',
-            'handleChangeClass'
+            'handleUpdateUser',
+            'handleDeleteUser',
+            'handleRenameClass',
+            'handleDeleteClass'
         ]);
         this.state = {
             loading: true,
@@ -82,29 +85,135 @@ class UserManagement extends React.Component {
         this.setState({savingId: null});
     }
 
-    async handleChangeClass (userId, className) {
+    // Update display name and/or class. Returns true on success so the
+    // component can leave edit mode only when the save actually persisted.
+    async handleUpdateUser (userId, patch) {
         const prev = this.state.users.find(u => u.id === userId);
-        const prevClass = prev ? prev.class_name : null;
-        const value = className.trim() === '' ? null : className.trim();
-        this.patchUser(userId, {class_name: value});
+        const update = {};
+        if (typeof patch.display_name !== 'undefined') {
+            const name = patch.display_name.trim();
+            // Keep the previous display name rather than writing an empty one.
+            update.display_name = name === '' ? (prev ? prev.display_name : null) : name;
+        }
+        if (typeof patch.class_name !== 'undefined') {
+            const cls = patch.class_name.trim();
+            update.class_name = cls === '' ? null : cls;
+        }
+
+        this.patchUser(userId, update);
         this.setState({savingId: userId, error: null});
 
         const {data, error} = await supabase
             .from('users')
-            .update({class_name: value})
+            .update(update)
             .eq('id', userId)
             .select();
 
         if (error || !data || data.length === 0) {
-            this.patchUser(userId, {class_name: prevClass});
+            // revert to the previous values
+            if (prev) {
+                this.patchUser(userId, {
+                    display_name: prev.display_name,
+                    class_name: prev.class_name
+                });
+            }
             const message = error ?
                 error.message :
                 'Update failed: you may not have permission (check the admin RLS policy).';
-            console.error('Error updating class:', error);
+            console.error('Error updating user:', error);
             this.setState({savingId: null, error: message});
-            return;
+            return false;
         }
         this.setState({savingId: null});
+        return true;
+    }
+
+    async handleDeleteUser (userId) {
+        this.setState({savingId: userId, error: null});
+        try {
+            // Remove the student's saved work first (avoids FK violations).
+            await supabase
+                .from('student_screens')
+                .delete()
+                .eq('user_id', userId);
+            await supabase
+                .from('student_visualizations')
+                .delete()
+                .eq('user_id', userId);
+
+            const {data, error} = await supabase
+                .from('users')
+                .delete()
+                .eq('id', userId)
+                .select();
+
+            if (error || !data || data.length === 0) {
+                const message = error ?
+                    error.message :
+                    'Delete failed: you may not have permission (check the admin RLS policy).';
+                console.error('Error deleting user:', error);
+                this.setState({savingId: null, error: message});
+                return;
+            }
+
+            this.setState(prevState => ({
+                users: prevState.users.filter(u => u.id !== userId),
+                savingId: null
+            }));
+        } catch (err) {
+            console.error('Error deleting user:', err);
+            this.setState({savingId: null, error: err.message});
+        }
+    }
+
+    // Bulk-rename a class: every member of oldName moves to newName.
+    async handleRenameClass (oldName, newName) {
+        this.setState({error: null});
+        const {data, error} = await supabase
+            .from('users')
+            .update({class_name: newName})
+            .eq('class_name', oldName)
+            .select();
+
+        if (error || !data) {
+            const message = error ?
+                error.message :
+                'Rename failed: you may not have permission (check the admin RLS policy).';
+            console.error('Error renaming class:', error);
+            this.setState({error: message});
+            return;
+        }
+
+        this.setState(prevState => ({
+            users: prevState.users.map(u => (
+                u.class_name === oldName ? {...u, class_name: newName} : u
+            ))
+        }));
+    }
+
+    // Delete a class by unassigning all of its members (class_name -> null).
+    async handleDeleteClass (name) {
+        this.setState({error: null});
+        const {data, error} = await supabase
+            .from('users')
+            .update({class_name: null})
+            .eq('class_name', name)
+            .select();
+
+        if (error || !data) {
+            const message = error ?
+                error.message :
+                'Delete failed: you may not have permission (check the admin RLS policy).';
+            console.error('Error deleting class:', error);
+            this.setState({error: message});
+            return;
+        }
+
+        this.setState(prevState => ({
+            users: prevState.users.map(u => (
+                u.class_name === name ? {...u, class_name: null} : u
+            ))
+        }));
     }
 
     handleClose () {
@@ -124,10 +233,13 @@ class UserManagement extends React.Component {
                 loading={this.state.loading}
                 savingId={this.state.savingId}
                 users={this.state.users}
-                onChangeClass={this.handleChangeClass}
                 onChangeRole={this.handleChangeRole}
+                onDeleteClass={this.handleDeleteClass}
+                onDeleteUser={this.handleDeleteUser}
                 onRefresh={this.handleRefresh}
+                onRenameClass={this.handleRenameClass}
                 onRequestClose={this.handleClose}
+                onUpdateUser={this.handleUpdateUser}
             />
         );
     }
