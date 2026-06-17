@@ -61,6 +61,7 @@ const StudentGalleryComponent = ({
             fullScreen
             id="studentGalleryModal"
             contentLabel={intl.formatMessage(messages.title)}
+            headerClassName={styles.modalHeader}
             isRtl={isRtl}
             onRequestClose={onRequestClose}
         >
@@ -136,6 +137,10 @@ const StudentGalleryComponent = ({
                         {screens.map(screen => {
                             const latestViz = getLatestVisualization(screen.user_id);
                             const thumbnailUrl = latestViz ? latestViz.image_url : screen.screenshot_url;
+                            const vizType = latestViz && latestViz.visualization_type;
+                            const badgeClass = vizType === 'histogram' ?
+                                styles.badgeHistogram : styles.badgeCircuit;
+                            const initial = (screen.username || '?').charAt(0).toUpperCase();
                             return (
                                 <div
                                     key={screen.id}
@@ -147,12 +152,20 @@ const StudentGalleryComponent = ({
                                         setVizIndex(0);
                                     }}
                                 >
-                                    <img
-                                        className={styles.screenshot}
-                                        src={thumbnailUrl}
-                                        alt={screen.username}
-                                    />
+                                    <div className={styles.thumb}>
+                                        {vizType && (
+                                            <span className={`${styles.badge} ${badgeClass}`}>
+                                                {vizType === 'histogram' ? 'Histogram' : 'Circuit'}
+                                            </span>
+                                        )}
+                                        <img
+                                            className={styles.screenshot}
+                                            src={thumbnailUrl}
+                                            alt={screen.username}
+                                        />
+                                    </div>
                                     <div className={styles.itemInfo}>
+                                        <div className={styles.avatar}>{initial}</div>
                                         <div className={styles.itemInfoLeft}>
                                             <p className={styles.username}>{screen.username}</p>
                                             <p className={styles.timestamp}>{formatTime(screen.created_at)}</p>
