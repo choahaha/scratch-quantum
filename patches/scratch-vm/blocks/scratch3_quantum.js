@@ -107,7 +107,16 @@ class Scratch3QuantumBlocks {
         log.log('Quantum: Added measureAll');
     }
 
-    run (args) {
+    run (args, util) {
+        // C-block: first entry runs the wrapped blocks (create circuit / gates /
+        // measure) once so they accumulate into globalCircuit, then on re-entry we
+        // send the assembled circuit to the backend.
+        if (typeof util.stackFrame.ranBody === 'undefined') {
+            util.stackFrame.ranBody = true;
+            util.startBranch(1, true); // execute SUBSTACK once, then re-enter run
+            return;
+        }
+
         const shots = Cast.toNumber(args.SHOTS);
 
         if (globalCircuit.blocks.length === 0 ||
