@@ -173,15 +173,25 @@ Blockly.Blocks['quantum_run'] = {
     this.jsonInit({
       "id": "quantum_run",
       "message0": Blockly.Msg.QUANTUM_RUN,
+      "message1": "%1", // Statement: wrapped circuit blocks (create / gates / measure)
       "args0": [
         {
           "type": "input_value",
           "name": "SHOTS"
         }
       ],
+      "args1": [
+        {
+          "type": "input_statement",
+          "name": "SUBSTACK"
+        }
+      ],
       "category": Blockly.Categories.quantum,
-      "extensions": ["colours_quantum", "shape_statement"]
+      "extensions": ["shape_statement"]
     });
+    // Lighter pink so the run/wrapper block stands out from the other
+    // quantum blocks (which use the standard quantum category pink).
+    this.setColourFromRawValues_("#FF80AB", "#F86F9E", "#EC5E8F", "#EC5E8F");
   }
 };
 
