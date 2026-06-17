@@ -12,18 +12,9 @@ import queryString from 'query-string';
  * @return {string} the preferred locale
  */
 const detectLocale = supportedLocales => {
-    let locale = 'en'; // default
-    let browserLocale = window.navigator.userLanguage || window.navigator.language;
-    browserLocale = browserLocale.toLowerCase();
-    // try to set locale from browserLocale
-    if (supportedLocales.includes(browserLocale)) {
-        locale = browserLocale;
-    } else {
-        browserLocale = browserLocale.split('-')[0];
-        if (supportedLocales.includes(browserLocale)) {
-            locale = browserLocale;
-        }
-    }
+    // Default to English regardless of the browser language.
+    // An explicit ?locale= / ?lang= URL parameter can still override this.
+    const locale = 'en';
 
     const queryParams = queryString.parse(location.search);
     // Flatten potential arrays and remove falsy values

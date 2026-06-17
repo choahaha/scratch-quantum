@@ -105,7 +105,7 @@ const AuthManagerHOC = function (WrappedComponent) {
             if (error) {
                 throw new Error(
                     error.message === 'Invalid login credentials'
-                        ? '아이디 또는 비밀번호가 올바르지 않습니다.'
+                        ? 'Incorrect username or password.'
                         : error.message
                 );
             }
@@ -124,13 +124,13 @@ const AuthManagerHOC = function (WrappedComponent) {
 
             if (authError) {
                 if (authError.message.includes('already registered')) {
-                    throw new Error('이미 사용 중인 아이디입니다.');
+                    throw new Error('This username is already taken.');
                 }
                 throw new Error(authError.message);
             }
 
             if (!authData.user) {
-                throw new Error('회원가입에 실패했습니다.');
+                throw new Error('Sign-up failed.');
             }
 
             // Create profile in users table
@@ -147,9 +147,9 @@ const AuthManagerHOC = function (WrappedComponent) {
                 // If profile creation fails, we should handle this gracefully
                 console.error('Profile creation error:', profileError);
                 if (profileError.code === '23505') {
-                    throw new Error('이미 사용 중인 아이디입니다.');
+                    throw new Error('This username is already taken.');
                 }
-                throw new Error('프로필 생성에 실패했습니다.');
+                throw new Error('Failed to create profile.');
             }
 
             return authData;
@@ -194,7 +194,7 @@ const AuthManagerHOC = function (WrappedComponent) {
                             fontSize: '18px'
                         }}
                     >
-                        로딩 중...
+                        Loading...
                     </div>
                 );
             }

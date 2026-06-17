@@ -27,7 +27,11 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: $menu-bar-standard-font-size;
     font-weight: bold;
-    background-color: $looks-secondary;
+    /* Custom theme: deep-indigo chrome, matching the login panel and the
+       admin dashboard top bar (#1e1b4b). Intentionally NOT using
+       $looks-secondary, which also colors the Looks block category and
+       must stay purple. */
+    background-color: #1e1b4b;
     color: $ui-white;
 }
 
@@ -105,7 +109,7 @@
 }
 
 .feedback-link {
-    color: $looks-secondary;
+    color: #4f46e5;
     text-decoration: none;
 }
 

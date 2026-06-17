@@ -195,7 +195,7 @@ class StudentGallery extends React.Component {
     }
 
     async handleDeleteAll () {
-        if (!window.confirm('모든 학생 화면을 삭제하시겠습니까?')) return;
+        if (!window.confirm('Delete all student screens?')) return;
 
         try {
             // 1. Storage에서 모든 스크린샷 삭제
@@ -226,7 +226,7 @@ class StudentGallery extends React.Component {
             console.log('All screens deleted successfully');
         } catch (error) {
             console.error('Error deleting screens:', error);
-            alert('삭제 중 오류가 발생했습니다.');
+            alert('An error occurred while deleting.');
         }
     }
 
@@ -249,13 +249,13 @@ class StudentGallery extends React.Component {
 
             if (error) {
                 console.error('Error deleting screen:', error);
-                alert('삭제 실패: ' + error.message);
+                alert('Delete failed: ' + error.message);
                 return;
             }
 
             if (!data || data.length === 0) {
                 console.log('No rows deleted - might be RLS issue');
-                alert('삭제 실패: 권한이 없거나 항목을 찾을 수 없습니다.');
+                alert('Delete failed: you do not have permission or the item was not found.');
                 return;
             }
 
@@ -265,7 +265,7 @@ class StudentGallery extends React.Component {
             console.log('=== handleDeleteScreen END ===');
         } catch (error) {
             console.error('Exception in handleDeleteScreen:', error);
-            alert('삭제 중 오류: ' + error.message);
+            alert('Error while deleting: ' + error.message);
         }
     }
 
@@ -291,7 +291,7 @@ class StudentGallery extends React.Component {
 
     async handleDeleteStudent (userId) {
         if (!userId) return;
-        if (!window.confirm('이 학생의 모든 데이터를 삭제하시겠습니까?')) return;
+        if (!window.confirm('Delete all data for this student?')) return;
 
         try {
             // 1. 해당 학생의 모든 스크린 삭제

@@ -112,7 +112,7 @@ class Scratch3QuantumBlocks {
 
         if (globalCircuit.blocks.length === 0 ||
             globalCircuit.blocks[0].opcode !== 'quantum_createCircuit') {
-            globalCircuit.result = 'Error: 먼저 "양자 회로 만들기" 블록을 사용하세요!';
+            globalCircuit.result = 'Error: Use the "create circuit" block first!';
             log.warn('Quantum: No circuit created before run');
             return Promise.resolve();
         }
