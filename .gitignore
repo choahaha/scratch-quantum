@@ -33,3 +33,8 @@ npm-debug.log*
 # scratch-blocks and scratch-gui are forks - track separately
 # scratch-blocks/
 # scratch-gui/
+.gstack/
+
+# Python
+__pycache__/
+venv/
