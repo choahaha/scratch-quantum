@@ -644,3 +644,31 @@ button {
     font-weight: 600;
     cursor: pointer;
 }
+
+.class-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.class-filter button {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 99px;
+    border: 1px solid #d5dae6;
+    background: #fff;
+    color: #556;
+    cursor: pointer;
+}
+
+.class-filter button:hover {
+    border-color: #4f46e5;
+}
+
+.class-filter button.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+}

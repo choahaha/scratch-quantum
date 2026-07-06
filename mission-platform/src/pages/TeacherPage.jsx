@@ -17,11 +17,12 @@ const TeacherPage = () => {
     const [missions, setMissions] = useState(null);
     const [progress, setProgress] = useState([]);
     const [detail, setDetail] = useState(null); // {student, mission, row}
+    const [classFilter, setClassFilter] = useState('all');
     const [error, setError] = useState('');
 
     const load = useCallback(async () => {
         const [studentsRes, missionsRes, progressRes] = await Promise.all([
-            supabase.from('users').select('id, username, display_name, role')
+            supabase.from('users').select('id, username, display_name, role, class_name')
                 .eq('role', 'student').order('username'),
             supabase.from('missions').select('id, order_index, title, chapter_id')
                 .order('order_index'),
@@ -53,8 +54,15 @@ const TeacherPage = () => {
     if (error) return <div className="page-loading">오류: {error}</div>;
     if (!profile || !students || !missions) return <div className="page-loading">로딩 중...</div>;
 
+    const UNASSIGNED = '미배정';
+    const classNames = [...new Set(students.map(s => s.class_name || UNASSIGNED))]
+        .sort((a, b) => (a === UNASSIGNED) - (b === UNASSIGNED) || a.localeCompare(b, 'ko'));
+    const visibleStudents = classFilter === 'all'
+        ? students
+        : students.filter(s => (s.class_name || UNASSIGNED) === classFilter);
+
     const progressMap = new Map(progress.map(row => [`${row.user_id}:${row.mission_id}`, row]));
-    const studentIds = new Set(students.map(s => s.id));
+    const studentIds = new Set(visibleStudents.map(s => s.id));
     const passedTotal = progress.filter(row =>
         row.status === 'passed' && studentIds.has(row.user_id)).length;
 
@@ -81,7 +89,7 @@ const TeacherPage = () => {
                 <div>
                     <h1>교사 대시보드</h1>
                     <p className="teacher-sub">
-                        {`학생 ${students.length}명 · 미션 통과 ${passedTotal}건 · 실시간 갱신`}
+                        {`학생 ${visibleStudents.length}명 · 미션 통과 ${passedTotal}건 · 실시간 갱신`}
                     </p>
                 </div>
                 <div className="teacher-actions">
@@ -89,6 +97,23 @@ const TeacherPage = () => {
                     <Link className="link-button" to="/">미션 맵으로 →</Link>
                 </div>
             </header>
+
+            <div className="class-filter">
+                <button
+                    className={classFilter === 'all' ? 'active' : ''}
+                    onClick={() => setClassFilter('all')}
+                >{`전체 (${students.length})`}</button>
+                {classNames.map(name => {
+                    const count = students.filter(s => (s.class_name || UNASSIGNED) === name).length;
+                    return (
+                        <button
+                            key={name}
+                            className={classFilter === name ? 'active' : ''}
+                            onClick={() => setClassFilter(name)}
+                        >{`${name} (${count})`}</button>
+                    );
+                })}
+            </div>
 
             <div className="teacher-table-wrap">
                 <table className="teacher-table">
@@ -102,7 +127,7 @@ const TeacherPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {students.map(student => {
+                        {visibleStudents.map(student => {
                             const passedCount = missions.filter(m =>
                                 progressMap.get(`${student.id}:${m.id}`)?.status === 'passed').length;
                             return (
@@ -115,7 +140,7 @@ const TeacherPage = () => {
                                 </tr>
                             );
                         })}
-                        {students.length === 0 && (
+                        {visibleStudents.length === 0 && (
                             <tr><td colSpan={missions.length + 2} className="t-empty">아직 등록된 학생이 없습니다.</td></tr>
                         )}
                     </tbody>
