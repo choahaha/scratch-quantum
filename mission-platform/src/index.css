@@ -486,36 +486,17 @@ button {
     border: none;
 }
 
-/* ---------- Teacher dashboard (odyssey dark) ---------- */
+/* ---------- Teacher dashboard (light) ---------- */
 
 .teacher-page {
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
-    background:
-        radial-gradient(ellipse 60% 40% at 75% 8%, rgba(79, 70, 229, 0.35), transparent 60%),
-        radial-gradient(ellipse 50% 45% at 10% 92%, rgba(255, 64, 129, 0.2), transparent 65%),
-        #0d0a2e;
-    color: #e6e8fb;
-    padding: 26px 32px 60px;
-}
-
-.teacher-page > * {
-    position: relative;
-    z-index: 2;
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.teacher-page > .odyssey-stars {
-    max-width: none;
-    z-index: 0;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 26px 20px 60px;
 }
 
 .teacher-brand {
-    font-weight: 600;
-    color: #9aa0d0;
+    font-weight: 700;
+    color: #99a;
     font-size: 13px;
     letter-spacing: 0.04em;
 }
@@ -524,14 +505,13 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .teacher-header h1 {
-    font-size: 24px;
-    font-weight: 800;
-    color: #fff;
+    font-size: 23px;
     margin: 4px 0 0;
+    color: #1f2430;
 }
 
 .teacher-actions {
@@ -539,80 +519,57 @@ button {
     gap: 16px;
 }
 
-.t-link {
-    background: none;
-    border: none;
-    color: #a5b4fc;
-    font-size: 13px;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.t-link:hover {
-    color: #fff;
-    text-decoration: underline;
-}
-
 .teacher-stats {
     display: flex;
     gap: 14px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
 .t-stat {
     display: flex;
     align-items: baseline;
-    gap: 8px;
-    background: rgba(30, 32, 80, 0.55);
-    border: 1px solid rgba(140, 147, 205, 0.22);
-    backdrop-filter: blur(6px);
+    gap: 9px;
+    background: #fff;
     border-radius: 12px;
-    padding: 12px 18px;
+    padding: 13px 18px;
+    box-shadow: 0 4px 14px rgba(30, 27, 75, 0.06);
 }
 
 .t-stat b {
     font-size: 20px;
-    color: #fff;
+    color: #1f2430;
 }
 
 .t-stat span {
     font-size: 12.5px;
-    color: #9aa0d0;
+    color: #778;
 }
 
-.t-stat-live b {
-    color: #34d399;
-    font-size: 11px;
-    animation: t-live-pulse 2s ease-in-out infinite;
-}
-
-@keyframes t-live-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+.t-stat-warn b {
+    color: #d64550;
 }
 
 .class-filter {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .class-filter button {
     font-size: 13px;
     font-weight: 600;
-    padding: 7px 16px;
+    padding: 7px 15px;
     border-radius: 99px;
-    border: 1px solid rgba(165, 180, 252, 0.35);
-    background: transparent;
-    color: #b9bfe6;
+    border: 1px solid #d5dae6;
+    background: #fff;
+    color: #556;
     cursor: pointer;
 }
 
 .class-filter button:hover {
-    border-color: #a5b4fc;
-    color: #fff;
+    border-color: #4f46e5;
 }
 
 .class-filter button.active {
@@ -622,10 +579,9 @@ button {
 }
 
 .teacher-table-wrap {
-    background: rgba(30, 32, 80, 0.55);
-    border: 1px solid rgba(140, 147, 205, 0.22);
-    backdrop-filter: blur(6px);
-    border-radius: 16px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(30, 27, 75, 0.08);
     overflow-x: auto;
 }
 
@@ -637,88 +593,101 @@ button {
 
 .teacher-table th {
     text-align: center;
-    padding: 14px 10px;
-    color: #9aa0d0;
+    padding: 12px 10px;
+    background: #f4f6fc;
+    color: #445;
     font-size: 12.5px;
     white-space: nowrap;
-    border-bottom: 1px solid rgba(140, 147, 205, 0.25);
 }
 
 .teacher-table th small {
     display: block;
     font-weight: 500;
-    color: #6d739f;
+    color: #99a;
     max-width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 3px auto 0;
+    margin: 2px auto 0;
 }
 
 .teacher-table td {
-    border-top: 1px solid rgba(140, 147, 205, 0.12);
-    padding: 10px;
+    border-top: 1px solid #eef0f7;
+    padding: 9px 10px;
     text-align: center;
 }
 
 .teacher-table tbody tr:hover {
-    background: rgba(79, 70, 229, 0.1);
+    background: #fafbff;
 }
 
 .t-student {
     text-align: left !important;
     font-weight: 700;
-    color: #fff;
-    min-width: 130px;
-    padding-left: 18px !important;
+    color: #334;
+    min-width: 120px;
+    padding-left: 16px !important;
 }
 
 .t-cell {
     cursor: pointer;
+    min-width: 76px;
 }
 
-.t-dot {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
+.t-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
+    font-size: 12.5px;
+    font-weight: 800;
 }
 
-.t-none .t-dot {
-    background: rgba(140, 147, 205, 0.18);
-    border: 1px solid rgba(140, 147, 205, 0.3);
+.t-pass .t-mark {
+    background: #d1fae5;
+    color: #047857;
 }
 
-.t-pass .t-dot {
-    background: radial-gradient(circle at 30% 30%, #6ee7b7, #059669);
-    box-shadow: 0 0 10px rgba(52, 211, 153, 0.7);
+.t-try .t-mark {
+    background: #e0e7ff;
+    color: #4338ca;
 }
 
-.t-try .t-dot {
-    background: radial-gradient(circle at 30% 30%, #ff79a8, #e0336d);
-    box-shadow: 0 0 10px rgba(255, 64, 129, 0.7);
+.t-struggle .t-mark {
+    background: #fee2e2;
+    color: #d64550;
+}
+
+.t-struggle {
+    background: #fff7f7;
 }
 
 .t-cell small {
     display: block;
     font-size: 10.5px;
-    color: #9aa0d0;
-    line-height: 1.35;
-    margin-top: 3px;
+    color: #99a;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+.t-none {
+    color: #ccd;
 }
 
 .t-ratio {
     font-weight: 700;
-    color: #a5b4fc;
+    color: #4f46e5;
     font-size: 12.5px;
-    min-width: 86px;
+    min-width: 84px;
 }
 
 .t-bar {
-    width: 64px;
+    width: 62px;
     height: 5px;
     border-radius: 99px;
-    background: rgba(255, 255, 255, 0.12);
-    margin: 0 auto 5px;
+    background: #e8ebf5;
+    margin: 0 auto 4px;
     overflow: hidden;
 }
 
@@ -726,18 +695,67 @@ button {
     display: block;
     height: 100%;
     border-radius: 99px;
-    background: linear-gradient(90deg, #34d399, #4f46e5);
+    background: linear-gradient(90deg, #10b981, #4f46e5);
+}
+
+.t-last {
+    color: #778;
+    font-size: 12.5px;
+    white-space: nowrap;
 }
 
 .t-empty {
-    color: #6d739f;
-    padding: 30px !important;
+    color: #99a;
+    padding: 28px !important;
+}
+
+.teacher-table tfoot td {
+    background: #f8f9fe;
+    border-top: 2px solid #e4e7f2;
+    padding: 10px;
+    font-size: 11.5px;
+    color: #667;
+}
+
+.t-foot-label .t-student {
+    font-size: 12px;
+    color: #778 !important;
+}
+
+.t-foot-pass {
+    font-weight: 700;
+    color: #334;
+    font-size: 12px;
+}
+
+.t-foot-sub {
+    color: #99a;
+    margin-top: 1px;
+}
+
+.t-legend {
+    margin: 12px 4px 0;
+    font-size: 12px;
+    color: #889;
+}
+
+.t-legend-warn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #d64550;
+    font-weight: 800;
+    font-size: 11px;
 }
 
 .t-modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(8, 7, 26, 0.7);
+    background: rgba(20, 22, 40, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -745,23 +763,20 @@ button {
 }
 
 .t-modal {
-    background: #171a45;
-    border: 1px solid rgba(140, 147, 205, 0.3);
-    border-radius: 16px;
+    background: #fff;
+    border-radius: 14px;
     padding: 22px 24px;
     width: 440px;
     max-width: 92vw;
-    color: #e6e8fb;
 }
 
 .t-modal h3 {
     margin: 0 0 8px;
     font-size: 16px;
-    color: #fff;
 }
 
 .t-modal-meta {
-    color: #9aa0d0;
+    color: #667;
     font-size: 13px;
     margin: 6px 0;
 }
@@ -770,7 +785,7 @@ button {
     list-style: none;
     padding: 10px 12px;
     margin: 10px 0;
-    background: rgba(30, 32, 80, 0.7);
+    background: #f7f8fd;
     border-radius: 10px;
     font-size: 13px;
 }
@@ -780,11 +795,11 @@ button {
 }
 
 .t-checks .check-pass {
-    color: #6ee7b7;
+    color: #2c7a37;
 }
 
 .t-checks .check-fail {
-    color: #ff9dbd;
+    color: #b8323f;
 }
 
 .t-close {
