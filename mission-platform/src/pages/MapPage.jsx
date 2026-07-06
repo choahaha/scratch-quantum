@@ -12,13 +12,17 @@ const MapPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        if (!session?.user?.id) return;
         const load = async () => {
             const [chaptersRes, missionsRes, progressRes] = await Promise.all([
                 supabase.from('chapters').select('*').order('order_index'),
                 supabase.from('missions')
                     .select('id, chapter_id, order_index, title')
                     .order('order_index'),
+                // 명시적으로 내 진행만 조회 — admin은 RLS상 전체 학생의
+                // 기록이 보이므로 필터가 없으면 맵 상태가 뒤섞인다.
                 supabase.from('mission_progress').select('*')
+                    .eq('user_id', session.user.id)
             ]);
             const firstError = chaptersRes.error || missionsRes.error || progressRes.error;
             if (firstError) {

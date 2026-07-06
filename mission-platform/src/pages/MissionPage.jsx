@@ -21,10 +21,14 @@ const MissionPage = () => {
     useEffect(() => {
         const load = async () => {
             const id = Number(missionId);
+            const {data: {session}} = await supabase.auth.getSession();
+            if (!session) return;
             const [chaptersRes, missionsRes, progressRes] = await Promise.all([
                 supabase.from('chapters').select('*').order('order_index'),
                 supabase.from('missions').select('*').order('order_index'),
+                // 내 진행만 조회 (admin은 전체 학생 기록이 보이므로 필수)
                 supabase.from('mission_progress').select('*')
+                    .eq('user_id', session.user.id)
             ]);
             if (chaptersRes.error || missionsRes.error || progressRes.error) {
                 setError((chaptersRes.error || missionsRes.error || progressRes.error).message);
@@ -42,8 +46,7 @@ const MissionPage = () => {
             setNextMission(findNextMission(chapters, id));
 
             // Mark as started (RLS only allows inserting 'in_progress')
-            const {data: {session}} = await supabase.auth.getSession();
-            if (session && !current.progress) {
+            if (!current.progress) {
                 await supabase.from('mission_progress').insert({
                     user_id: session.user.id,
                     mission_id: id,
