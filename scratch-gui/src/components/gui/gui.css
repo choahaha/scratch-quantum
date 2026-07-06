@@ -11,6 +11,11 @@
     background-color: $ui-primary;
 }
 
+/* Embedded (menu-bar-less) mode: reclaim the menu bar's height */
+.body-wrapper-embedded {
+    height: 100%;
+}
+
 .body-wrapper * {
     box-sizing: border-box;
 }

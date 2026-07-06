@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import bindAll from 'lodash.bindall';
 
 import {supabase} from './supabase-client.js';
+import fetchProfile from './fetch-profile.js';
 import {setUser, setLoading} from '../reducers/auth.js';
 import LoginPage from '../components/login/login-page.jsx';
 import RegisterModal from '../components/login/register-modal.jsx';
@@ -33,7 +34,7 @@ const AuthManagerHOC = function (WrappedComponent) {
                 (event, session) => {
                     if (session?.user) {
                         this.props.dispatchSetUser(session.user, null);
-                        this.fetchProfile(session.user.id).then(profile => {
+                        fetchProfile(session.user.id).then(profile => {
                             if (profile) {
                                 this.props.dispatchSetUser(session.user, profile);
                             }
@@ -60,7 +61,7 @@ const AuthManagerHOC = function (WrappedComponent) {
                     // 먼저 유저 설정하여 로딩 해제
                     this.props.dispatchSetUser(session.user, null);
                     // 프로필은 백그라운드에서 로드
-                    this.fetchProfile(session.user.id).then(profile => {
+                    fetchProfile(session.user.id).then(profile => {
                         if (profile) {
                             this.props.dispatchSetUser(session.user, profile);
                         }
@@ -71,25 +72,6 @@ const AuthManagerHOC = function (WrappedComponent) {
             } catch (error) {
                 console.error('Session check error:', error);
                 this.props.dispatchSetUser(null, null);
-            }
-        }
-
-        async fetchProfile (userId) {
-            try {
-                const {data, error} = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-
-                if (error) {
-                    console.error('Profile fetch error:', error);
-                    return null;
-                }
-                return data;
-            } catch (error) {
-                console.error('Profile fetch error:', error);
-                return null;
             }
         }
 

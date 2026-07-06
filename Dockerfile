@@ -22,6 +22,11 @@ RUN rm -f package-lock.json && yarn add react@16.14.0 react-dom@16.14.0 --ignore
 RUN cp /app/patches/scratch-vm/blocks/*.js node_modules/scratch-vm/src/blocks/ && \
     cp /app/patches/scratch-vm/engine/*.js node_modules/scratch-vm/src/engine/
 
+# Allowed parent origins for the embedded editor (mission platform).
+# Set as a Railway service variable so it's passed as a build arg.
+ARG MISSION_PLATFORM_ORIGINS
+ENV MISSION_PLATFORM_ORIGINS=$MISSION_PLATFORM_ORIGINS
+
 # Build after patches are applied
 RUN yarn build
 

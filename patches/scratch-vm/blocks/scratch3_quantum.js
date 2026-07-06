@@ -145,6 +145,14 @@ class Scratch3QuantumBlocks {
                     globalCircuit.result = data.result_text || data.result;
                     globalCircuit.counts = data.counts || {};
                     globalCircuit.shotsDetail = data.shots_detail || [];
+                    // Notify listeners (e.g. the mission platform embed
+                    // bridge) that a run finished with fresh results.
+                    this.runtime.emit('QUANTUM_RUN_COMPLETED', {
+                        blocks: JSON.parse(JSON.stringify(globalCircuit.blocks)),
+                        counts: globalCircuit.counts,
+                        shotsDetail: globalCircuit.shotsDetail,
+                        resultText: globalCircuit.result
+                    });
                 } else {
                     globalCircuit.result = `Error: ${data.error}`;
                     globalCircuit.counts = {};

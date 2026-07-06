@@ -90,6 +90,7 @@ const GUIComponent = props => {
         enableCommunity,
         intl,
         isCreating,
+        isEmbedded,
         isFullScreen,
         isPlayerOnly,
         isRtl,
@@ -236,7 +237,7 @@ const GUIComponent = props => {
                         onRequestClose={onRequestCloseBackdropLibrary}
                     />
                 ) : null}
-                <MenuBar
+                {isEmbedded ? null : <MenuBar
                     accountNavOpen={accountNavOpen}
                     authorId={authorId}
                     authorThumbnailUrl={authorThumbnailUrl}
@@ -269,8 +270,12 @@ const GUIComponent = props => {
                     onShare={onShare}
                     onStartSelectingFileUpload={onStartSelectingFileUpload}
                     onToggleLoginOpen={onToggleLoginOpen}
-                />
-                <Box className={styles.bodyWrapper}>
+                />}
+                <Box
+                    className={classNames(styles.bodyWrapper, {
+                        [styles.bodyWrapperEmbedded]: isEmbedded
+                    })}
+                >
                     <Box className={styles.flexWrapper}>
                         <Box className={styles.editorWrapper}>
                             <Tabs
@@ -428,6 +433,7 @@ GUIComponent.propTypes = {
     intl: intlShape.isRequired,
     isCreating: PropTypes.bool,
     isFullScreen: PropTypes.bool,
+    isEmbedded: PropTypes.bool,
     isPlayerOnly: PropTypes.bool,
     isRtl: PropTypes.bool,
     isShared: PropTypes.bool,

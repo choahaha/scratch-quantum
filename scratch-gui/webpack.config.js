@@ -53,7 +53,10 @@ const baseConfig = new ScratchWebpackConfigBuilder(
         'process.env.DEBUG': Boolean(process.env.DEBUG),
         'process.env.GA_ID': `"${process.env.GA_ID || 'UA-000000-01'}"`,
         'process.env.GTM_ENV_AUTH': `"${process.env.GTM_ENV_AUTH || ''}"`,
-        'process.env.GTM_ID': process.env.GTM_ID ? `"${process.env.GTM_ID}"` : null
+        'process.env.GTM_ID': process.env.GTM_ID ? `"${process.env.GTM_ID}"` : null,
+        // Allowed parent origins for the embedded editor (mission platform)
+        'process.env.MISSION_PLATFORM_ORIGINS':
+            `"${process.env.MISSION_PLATFORM_ORIGINS || 'http://localhost:5173'}"`
     }))
     .addPlugin(new CopyWebpackPlugin({
         patterns: [
@@ -115,7 +118,8 @@ const buildConfig = baseConfig.clone()
             gui: './src/playground/index.jsx',
             blocksonly: './src/playground/blocks-only.jsx',
             compatibilitytesting: './src/playground/compatibility-testing.jsx',
-            player: './src/playground/player.jsx'
+            player: './src/playground/player.jsx',
+            embed: './src/playground/embed.jsx'
         },
         output: {
             path: path.resolve(__dirname, 'build')
@@ -147,6 +151,13 @@ const buildConfig = baseConfig.clone()
         filename: 'player.html',
         template: 'src/playground/index.ejs',
         title: 'Scratch 3.0 GUI: Player Example'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['embed'],
+        filename: 'embed.html',
+        template: 'src/playground/index.ejs',
+        title: 'Scratch Quantum: Mission Editor'
     }))
     .addPlugin(new CopyWebpackPlugin({
         patterns: [
