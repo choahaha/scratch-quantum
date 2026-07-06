@@ -13,8 +13,10 @@ const EMBED_ORIGIN = new URL(import.meta.env.VITE_SCRATCH_EMBED_URL).origin;
 
 export const embedUrl = () => {
     const base = import.meta.env.VITE_SCRATCH_EMBED_URL.replace(/\/$/, '');
-    // The editor defaults to English; force Korean for mission students.
-    return `${base}/embed.html?locale=ko`;
+    // locale=ko: the editor defaults to English; force Korean for students.
+    // v=2: cache-buster — browsers permanently cached a broken 301 for the
+    // bare /embed.html?locale=ko URL served before the serve.json fix.
+    return `${base}/embed.html?locale=ko&v=2`;
 };
 
 /**
