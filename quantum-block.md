@@ -16,6 +16,9 @@ Scratch Quantum 프로젝트에서 사용되는 양자 컴퓨팅 블록들의 �
 | measure all | `quantum_measureAll` | Statement |
 | run quantum circuit | `quantum_run` | Statement |
 | quantum measurement result | `quantum_getResult` | Reporter |
+| get result data | `quantum_getResultData` | Reporter |
+| shot result | `quantum_getShotResult` | Reporter |
+| qubit of shot | `quantum_getQubitOfShot` | Reporter |
 
 ---
 
@@ -264,6 +267,50 @@ for state, count in sorted(counts.items(), key=lambda x: -x[1])[:5]:
 
 ---
 
+### 11. shot result (shot별 측정 결과)
+
+**Scratch 블록:**
+```
+shot result [INDEX]
+```
+
+**기능:**
+- N번째 shot의 전체 비트열을 반환합니다.
+- 1-based 인덱스 (Scratch 스타일)
+- 1큐빗: "0" 또는 "1", 2큐빗: "00", "01", "10", "11"
+
+**Python (Qiskit) 대응:**
+```python
+job = simulator.run(qc, shots=100, memory=True)
+result = job.result()
+shots_detail = result.get_memory()
+print(shots_detail[0])  # 첫 번째 shot 결과, e.g. "01"
+```
+
+---
+
+### 12. qubit of shot (개별 큐빗 결과)
+
+**Scratch 블록:**
+```
+qubit [QUBIT] of shot [SHOT]
+```
+
+**기능:**
+- N번째 shot에서 특정 큐빗의 측정 결과(0 또는 1)를 반환합니다.
+- Qiskit 비트 순서: 오른쪽이 qubit 0 (예: "01" → qubit 0 = 1, qubit 1 = 0)
+- 다중 큐빗 회로에서 개별 큐빗 결과를 추출할 때 사용
+
+**Python (Qiskit) 대응:**
+```python
+shots_detail = result.get_memory()
+bit_string = shots_detail[0]  # e.g. "01"
+qubit_0 = bit_string[-1]      # "1" (오른쪽이 qubit 0)
+qubit_1 = bit_string[-2]      # "0"
+```
+
+---
+
 ## 전체 예제: Bell State 생성
 
 ### Scratch 블록 순서:
@@ -315,7 +362,7 @@ Bell 상태에서는 두 큐비트가 얽혀서 항상 같은 값(00 또는 11)�
 | 구성요소 | 파일 경로 |
 |---------|----------|
 | 블록 UI 정의 | `scratch-blocks/blocks_vertical/quantum.js` |
-| 런타임 구현 | `scratch-gui/node_modules/scratch-vm/src/blocks/scratch3_quantum.js` |
+| 런타임 구현 (패치) | `patches/scratch-vm/blocks/scratch3_quantum.js` |
 | 툴박스 정의 | `scratch-gui/src/lib/make-toolbox-xml.js` (lines 740-827) |
 | 메시지 문자열 | `scratch-blocks/msg/messages.js` (lines 295-305) |
 | 블록 색상 | `scratch-blocks/core/colours.js` (lines 96-101) |
