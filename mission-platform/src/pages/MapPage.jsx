@@ -38,7 +38,7 @@ const MapPage = () => {
         load();
     }, [session?.user?.id]);
 
-    if (error) return <div className="page-loading">오류: {error}</div>;
+    if (error) return <div className="page-loading">Error: {error}</div>;
 
     return (
         <div className="odyssey-page">
@@ -47,17 +47,17 @@ const MapPage = () => {
                 <div className="odyssey-logo">Qubit123</div>
                 <div className="odyssey-user">
                     {profile?.role === 'admin' && (
-                        <Link className="odyssey-teacher-link" to="/teacher">교사 대시보드</Link>
+                        <Link className="odyssey-teacher-link" to="/teacher">Teacher Dashboard</Link>
                     )}
                     <span className="odyssey-chip">
                         {profile?.display_name || profile?.username || '...'}
                     </span>
-                    <button className="odyssey-logout" onClick={logout}>로그아웃</button>
+                    <button className="odyssey-logout" onClick={logout}>Log out</button>
                 </div>
             </header>
             {chapters
                 ? <OdysseyMap chapters={chapters} />
-                : <div className="odyssey-loading">우주 항해 준비 중...</div>}
+                : <div className="odyssey-loading">Preparing for launch...</div>}
         </div>
     );
 };

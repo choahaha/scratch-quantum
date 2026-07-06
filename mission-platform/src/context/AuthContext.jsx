@@ -55,7 +55,7 @@ export const AuthProvider = ({children}) => {
         if (error) {
             throw new Error(
                 error.message === 'Invalid login credentials'
-                    ? '아이디 또는 비밀번호가 올바르지 않습니다.'
+                    ? 'Incorrect username or password.'
                     : error.message
             );
         }
@@ -69,11 +69,11 @@ export const AuthProvider = ({children}) => {
         });
         if (error) {
             if (error.message.includes('already registered')) {
-                throw new Error('이미 사용 중인 아이디입니다.');
+                throw new Error('That username is already taken.');
             }
             throw new Error(error.message);
         }
-        if (!data.user) throw new Error('회원가입에 실패했습니다.');
+        if (!data.user) throw new Error('Sign up failed.');
 
         const {error: profileError} = await supabase.from('users').insert({
             id: data.user.id,
@@ -82,7 +82,7 @@ export const AuthProvider = ({children}) => {
             role: 'student'
         });
         if (profileError && profileError.code !== '23505') {
-            throw new Error('프로필 생성에 실패했습니다.');
+            throw new Error('Failed to create your profile.');
         }
         return data;
     };

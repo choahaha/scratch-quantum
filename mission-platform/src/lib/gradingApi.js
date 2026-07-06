@@ -25,9 +25,9 @@ export const submitMission = async (accessToken, missionId, blocks, projectJson)
     if (!response.ok) {
         const detail = await response.json().catch(() => ({}));
         if (response.status === 403) {
-            throw new Error('이전 미션을 먼저 통과해야 해요.');
+            throw new Error('You need to pass the previous mission first.');
         }
-        throw new Error(detail.detail || `채점 요청 실패 (${response.status})`);
+        throw new Error(detail.detail || `Grading request failed (${response.status})`);
     }
     return response.json();
 };

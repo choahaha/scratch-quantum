@@ -67,10 +67,10 @@ const MissionPage = () => {
         try {
             const snapshot = await bridgeRef.current.requestSubmit();
             if (!snapshot.blocks || snapshot.blocks.length === 0) {
-                throw new Error('먼저 양자 회로를 만들고 실행해 보세요!');
+                throw new Error('Build and run a quantum circuit first!');
             }
             const {data: {session}} = await supabase.auth.getSession();
-            if (!session) throw new Error('로그인이 만료되었습니다.');
+            if (!session) throw new Error('Your session has expired. Please log in again.');
             const result = await submitMission(
                 session.access_token,
                 mission.id,
@@ -85,13 +85,13 @@ const MissionPage = () => {
         }
     };
 
-    if (error && !mission) return <div className="page-loading">오류: {error}</div>;
-    if (!mission) return <div className="page-loading">로딩 중...</div>;
+    if (error && !mission) return <div className="page-loading">Error: {error}</div>;
+    if (!mission) return <div className="page-loading">Loading...</div>;
 
     return (
         <div className="mission-page">
             <aside className="mission-panel">
-                <Link to="/" className="back-link">← 미션 맵으로</Link>
+                <Link to="/" className="back-link">← Mission Map</Link>
                 <h2>{mission.title}</h2>
                 <div className="mission-description">
                     {mission.description.split('\n').map((line, i) => {
@@ -106,7 +106,7 @@ const MissionPage = () => {
                 <div className="mission-actions">
                     {lastRun && (
                         <p className="run-preview">
-                            {'최근 실행: '}
+                            {'Latest run: '}
                             {Object.entries(lastRun.counts || {})
                                 .map(([state, count]) => `|${state}⟩ ${count}`)
                                 .join(', ') || lastRun.resultText}
@@ -116,22 +116,22 @@ const MissionPage = () => {
                         className="grade-submit-button"
                         disabled={!lastRun || submitting}
                         onClick={handleSubmit}
-                        title={lastRun ? '' : '회로를 실행하면 제출할 수 있어요'}
+                        title={lastRun ? '' : 'Run your circuit to enable submission'}
                     >
-                        {submitting ? '채점 중...' : '제출하기'}
+                        {submitting ? 'Grading...' : 'Submit'}
                     </button>
                     {!lastRun && !gradeResult && (
-                        <p className="hint">에디터에서 양자 회로를 만들어 실행하면 제출 버튼이 켜져요.</p>
+                        <p className="hint">Build and run a quantum circuit in the editor to enable the Submit button.</p>
                     )}
                     {error && <p className="form-error">{error}</p>}
                     <GradeFeedback result={gradeResult} />
                     {gradeResult?.passed && (
                         nextMission ? (
                             <Link className="next-link" to={`/missions/${nextMission.id}`}>
-                                다음 미션: {nextMission.title} →
+                                Next mission: {nextMission.title} →
                             </Link>
                         ) : (
-                            <p className="next-link">🏆 모든 미션을 완료했어요!</p>
+                            <p className="next-link">🏆 You completed every mission!</p>
                         )
                     )}
                 </div>
@@ -141,7 +141,7 @@ const MissionPage = () => {
                     mission={mission}
                     bridgeRef={bridgeRef}
                     onQuantumRun={payload => setLastRun(payload)}
-                    onBridgeError={message => setError(message || '에디터 연결 오류')}
+                    onBridgeError={message => setError(message || 'Editor connection error')}
                 />
             </main>
         </div>

@@ -14,7 +14,7 @@ const OdysseyMap = ({chapters}) => (
                 <section key={chapter.id} className="va">
                     <div className="va-head">
                         <h2>{`Chapter ${chapter.order_index}. ${chapter.title}`}</h2>
-                        <div className="va-sub">미션을 하나씩 클리어하며 양자 우주를 항해하세요</div>
+                        <div className="va-sub">Clear missions one by one and sail the quantum universe</div>
                         <div className="va-progress">
                             <i style={{width: `${(passed / chapter.missions.length) * 100}%`}} />
                         </div>

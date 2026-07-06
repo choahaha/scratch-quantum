@@ -13,10 +13,10 @@ const EMBED_ORIGIN = new URL(import.meta.env.VITE_SCRATCH_EMBED_URL).origin;
 
 export const embedUrl = () => {
     const base = import.meta.env.VITE_SCRATCH_EMBED_URL.replace(/\/$/, '');
-    // locale=ko: the editor defaults to English; force Korean for students.
     // v=2: cache-buster — browsers permanently cached a broken 301 for the
-    // bare /embed.html?locale=ko URL served before the serve.json fix.
-    return `${base}/embed.html?locale=ko&v=2`;
+    // original embed URL served before the serve.json fix.
+    // (The editor defaults to English; add ?locale=ko here to force Korean.)
+    return `${base}/embed.html?v=2`;
 };
 
 /**
@@ -84,7 +84,7 @@ export const attachBridge = (iframe, handlers = {}) => {
             const requestId = crypto.randomUUID();
             const timer = setTimeout(() => {
                 pending.delete(requestId);
-                reject(new Error('제출 응답이 없습니다. 에디터가 로드되었는지 확인해 주세요.'));
+                reject(new Error('No response from the editor. Make sure it has finished loading.'));
             }, SUBMIT_TIMEOUT_MS);
             pending.set(requestId, {resolve, timer});
             post({type: 'SUBMIT_REQUEST', requestId});
