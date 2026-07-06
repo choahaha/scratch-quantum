@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {Link, Navigate} from 'react-router-dom';
 import {supabase} from '../lib/supabaseClient';
 import {useAuth} from '../context/AuthContext';
+import '../components/map-themes/themes.css';
 
 const formatTime = iso => {
     if (!iso) return '';
@@ -9,6 +10,18 @@ const formatTime = iso => {
         month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
     });
 };
+
+/** 시작~통과 소요 시간. 시작 시각이 없거나 이상하면 null. */
+const formatDuration = (start, end) => {
+    if (!start || !end) return null;
+    const mins = (new Date(end) - new Date(start)) / 60000;
+    if (mins < 0) return null;
+    if (mins < 1) return '1분 미만';
+    if (mins < 60) return `${Math.round(mins)}분`;
+    return `${Math.floor(mins / 60)}시간 ${Math.round(mins % 60)}분`;
+};
+
+const UNASSIGNED = '미배정';
 
 /** 교사용 진행 현황: 학생 × 미션 매트릭스 */
 const TeacherPage = () => {
@@ -54,7 +67,6 @@ const TeacherPage = () => {
     if (error) return <div className="page-loading">오류: {error}</div>;
     if (!profile || !students || !missions) return <div className="page-loading">로딩 중...</div>;
 
-    const UNASSIGNED = '미배정';
     const classNames = [...new Set(students.map(s => s.class_name || UNASSIGNED))]
         .sort((a, b) => (a === UNASSIGNED) - (b === UNASSIGNED) || a.localeCompare(b, 'ko'));
     const visibleStudents = classFilter === 'all'
@@ -65,11 +77,17 @@ const TeacherPage = () => {
     const studentIds = new Set(visibleStudents.map(s => s.id));
     const passedTotal = progress.filter(row =>
         row.status === 'passed' && studentIds.has(row.user_id)).length;
+    const passRate = visibleStudents.length && missions.length
+        ? Math.round((passedTotal / (visibleStudents.length * missions.length)) * 100)
+        : 0;
 
     const cellFor = (student, mission) => {
         const row = progressMap.get(`${student.id}:${mission.id}`);
-        if (!row) return <td key={mission.id} className="t-cell t-none">—</td>;
+        if (!row) {
+            return <td key={mission.id} className="t-cell t-none"><i className="t-dot" /></td>;
+        }
         const passed = row.status === 'passed';
+        const duration = passed ? formatDuration(row.started_at, row.passed_at) : null;
         return (
             <td
                 key={mission.id}
@@ -77,26 +95,43 @@ const TeacherPage = () => {
                 title={`시도 ${row.attempts}회 · ${formatTime(row.updated_at)}`}
                 onClick={() => setDetail({student, mission, row})}
             >
-                {passed ? '✅' : '🔄'}
-                <small>{row.attempts > 0 ? `${row.attempts}회` : ''}</small>
+                <i className="t-dot" />
+                <small>
+                    {`${row.attempts}회`}
+                    {duration && <><br />{duration}</>}
+                </small>
             </td>
         );
     };
 
     return (
         <div className="teacher-page">
+            <div className="odyssey-stars" />
             <header className="teacher-header">
                 <div>
+                    <div className="teacher-brand">Qubit123</div>
                     <h1>교사 대시보드</h1>
-                    <p className="teacher-sub">
-                        {`학생 ${visibleStudents.length}명 · 미션 통과 ${passedTotal}건 · 실시간 갱신`}
-                    </p>
                 </div>
                 <div className="teacher-actions">
-                    <button className="link-button" onClick={load}>새로고침</button>
-                    <Link className="link-button" to="/">미션 맵으로 →</Link>
+                    <button className="t-link" onClick={load}>새로고침</button>
+                    <Link className="t-link" to="/">미션 맵으로 →</Link>
                 </div>
             </header>
+
+            <div className="teacher-stats">
+                <div className="t-stat">
+                    <b>{visibleStudents.length}</b><span>학생</span>
+                </div>
+                <div className="t-stat">
+                    <b>{passedTotal}</b><span>미션 통과</span>
+                </div>
+                <div className="t-stat">
+                    <b>{`${passRate}%`}</b><span>진행률</span>
+                </div>
+                <div className="t-stat t-stat-live">
+                    <b>●</b><span>실시간 갱신 중</span>
+                </div>
+            </div>
 
             <div className="class-filter">
                 <button
@@ -136,7 +171,12 @@ const TeacherPage = () => {
                                         {student.display_name || student.username}
                                     </td>
                                     {missions.map(m => cellFor(student, m))}
-                                    <td className="t-ratio">{`${passedCount}/${missions.length}`}</td>
+                                    <td className="t-ratio">
+                                        <div className="t-bar">
+                                            <i style={{width: `${(passedCount / missions.length) * 100}%`}} />
+                                        </div>
+                                        {`${passedCount}/${missions.length}`}
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -157,6 +197,12 @@ const TeacherPage = () => {
                             {`상태: ${detail.row.status === 'passed' ? '통과' : '시도 중'} · 시도 ${detail.row.attempts}회`}
                             {detail.row.passed_at && ` · 통과 ${formatTime(detail.row.passed_at)}`}
                         </p>
+                        {detail.row.status === 'passed' && (
+                            <p className="t-modal-meta">
+                                {'소요 시간: '}
+                                {formatDuration(detail.row.started_at, detail.row.passed_at) || '기록 없음'}
+                            </p>
+                        )}
                         {detail.row.last_result?.checks ? (
                             <ul className="t-checks">
                                 {detail.row.last_result.checks.map(check => (

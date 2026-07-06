@@ -486,41 +486,146 @@ button {
     border: none;
 }
 
-/* ---------- Teacher dashboard ---------- */
+/* ---------- Teacher dashboard (odyssey dark) ---------- */
 
 .teacher-page {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 60% 40% at 75% 8%, rgba(79, 70, 229, 0.35), transparent 60%),
+        radial-gradient(ellipse 50% 45% at 10% 92%, rgba(255, 64, 129, 0.2), transparent 65%),
+        #0d0a2e;
+    color: #e6e8fb;
+    padding: 26px 32px 60px;
+}
+
+.teacher-page > * {
+    position: relative;
+    z-index: 2;
     max-width: 1100px;
-    margin: 0 auto;
-    padding: 28px 20px 60px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.teacher-page > .odyssey-stars {
+    max-width: none;
+    z-index: 0;
+}
+
+.teacher-brand {
+    font-weight: 600;
+    color: #9aa0d0;
+    font-size: 13px;
+    letter-spacing: 0.04em;
 }
 
 .teacher-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .teacher-header h1 {
-    font-size: 22px;
-    margin: 0;
-}
-
-.teacher-sub {
-    color: #778;
-    font-size: 13px;
-    margin: 6px 0 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin: 4px 0 0;
 }
 
 .teacher-actions {
     display: flex;
+    gap: 16px;
+}
+
+.t-link {
+    background: none;
+    border: none;
+    color: #a5b4fc;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.t-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.teacher-stats {
+    display: flex;
     gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.t-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    background: rgba(30, 32, 80, 0.55);
+    border: 1px solid rgba(140, 147, 205, 0.22);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    padding: 12px 18px;
+}
+
+.t-stat b {
+    font-size: 20px;
+    color: #fff;
+}
+
+.t-stat span {
+    font-size: 12.5px;
+    color: #9aa0d0;
+}
+
+.t-stat-live b {
+    color: #34d399;
+    font-size: 11px;
+    animation: t-live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes t-live-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
+
+.class-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.class-filter button {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 99px;
+    border: 1px solid rgba(165, 180, 252, 0.35);
+    background: transparent;
+    color: #b9bfe6;
+    cursor: pointer;
+}
+
+.class-filter button:hover {
+    border-color: #a5b4fc;
+    color: #fff;
+}
+
+.class-filter button.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
 }
 
 .teacher-table-wrap {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 6px 22px rgba(30, 27, 75, 0.08);
+    background: rgba(30, 32, 80, 0.55);
+    border: 1px solid rgba(140, 147, 205, 0.22);
+    backdrop-filter: blur(6px);
+    border-radius: 16px;
     overflow-x: auto;
 }
 
@@ -532,69 +637,107 @@ button {
 
 .teacher-table th {
     text-align: center;
-    padding: 12px 10px;
-    background: #f4f6fc;
-    color: #445;
+    padding: 14px 10px;
+    color: #9aa0d0;
     font-size: 12.5px;
     white-space: nowrap;
+    border-bottom: 1px solid rgba(140, 147, 205, 0.25);
 }
 
 .teacher-table th small {
     display: block;
     font-weight: 500;
-    color: #99a;
+    color: #6d739f;
     max-width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 2px auto 0;
+    margin: 3px auto 0;
 }
 
 .teacher-table td {
-    border-top: 1px solid #eef0f7;
+    border-top: 1px solid rgba(140, 147, 205, 0.12);
     padding: 10px;
     text-align: center;
+}
+
+.teacher-table tbody tr:hover {
+    background: rgba(79, 70, 229, 0.1);
 }
 
 .t-student {
     text-align: left !important;
     font-weight: 700;
-    color: #334;
-    min-width: 120px;
+    color: #fff;
+    min-width: 130px;
+    padding-left: 18px !important;
 }
 
 .t-cell {
     cursor: pointer;
 }
 
+.t-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+.t-none .t-dot {
+    background: rgba(140, 147, 205, 0.18);
+    border: 1px solid rgba(140, 147, 205, 0.3);
+}
+
+.t-pass .t-dot {
+    background: radial-gradient(circle at 30% 30%, #6ee7b7, #059669);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.7);
+}
+
+.t-try .t-dot {
+    background: radial-gradient(circle at 30% 30%, #ff79a8, #e0336d);
+    box-shadow: 0 0 10px rgba(255, 64, 129, 0.7);
+}
+
 .t-cell small {
     display: block;
     font-size: 10.5px;
-    color: #99a;
-}
-
-.t-cell.t-pass:hover,
-.t-cell.t-try:hover {
-    background: #f0f3fb;
-}
-
-.t-none {
-    color: #ccd;
+    color: #9aa0d0;
+    line-height: 1.35;
+    margin-top: 3px;
 }
 
 .t-ratio {
     font-weight: 700;
-    color: #4f46e5;
+    color: #a5b4fc;
+    font-size: 12.5px;
+    min-width: 86px;
+}
+
+.t-bar {
+    width: 64px;
+    height: 5px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 0 auto 5px;
+    overflow: hidden;
+}
+
+.t-bar i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #34d399, #4f46e5);
 }
 
 .t-empty {
-    color: #99a;
-    padding: 28px !important;
+    color: #6d739f;
+    padding: 30px !important;
 }
 
 .t-modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(20, 22, 40, 0.5);
+    background: rgba(8, 7, 26, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -602,20 +745,23 @@ button {
 }
 
 .t-modal {
-    background: #fff;
-    border-radius: 14px;
+    background: #171a45;
+    border: 1px solid rgba(140, 147, 205, 0.3);
+    border-radius: 16px;
     padding: 22px 24px;
-    width: 420px;
+    width: 440px;
     max-width: 92vw;
+    color: #e6e8fb;
 }
 
 .t-modal h3 {
     margin: 0 0 8px;
     font-size: 16px;
+    color: #fff;
 }
 
 .t-modal-meta {
-    color: #667;
+    color: #9aa0d0;
     font-size: 13px;
     margin: 6px 0;
 }
@@ -624,13 +770,21 @@ button {
     list-style: none;
     padding: 10px 12px;
     margin: 10px 0;
-    background: #f7f8fd;
+    background: rgba(30, 32, 80, 0.7);
     border-radius: 10px;
     font-size: 13px;
 }
 
 .t-checks li {
     margin: 4px 0;
+}
+
+.t-checks .check-pass {
+    color: #6ee7b7;
+}
+
+.t-checks .check-fail {
+    color: #ff9dbd;
 }
 
 .t-close {
@@ -643,32 +797,4 @@ button {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-}
-
-.class-filter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 14px;
-}
-
-.class-filter button {
-    font-size: 13px;
-    font-weight: 600;
-    padding: 7px 14px;
-    border-radius: 99px;
-    border: 1px solid #d5dae6;
-    background: #fff;
-    color: #556;
-    cursor: pointer;
-}
-
-.class-filter button:hover {
-    border-color: #4f46e5;
-}
-
-.class-filter button.active {
-    background: #4f46e5;
-    border-color: #4f46e5;
-    color: #fff;
 }
