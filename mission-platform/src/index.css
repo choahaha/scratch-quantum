@@ -1,0 +1,487 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: #f5f7fc;
+    color: #1f2430;
+}
+
+button {
+    font-family: inherit;
+}
+
+.page-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 18px;
+    color: #667;
+}
+
+/* ---------- Login (mirrors scratch-gui login-page.css) ---------- */
+
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f3f4f6;
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.brand-side {
+    width: 34%;
+    min-width: 280px;
+    background: #1e1b4b;
+    color: #c7d2fe;
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-logo {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+}
+
+.brand-mid {
+    margin-top: auto;
+}
+
+.brand-headline {
+    color: #fff;
+    font-size: 1.9rem;
+    line-height: 1.25;
+    font-weight: 600;
+    margin: 0;
+}
+
+.brand-sub {
+    margin-top: 0.9rem;
+    font-size: 1rem;
+    color: #a5b4fc;
+}
+
+.brand-art {
+    margin-top: 1.8rem;
+}
+
+.form-side {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+}
+
+.form-inner {
+    width: 100%;
+    max-width: 360px;
+}
+
+.login-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.3rem;
+}
+
+.login-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin: 0 0 1.8rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+}
+
+.input-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.text-input {
+    padding: 0.7rem 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.text-input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.text-input::placeholder {
+    color: #9ca3af;
+}
+
+.form-error-box {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 0.7rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 1.1rem;
+}
+
+.submit-button {
+    padding: 0.8rem;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background: #4338ca;
+}
+
+.submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.register-section {
+    margin-top: 1.3rem;
+    font-size: 0.88rem;
+    color: #6b7280;
+}
+
+.register-link {
+    background: none;
+    border: none;
+    color: #4f46e5;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.88rem;
+    padding: 0;
+}
+
+.register-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+    .brand-side {
+        display: none;
+    }
+}
+
+/* ---------- Map ---------- */
+
+.map-page {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+}
+
+.map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.map-header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.map-header-user {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #556;
+    font-size: 14px;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: #4f46e5;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}
+
+.chapter-section {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-top: 18px;
+    box-shadow: 0 4px 14px rgba(30, 40, 90, 0.06);
+}
+
+.chapter-section h2 {
+    margin: 0 0 18px;
+    font-size: 18px;
+}
+
+.mission-track {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.mission-track-item {
+    display: flex;
+    align-items: center;
+}
+
+.track-connector {
+    width: 28px;
+    height: 4px;
+    border-radius: 2px;
+}
+
+.connector-open {
+    background: #7bc97f;
+}
+
+.connector-locked {
+    background: #d8dce8;
+}
+
+.mission-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 108px;
+    height: 96px;
+    border-radius: 14px;
+    text-decoration: none;
+    text-align: center;
+    padding: 8px;
+    border: 2px solid transparent;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.mission-node .mission-icon {
+    font-size: 24px;
+}
+
+.mission-node .mission-title {
+    font-size: 12.5px;
+    line-height: 1.25;
+    color: #334;
+}
+
+.mission-node.available {
+    background: #fff7e0;
+    border-color: #ffc94d;
+}
+
+.mission-node.available:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(255, 171, 25, 0.25);
+}
+
+.mission-node.passed {
+    background: #eaf8ec;
+    border-color: #7bc97f;
+}
+
+.mission-node.locked {
+    background: #f0f2f8;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ---------- Mission play ---------- */
+
+.mission-page {
+    display: flex;
+    height: 100vh;
+}
+
+.mission-panel {
+    width: 340px;
+    flex-shrink: 0;
+    background: white;
+    border-right: 1px solid #e2e6f0;
+    padding: 18px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.back-link {
+    color: #4f46e5;
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.mission-panel h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+}
+
+.mission-description {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #333c4d;
+}
+
+.mission-description h3 {
+    font-size: 15px;
+    margin: 14px 0 6px;
+}
+
+.mission-description h4 {
+    font-size: 14px;
+    margin: 12px 0 4px;
+}
+
+.mission-description p {
+    margin: 6px 0;
+}
+
+.step-line {
+    padding-left: 6px;
+}
+
+.mission-actions {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.run-preview {
+    font-size: 13px;
+    color: #445;
+    background: #f0f3fb;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.grade-submit-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #ffab19;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.grade-submit-button:disabled {
+    background: #d8dce8;
+    cursor: default;
+}
+
+.hint {
+    font-size: 12.5px;
+    color: #889;
+    margin: 8px 0 0;
+}
+
+.grade-feedback {
+    margin-top: 12px;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+}
+
+.grade-passed {
+    background: #eaf8ec;
+    border: 1px solid #7bc97f;
+}
+
+.grade-failed {
+    background: #fdeef0;
+    border: 1px solid #f0a4ad;
+}
+
+.grade-feedback h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+
+.grade-feedback ul {
+    margin: 0;
+    padding-left: 4px;
+    list-style: none;
+}
+
+.grade-feedback li {
+    margin: 3px 0;
+}
+
+.check-pass {
+    color: #2c7a37;
+}
+
+.check-fail {
+    color: #b8323f;
+}
+
+.grade-counts {
+    margin: 8px 0 0;
+    color: #445;
+    font-size: 12.5px;
+}
+
+.next-link {
+    display: block;
+    margin-top: 12px;
+    font-weight: 700;
+    color: #2c7a37;
+    text-decoration: none;
+    font-size: 14.5px;
+}
+
+.mission-editor {
+    flex-grow: 1;
+    position: relative;
+}
+
+.scratch-embed {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}

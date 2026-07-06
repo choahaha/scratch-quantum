@@ -1,0 +1,225 @@
+/* Mission map theme A "퀀텀 오디세이" (va- prefix).
+   Design reference (A + D alternatives): public/design-preview.html */
+
+/* Full-bleed space page: the page itself is the universe, the header and
+   chapters live inside it (no floating dark card on a light page). */
+.odyssey-page {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 60% 40% at 75% 8%, rgba(79, 70, 229, 0.35), transparent 60%),
+        radial-gradient(ellipse 50% 45% at 10% 92%, rgba(255, 64, 129, 0.2), transparent 65%),
+        #0d0a2e;
+    color: #e6e8fb;
+}
+
+.odyssey-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 22px 32px 0;
+}
+
+.odyssey-logo {
+    font-weight: 600;
+    color: #fff;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.odyssey-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12.5px;
+    color: #b9bfe6;
+}
+
+.odyssey-chip {
+    border: 1px solid rgba(185, 191, 230, 0.35);
+    padding: 6px 14px;
+    border-radius: 99px;
+}
+
+.odyssey-logout {
+    background: none;
+    border: none;
+    color: #8f96c9;
+    font-size: 12.5px;
+    cursor: pointer;
+}
+
+.odyssey-logout:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.odyssey-chapters {
+    position: relative;
+    z-index: 2;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 12px 60px;
+}
+
+/* Chapter separator when several chapters stack */
+.va + .va {
+    border-top: 1px solid rgba(140, 147, 205, 0.18);
+    margin-top: 12px;
+}
+
+.odyssey-loading {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    color: #9aa0d0;
+    font-size: 15px;
+}
+
+/* ============ A. 퀀텀 오디세이 ============ */
+
+.va {
+    position: relative;
+    color: #e6e8fb;
+}
+
+.odyssey-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1.5px 1.5px at 12% 22%, #fff, transparent),
+        radial-gradient(1px 1px at 32% 68%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1.5px 1.5px at 51% 12%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 66% 42%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 84% 74%, #fff, transparent),
+        radial-gradient(1px 1px at 92% 28%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 22% 88%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.5px 1.5px at 44% 46%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 74% 90%, rgba(255, 255, 255, 0.7), transparent);
+}
+
+.va-head {
+    position: relative;
+    z-index: 2;
+    padding: 28px 32px 0;
+}
+
+.va-head h2 {
+    font-size: 24px;
+    color: #fff;
+    font-weight: 800;
+    margin: 0;
+}
+
+.va-sub {
+    color: #9aa0d0;
+    font-size: 13.5px;
+    margin-top: 6px;
+}
+
+.va-progress {
+    margin-top: 14px;
+    width: 260px;
+    height: 8px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.va-progress i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #34d399, #4f46e5);
+    transition: width 0.4s ease;
+}
+
+.va-map {
+    position: relative;
+    z-index: 2;
+    height: 380px;
+    margin-top: 8px;
+}
+
+.va-orbit {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.va-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 130px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.va-orb {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.va-node span {
+    font-size: 12.5px;
+    color: #c6cbee;
+    line-height: 1.3;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.va-passed .va-orb {
+    background: radial-gradient(circle at 30% 30%, #6ee7b7, #059669);
+    box-shadow: 0 0 22px rgba(52, 211, 153, 0.55), inset 0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+.va-current .va-orb {
+    width: 78px;
+    height: 78px;
+    font-size: 28px;
+    background: radial-gradient(circle at 30% 30%, #ff79a8, #e0336d);
+    animation: va-pulse 1.8s ease-in-out infinite;
+}
+
+.va-current span {
+    color: #ffd7e6;
+    font-weight: 700;
+}
+
+@keyframes va-pulse {
+    0%, 100% { box-shadow: 0 0 26px rgba(255, 64, 129, 0.6), 0 0 60px rgba(255, 64, 129, 0.25); }
+    50% { box-shadow: 0 0 42px rgba(255, 64, 129, 0.95), 0 0 110px rgba(255, 64, 129, 0.45); }
+}
+
+.va-locked .va-orb {
+    background: rgba(120, 126, 180, 0.16);
+    border: 1.5px solid rgba(140, 147, 205, 0.35);
+    color: rgba(198, 203, 238, 0.55);
+    font-size: 18px;
+    box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.4);
+}
+
+.va-locked span {
+    color: #6d739f;
+}

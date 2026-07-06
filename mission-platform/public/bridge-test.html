@@ -1,0 +1,33 @@
+<!-- Temporary dev harness for the scratch-quantum postMessage bridge.
+     Served from the mission-platform origin so the embed allowlists it.
+     Not linked from the app; safe to delete. -->
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><title>bridge test</title></head>
+<body>
+<iframe id="f" src="http://localhost:8601/embed.html" style="width:900px;height:500px"></iframe>
+<pre id="log"></pre>
+<script>
+window.__msgs = [];
+const EMBED_ORIGIN = 'http://localhost:8601';
+window.addEventListener('message', event => {
+    if (event.origin !== EMBED_ORIGIN) return;
+    const data = event.data;
+    if (!data || data.channel !== 'scratch-quantum') return;
+    window.__msgs.push(data);
+    document.getElementById('log').textContent = JSON.stringify(window.__msgs.map(m => m.type));
+    if (data.type === 'EMBED_READY') {
+        document.getElementById('f').contentWindow.postMessage({
+            channel: 'scratch-quantum', version: 1, type: 'MISSION_INIT',
+            payload: {accessToken: null, refreshToken: null, missionId: 1, starterProject: null}
+        }, EMBED_ORIGIN);
+    }
+    if (data.type === 'INIT_RESULT') {
+        document.getElementById('f').contentWindow.postMessage({
+            channel: 'scratch-quantum', version: 1, type: 'SUBMIT_REQUEST', requestId: 'test-123'
+        }, EMBED_ORIGIN);
+    }
+});
+</script>
+</body>
+</html>
