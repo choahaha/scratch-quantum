@@ -223,3 +223,17 @@
 .va-locked span {
     color: #6d739f;
 }
+
+.odyssey-teacher-link {
+    color: #a5b4fc;
+    font-size: 12.5px;
+    text-decoration: none;
+    border: 1px solid rgba(165, 180, 252, 0.4);
+    padding: 6px 14px;
+    border-radius: 99px;
+}
+
+.odyssey-teacher-link:hover {
+    color: #fff;
+    border-color: #a5b4fc;
+}

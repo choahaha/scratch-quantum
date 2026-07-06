@@ -485,3 +485,162 @@ button {
     height: 100%;
     border: none;
 }
+
+/* ---------- Teacher dashboard ---------- */
+
+.teacher-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+}
+
+.teacher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 18px;
+}
+
+.teacher-header h1 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.teacher-sub {
+    color: #778;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+
+.teacher-actions {
+    display: flex;
+    gap: 14px;
+}
+
+.teacher-table-wrap {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(30, 27, 75, 0.08);
+    overflow-x: auto;
+}
+
+.teacher-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+.teacher-table th {
+    text-align: center;
+    padding: 12px 10px;
+    background: #f4f6fc;
+    color: #445;
+    font-size: 12.5px;
+    white-space: nowrap;
+}
+
+.teacher-table th small {
+    display: block;
+    font-weight: 500;
+    color: #99a;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 2px auto 0;
+}
+
+.teacher-table td {
+    border-top: 1px solid #eef0f7;
+    padding: 10px;
+    text-align: center;
+}
+
+.t-student {
+    text-align: left !important;
+    font-weight: 700;
+    color: #334;
+    min-width: 120px;
+}
+
+.t-cell {
+    cursor: pointer;
+}
+
+.t-cell small {
+    display: block;
+    font-size: 10.5px;
+    color: #99a;
+}
+
+.t-cell.t-pass:hover,
+.t-cell.t-try:hover {
+    background: #f0f3fb;
+}
+
+.t-none {
+    color: #ccd;
+}
+
+.t-ratio {
+    font-weight: 700;
+    color: #4f46e5;
+}
+
+.t-empty {
+    color: #99a;
+    padding: 28px !important;
+}
+
+.t-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 22, 40, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.t-modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    width: 420px;
+    max-width: 92vw;
+}
+
+.t-modal h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.t-modal-meta {
+    color: #667;
+    font-size: 13px;
+    margin: 6px 0;
+}
+
+.t-checks {
+    list-style: none;
+    padding: 10px 12px;
+    margin: 10px 0;
+    background: #f7f8fd;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.t-checks li {
+    margin: 4px 0;
+}
+
+.t-close {
+    margin-top: 8px;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}

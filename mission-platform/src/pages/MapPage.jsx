@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 import {supabase} from '../lib/supabaseClient';
 import {computeUnlocks} from '../lib/progress';
 import {useAuth} from '../context/AuthContext';
@@ -41,6 +42,9 @@ const MapPage = () => {
             <header className="odyssey-header">
                 <div className="odyssey-logo">Qubit123</div>
                 <div className="odyssey-user">
+                    {profile?.role === 'admin' && (
+                        <Link className="odyssey-teacher-link" to="/teacher">교사 대시보드</Link>
+                    )}
                     <span className="odyssey-chip">
                         {profile?.display_name || profile?.username || '...'}
                     </span>

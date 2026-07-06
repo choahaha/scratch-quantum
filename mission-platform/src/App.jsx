@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import MapPage from './pages/MapPage';
 import MissionPage from './pages/MissionPage';
+import TeacherPage from './pages/TeacherPage';
 
 const App = () => (
     <AuthProvider>
@@ -17,6 +18,10 @@ const App = () => (
                 <Route
                     path="/missions/:missionId"
                     element={<ProtectedRoute><MissionPage /></ProtectedRoute>}
+                />
+                <Route
+                    path="/teacher"
+                    element={<ProtectedRoute><TeacherPage /></ProtectedRoute>}
                 />
             </Routes>
         </BrowserRouter>
