@@ -30,6 +30,11 @@ ENV MISSION_PLATFORM_ORIGINS=$MISSION_PLATFORM_ORIGINS
 # Build after patches are applied
 RUN yarn build
 
+# serve's default cleanUrls 301s /embed.html -> /embed, which then falls
+# into the SPA fallback (index.html with the login gate) instead of the
+# embed entry. Disable cleanUrls so real files are served as-is.
+RUN echo '{"cleanUrls": false}' > build/serve.json
+
 # Install serve to host static files
 RUN npm install -g serve
 
