@@ -336,7 +336,6 @@ button {
 }
 
 .mission-panel {
-    width: 340px;
     flex-shrink: 0;
     background: white;
     border-right: 1px solid #e2e6f0;
@@ -819,4 +818,29 @@ button {
     margin-top: 4px;
     color: #99a;
     font-size: 11.5px;
+}
+
+/* ---------- Mission panel resizer ---------- */
+
+.panel-resizer {
+    width: 6px;
+    flex-shrink: 0;
+    cursor: col-resize;
+    background: #e2e6f0;
+    transition: background 0.15s;
+}
+
+.panel-resizer:hover {
+    background: #4f46e5;
+}
+
+/* While dragging: keep the col-resize cursor everywhere, disable text
+   selection, and stop the iframe from swallowing mouse events. */
+.mission-page.resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.mission-page.resizing .scratch-embed {
+    pointer-events: none;
 }

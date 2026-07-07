@@ -1,10 +1,14 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {supabase} from '../lib/supabaseClient';
 import {computeUnlocks, findNextMission} from '../lib/progress';
 import {submitMission} from '../lib/gradingApi';
 import ScratchEmbed from '../components/ScratchEmbed';
 import GradeFeedback from '../components/GradeFeedback';
+
+const PANEL_WIDTH_KEY = 'sq-mission-panel-width';
+const PANEL_MIN = 220;
+const PANEL_MAX = 640;
 
 const MissionPage = () => {
     const {missionId} = useParams();
@@ -17,6 +21,32 @@ const MissionPage = () => {
     const [gradeResult, setGradeResult] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
+    const [panelWidth, setPanelWidth] = useState(() => {
+        const saved = Number(localStorage.getItem(PANEL_WIDTH_KEY));
+        return saved >= PANEL_MIN && saved <= PANEL_MAX ? saved : 340;
+    });
+    const [resizing, setResizing] = useState(false);
+
+    // Drag the divider to resize the mission panel. While dragging, the
+    // iframe must not receive mouse events or the drag would get stuck
+    // the moment the cursor crosses into it (handled via CSS .resizing).
+    const startResize = useCallback(event => {
+        event.preventDefault();
+        setResizing(true);
+        const onMove = e => {
+            const width = Math.min(PANEL_MAX, Math.max(PANEL_MIN, e.clientX));
+            setPanelWidth(width);
+        };
+        const onUp = e => {
+            const width = Math.min(PANEL_MAX, Math.max(PANEL_MIN, e.clientX));
+            localStorage.setItem(PANEL_WIDTH_KEY, String(width));
+            setResizing(false);
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mouseup', onUp);
+        };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+    }, []);
 
     useEffect(() => {
         const load = async () => {
@@ -89,8 +119,8 @@ const MissionPage = () => {
     if (!mission) return <div className="page-loading">Loading...</div>;
 
     return (
-        <div className="mission-page">
-            <aside className="mission-panel">
+        <div className={`mission-page${resizing ? ' resizing' : ''}`}>
+            <aside className="mission-panel" style={{width: panelWidth}}>
                 <Link to="/" className="back-link">← Mission Map</Link>
                 <h2>{mission.title}</h2>
                 <div className="mission-description">
@@ -136,6 +166,11 @@ const MissionPage = () => {
                     )}
                 </div>
             </aside>
+            <div
+                className="panel-resizer"
+                title="Drag to resize"
+                onMouseDown={startResize}
+            />
             <main className="mission-editor">
                 <ScratchEmbed
                     mission={mission}
