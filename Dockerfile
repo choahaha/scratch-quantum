@@ -18,9 +18,10 @@ RUN npm install --legacy-peer-deps --ignore-scripts
 WORKDIR /app/scratch-gui
 RUN rm -f package-lock.json && yarn add react@16.14.0 react-dom@16.14.0 --ignore-engines
 
-# Apply patches to scratch-vm (blocks and engine)
+# Apply patches to scratch-vm (blocks, engine, serialization)
 RUN cp /app/patches/scratch-vm/blocks/*.js node_modules/scratch-vm/src/blocks/ && \
-    cp /app/patches/scratch-vm/engine/*.js node_modules/scratch-vm/src/engine/
+    cp /app/patches/scratch-vm/engine/*.js node_modules/scratch-vm/src/engine/ && \
+    cp /app/patches/scratch-vm/serialization/*.js node_modules/scratch-vm/src/serialization/
 
 # Allowed parent origins for the embedded editor (mission platform).
 # Set as a Railway service variable so it's passed as a build arg.

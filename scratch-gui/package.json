@@ -13,7 +13,7 @@
   "scripts": {
     "build": "npm run clean && webpack",
     "clean": "rimraf ./build ./dist",
-    "copy:patches": "cp ../patches/scratch-vm/blocks/*.js node_modules/scratch-vm/src/blocks/ && cp ../patches/scratch-vm/engine/*.js node_modules/scratch-vm/src/engine/",
+    "copy:patches": "cp ../patches/scratch-vm/blocks/*.js node_modules/scratch-vm/src/blocks/ && cp ../patches/scratch-vm/engine/*.js node_modules/scratch-vm/src/engine/ && cp ../patches/scratch-vm/serialization/*.js node_modules/scratch-vm/src/serialization/",
     "deploy": "touch build/.nojekyll && gh-pages -t -d build -m \"[skip ci] Build for $(git log --pretty=format:%H -n1)\"",
     "prepublish": "node scripts/prepublish.mjs",
     "prune": "./prune-gh-pages.sh",
