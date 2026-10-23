@@ -8,8 +8,9 @@ import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
 
+// '_top' so the whole page leaves when the editor is embedded in the mission platform iframe
 const onClickLogo = () => {
-    window.location = 'https://scratch.mit.edu';
+    window.open('https://playqubit.io', '_top');
 };
 
 const handleTelemetryModalCancel = () => {
