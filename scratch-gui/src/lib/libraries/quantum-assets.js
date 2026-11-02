@@ -10,7 +10,17 @@ const LOCAL_ASSETS = [
     '1379658c9b4bd4de381ed893ae75816f.png',
     'e532dcf3ed7d0e54821f0c47e1186312.png',
     '39fc6371830f1827eef4467f757f66ae.png',
-    '6ee0c10bc04751aeecddf36651e05118.png'
+    '6ee0c10bc04751aeecddf36651e05118.png',
+    // Qubit2 sprite (Qubit2_1 ... Qubit2_6)
+    '1762054f702db15ff8477f3d179c3931.png',
+    '602b016b308ec4bae06e07676645633d.png',
+    '061a2aa74e53905729db72d3a44b2117.png',
+    '016f2f598d057cd207ae1ad35d8d18c3.png',
+    '95604f6cdc3ef77ec04602bacd674520.png',
+    '0b47ed82ec8886e0e7e979b4b9222ef8.png',
+    // State sprite (ground, excited)
+    'acd0d83688d1ded7f476d818e017fec7.png',
+    '906eddf479c3d9b7aef6bde8e3d8c90a.png'
 ];
 
 /**
