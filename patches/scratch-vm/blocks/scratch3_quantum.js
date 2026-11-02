@@ -295,12 +295,19 @@ class Scratch3QuantumBlocks {
         return globalCircuit.result || '';
     }
 
+    // counts: "0: 49, 1: 51" (state order, observed states only)
+    // state:  "1, 0" (observed states, most frequent first)
     getResultData (args) {
         const dataType = args.DATA_TYPE || 'state';
+        const counts = globalCircuit.counts || {};
+        const states = Object.keys(counts);
         if (dataType === 'counts') {
-            return JSON.stringify(globalCircuit.counts || {});
+            return states.sort()
+                .map(state => `${state}: ${counts[state]}`)
+                .join(', ');
         }
-        return globalCircuit.result || '';
+        return states.sort((a, b) => (counts[b] - counts[a]) || (a < b ? -1 : 1))
+            .join(', ');
     }
 
     getShotResult (args) {
