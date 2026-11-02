@@ -3,11 +3,21 @@ import React from 'react';
 import Modal from '../../containers/modal.jsx';
 import styles from './visualization-modal.css';
 
-const VisualizationModalComponent = ({imageData, onRequestClose}) => (
+const TITLES = {
+    circuit: 'Quantum Circuit Diagram',
+    histogram: 'Quantum Measurement Results'
+};
+
+const ALT_TEXT = {
+    circuit: 'Quantum Circuit Diagram',
+    histogram: 'Quantum Measurement Histogram'
+};
+
+const VisualizationModalComponent = ({imageData, type, onRequestClose}) => (
     <Modal
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
-        contentLabel="Quantum Measurement Results"
+        contentLabel={TITLES[type] || TITLES.histogram}
         onRequestClose={onRequestClose}
         id="visualizationModal"
     >
@@ -16,7 +26,7 @@ const VisualizationModalComponent = ({imageData, onRequestClose}) => (
                 <img
                     className={styles.histogramImage}
                     src={imageData}
-                    alt="Quantum Measurement Histogram"
+                    alt={ALT_TEXT[type] || ALT_TEXT.histogram}
                 />
             ) : (
                 <div className={styles.loading}>Loading...</div>
@@ -27,6 +37,7 @@ const VisualizationModalComponent = ({imageData, onRequestClose}) => (
 
 VisualizationModalComponent.propTypes = {
     imageData: PropTypes.string,
+    type: PropTypes.oneOf(['circuit', 'histogram']),
     onRequestClose: PropTypes.func.isRequired
 };
 

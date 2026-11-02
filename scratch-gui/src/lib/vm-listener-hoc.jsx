@@ -117,7 +117,7 @@ const vmListenerHOC = function (WrappedComponent) {
         }
         handleVisualizationShow (data) {
             // Store data in global state and open modal
-            setVisualizationData(data.imageData, data.onClose);
+            setVisualizationData(data.imageData, data.type, data.onClose);
             this.props.onOpenVisualizationModal();
 
             // Auto-save visualization to Supabase for admin dashboard

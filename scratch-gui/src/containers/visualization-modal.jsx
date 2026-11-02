@@ -28,10 +28,11 @@ class VisualizationModal extends React.Component {
     }
 
     render () {
-        const {imageData} = getVisualizationData();
+        const {imageData, type} = getVisualizationData();
         return (
             <VisualizationModalComponent
                 imageData={imageData}
+                type={type}
                 onRequestClose={this.handleRequestClose}
             />
         );
