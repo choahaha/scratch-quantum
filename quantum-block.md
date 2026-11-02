@@ -29,7 +29,7 @@ Scratch Quantum 프로젝트에서 사용되는 양자 컴퓨팅 블록들의 �
 
 **Scratch 블록:**
 ```
-create a circuit (NUM_QUBITS) qubits             # 한국어: 큐비트 (NUM_QUBITS)개를 사용하는 회로 만들기
+create a circuit (NUM_QUBITS) qubits             # 한국어: 큐비트 (NUM_QUBITS)개 회로 만들기
 ```
 
 **기능:**

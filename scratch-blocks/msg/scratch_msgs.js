@@ -8954,7 +8954,7 @@ Blockly.ScratchMsgs.locales["ko"] =
     "BROADCAST_MODAL_TITLE": "새로운 메시지",
     "DEFAULT_BROADCAST_MESSAGE_NAME": "메시지1",
     "CATEGORY_QUANTUM": "양자",
-    "QUANTUM_CREATECIRCUIT": "큐비트 %1개를 사용하는 회로 만들기",
+    "QUANTUM_CREATECIRCUIT": "큐비트 %1개 회로 만들기",
     "QUANTUM_PREPARESTATE": "큐비트 %1을 %2 상태로 준비하기",
     "QUANTUM_GATE_H": "H 게이트 큐비트 %1",
     "QUANTUM_GATE_X": "X 게이트 큐비트 %1",
