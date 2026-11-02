@@ -76,6 +76,11 @@ class Scratch3VisualizationBlocks {
             log.warn('Visualization: No circuit to draw. Create a circuit first.');
             return Promise.resolve();
         }
+        if (quantumCircuit.error) {
+            // The circuit failed validation (e.g. a misplaced prepare block): don't draw it.
+            log.warn(`Visualization: Circuit has an error: ${quantumCircuit.error}`);
+            return Promise.resolve();
+        }
 
         return new Promise(resolve => {
             fetchWithTimeout(`${QUANTUM_API_URL}/api/visualization/circuit-diagram`, {

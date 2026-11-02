@@ -48,6 +48,34 @@ Blockly.Blocks['quantum_createCircuit'] = {
 };
 
 // ============================================
+// 1-1. quantum_prepareState - 큐비트 상태 준비하기 (회로 시작 부분)
+// ============================================
+Blockly.Blocks['quantum_prepareState'] = {
+  init: function() {
+    this.jsonInit({
+      "id": "quantum_prepareState",
+      "message0": Blockly.Msg.QUANTUM_PREPARESTATE,
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "QUBIT"
+        },
+        {
+          "type": "field_dropdown",
+          "name": "STATE",
+          "options": [
+            ['0', '0'],
+            ['1', '1']
+          ]
+        }
+      ],
+      "category": Blockly.Categories.quantum,
+      "extensions": ["colours_quantum", "shape_statement"]
+    });
+  }
+};
+
+// ============================================
 // 2. quantum_gateH - H 게이트 (Hadamard)
 // ============================================
 Blockly.Blocks['quantum_gateH'] = {

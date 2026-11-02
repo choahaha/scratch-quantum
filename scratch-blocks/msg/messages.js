@@ -293,7 +293,8 @@ Blockly.Msg.CATEGORY_MYBLOCKS = 'My Blocks';
 Blockly.Msg.CATEGORY_QUANTUM = 'Quantum';
 
 // Quantum blocks
-Blockly.Msg.QUANTUM_CREATECIRCUIT = 'create circuit %1 qubits';
+Blockly.Msg.QUANTUM_CREATECIRCUIT = 'create a circuit with %1 qubit(s)';
+Blockly.Msg.QUANTUM_PREPARESTATE = 'prepare qubit %1 in state %2';
 Blockly.Msg.QUANTUM_GATE_H = 'H gate qubit %1';
 Blockly.Msg.QUANTUM_GATE_X = 'X gate qubit %1';
 Blockly.Msg.QUANTUM_GATE_Y = 'Y gate qubit %1';

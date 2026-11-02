@@ -6,7 +6,8 @@ Scratch Quantum 프로젝트에서 사용되는 양자 컴퓨팅 블록들의 �
 
 | 블록명 | Opcode | 블록 타입 |
 |--------|--------|----------|
-| create quantum circuit | `quantum_createCircuit` | Statement |
+| create a circuit with (1) qubit(s) | `quantum_createCircuit` | Statement |
+| prepare qubit (0) in state [0 ▾] | `quantum_prepareState` | Statement |
 | H gate | `quantum_gateH` | Statement |
 | X gate | `quantum_gateX` | Statement |
 | Y gate | `quantum_gateY` | Statement |
@@ -24,24 +25,51 @@ Scratch Quantum 프로젝트에서 사용되는 양자 컴퓨팅 블록들의 �
 
 ## 블록 상세 설명 및 Python 대응
 
-### 1. create quantum circuit (양자 회로 생성)
+### 1. create a circuit (회로 만들기)
 
 **Scratch 블록:**
 ```
-create quantum circuit qubits [NUM_QUBITS] classical bits [NUM_CLBITS]
+create a circuit with (NUM_QUBITS) qubit(s)      # 한국어: 큐비트 (NUM_QUBITS)개를 사용하는 회로 만들기
 ```
 
 **기능:**
-- 지정된 수의 큐비트와 클래식 비트를 가진 양자 회로를 생성합니다.
-- 기본값: 큐비트 1개, 클래식 비트 1개
+- 사용할 큐비트 수를 정하고 새 회로를 만듭니다. 이전 회로, 결과, 상태 준비 기록을 모두 초기화합니다.
+- 팔레트 기본값: 큐비트 1개
 - 제한: 최대 10개 큐비트, 100개 게이트
 
 **Python (Qiskit) 대응:**
 ```python
 from qiskit import QuantumCircuit
 
-# 큐비트 2개, 클래식 비트 2개인 회로 생성
-qc = QuantumCircuit(2, 2)
+qc = QuantumCircuit(2)  # 큐비트 2개 (측정 시 measure_all이 클래식 비트를 추가)
+```
+
+---
+
+### 1-1. prepare state (상태 준비하기)
+
+**Scratch 블록:**
+```
+prepare qubit (QUBIT) in state [STATE ▾]         # 한국어: 큐비트 (QUBIT)을 [STATE ▾] 상태로 준비하기
+```
+
+**기능:**
+- 회로 시작 부분에서 큐비트의 초기 상태를 0 또는 1로 고릅니다. 큐비트 번호는 0부터 시작합니다.
+- 준비하지 않은 큐비트는 0 상태로 시작합니다.
+
+**규칙 (VM과 백엔드가 같은 규칙으로 검사):**
+- 회로 만들기 블록 뒤에 와야 합니다.
+- 모든 상태 준비는 첫 게이트나 측정보다 앞에 와야 합니다.
+- 큐비트마다 한 번만 준비할 수 있습니다 (같은 상태라도 두 번이면 오류).
+- 큐비트 번호는 회로 안의 정수, 상태는 0 또는 1이어야 합니다. 잘못된 값은 보정하지 않고 오류로 처리합니다.
+- 오류가 나면 그 실행은 서버에 보내지 않고, `get result`가 오류 문구를 돌려줍니다.
+
+**Python (Qiskit) 대응:**
+```python
+qc = QuantumCircuit(1)
+# prepare qubit 0 in state 0 → 게이트 없음 (기본 상태 0)
+# prepare qubit 0 in state 1 → qc.x(0)
+qc.x(0)
 ```
 
 ---

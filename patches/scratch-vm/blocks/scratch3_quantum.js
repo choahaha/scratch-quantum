@@ -1,4 +1,5 @@
 const Cast = require('../util/cast');
+const formatMessage = require('format-message');
 const {fetchWithTimeout} = require('../util/fetch-with-timeout');
 const log = require('../util/log');
 
@@ -9,12 +10,83 @@ const QUANTUM_API_URL = 'https://quantum-backend-production-3180.up.railway.app'
 const SERVER_TIMEOUT_MS = 30000;
 
 // 전역 회로 상태 (모든 스프라이트에서 공유)
+// preparedQubits / operationsStarted: 상태 준비 블록 순서·중복 검사용
+// error: 검증 실패 메시지. 설정되면 이후 블록은 무시되고 run은 서버에 요청하지 않는다.
 let globalCircuit = {
     blocks: [],
     result: '',
     counts: {},
-    shotsDetail: []
+    shotsDetail: [],
+    preparedQubits: [],
+    operationsStarted: false,
+    error: null
 };
+
+// 학습자에게 보여줄 오류 문구 (현재 에디터 언어가 한국어면 한국어, 그 외에는 영어)
+const MESSAGES = {
+    en: {
+        prefix: 'Error: ',
+        noCircuit: 'Run the "create a circuit" block first.',
+        prepareOrder: 'Put the "prepare qubit" blocks before any gate or measurement blocks.',
+        alreadyPrepared: 'Qubit {qubit} is already prepared. Change the state in the existing prepare block instead.',
+        badQubit: 'Qubit {qubit} is not in this circuit. Use a whole number from 0 to {max}.',
+        badState: 'The state must be 0 or 1.'
+    },
+    ko: {
+        prefix: '오류: ',
+        noCircuit: '먼저 회로 만들기 블록을 실행해 주세요.',
+        prepareOrder: '상태 준비 블록을 게이트와 측정 블록보다 앞에 놓아 주세요.',
+        alreadyPrepared: '큐비트 {qubit}은(는) 이미 준비했어요. 기존 준비 블록의 상태를 변경해 주세요.',
+        badQubit: '회로에 없는 큐비트 번호예요({qubit}). 0부터 {max}까지의 정수를 입력해 주세요.',
+        badState: '상태는 0 또는 1만 선택할 수 있어요.'
+    }
+};
+
+const getLocale = () => {
+    const locale = formatMessage.setup().locale || 'en';
+    return locale.toLowerCase().startsWith('ko') ? 'ko' : 'en';
+};
+
+const message = (key, params = {}) => {
+    const text = MESSAGES[getLocale()][key];
+    return text.replace(/\{(\w+)\}/g, (match, name) => String(params[name]));
+};
+
+// 검증 실패: 이전 결과를 지우고 오류를 기록한다. 같은 회로의 이후 블록은 무시된다.
+const failCircuit = text => {
+    globalCircuit.error = text;
+    globalCircuit.result = `${MESSAGES[getLocale()].prefix}${text}`;
+    globalCircuit.counts = {};
+    globalCircuit.shotsDetail = [];
+    log.warn(`Quantum: ${text}`);
+};
+
+// 게이트·측정 블록 공통: 오류 상태면 무시하고, 아니면 회로에 추가하고 준비 단계를 닫는다.
+const addOperation = block => {
+    if (globalCircuit.error) return;
+    globalCircuit.blocks.push(block);
+    globalCircuit.operationsStarted = true;
+};
+
+// Update the existing object instead of reassigning (keeps the runtime reference)
+const resetCircuit = () => {
+    globalCircuit.blocks = [];
+    globalCircuit.result = '';
+    globalCircuit.counts = {};
+    globalCircuit.shotsDetail = [];
+    globalCircuit.preparedQubits = [];
+    globalCircuit.operationsStarted = false;
+    globalCircuit.error = null;
+};
+
+// True when the running block is wrapped (at any depth) by a quantum_run C-block
+const isInsideRun = util => util.thread.stack.some(blockId => {
+    const block = util.target.blocks.getBlock(blockId);
+    return block && block.opcode === 'quantum_run';
+});
+
+const hasCircuit = () => globalCircuit.blocks.length > 0 &&
+    globalCircuit.blocks[0].opcode === 'quantum_createCircuit';
 
 class Scratch3QuantumBlocks {
     constructor (runtime) {
@@ -26,6 +98,7 @@ class Scratch3QuantumBlocks {
     getPrimitives () {
         return {
             quantum_createCircuit: this.createCircuit,
+            quantum_prepareState: this.prepareState,
             quantum_gateH: this.gateH,
             quantum_gateX: this.gateX,
             quantum_gateY: this.gateY,
@@ -40,26 +113,71 @@ class Scratch3QuantumBlocks {
         };
     }
 
-    createCircuit (args) {
+    createCircuit (args, util) {
         const numQubits = Cast.toNumber(args.NUM_QUBITS);
 
-        // Update existing object instead of reassigning (keeps runtime reference)
-        globalCircuit.blocks = [{
+        // Inside a run, an earlier error (e.g. "prepare" placed before this block)
+        // must still fail the run, so a later "create a circuit" can't clear it.
+        if (globalCircuit.error && isInsideRun(util)) return;
+
+        resetCircuit();
+        globalCircuit.blocks.push({
             opcode: 'quantum_createCircuit',
             args: {
                 NUM_QUBITS: numQubits
             }
-        }];
-        globalCircuit.result = '';
-        globalCircuit.counts = {};
-        globalCircuit.shotsDetail = [];
+        });
 
         log.log(`Quantum: Created circuit with ${numQubits} qubits`);
     }
 
+    // 회로 시작 부분에서 큐비트의 초기 상태(0 또는 1)를 고른다.
+    // 백엔드는 1 준비를 X 게이트 하나로 바꾸므로, 게이트·측정 이전에 큐비트당 한 번만 허용한다.
+    prepareState (args) {
+        if (globalCircuit.error) return;
+
+        const rawQubit = args.QUBIT;
+        const rawState = String(args.STATE);
+        const block = {
+            opcode: 'quantum_prepareState',
+            args: {QUBIT: rawQubit, STATE: rawState}
+        };
+
+        if (!hasCircuit()) {
+            failCircuit(message('noCircuit'));
+            return;
+        }
+        // 문제가 된 블록도 기록해 둔다: 미션 제출 시 백엔드가 같은 규칙으로 다시 거절한다.
+        globalCircuit.blocks.push(block);
+
+        if (globalCircuit.operationsStarted) {
+            failCircuit(message('prepareOrder'));
+            return;
+        }
+
+        const numQubits = Cast.toNumber(globalCircuit.blocks[0].args.NUM_QUBITS);
+        const qubit = Number(rawQubit);
+        if (String(rawQubit).trim() === '' || !Number.isInteger(qubit) || qubit < 0 || qubit >= numQubits) {
+            failCircuit(message('badQubit', {qubit: rawQubit, max: Math.max(numQubits - 1, 0)}));
+            return;
+        }
+        if (rawState !== '0' && rawState !== '1') {
+            failCircuit(message('badState'));
+            return;
+        }
+        if (globalCircuit.preparedQubits.indexOf(qubit) !== -1) {
+            failCircuit(message('alreadyPrepared', {qubit}));
+            return;
+        }
+
+        block.args = {QUBIT: qubit, STATE: Number(rawState)};
+        globalCircuit.preparedQubits.push(qubit);
+        log.log(`Quantum: Prepared qubit ${qubit} in state ${rawState}`);
+    }
+
     gateH (args) {
         const qubit = Cast.toNumber(args.QUBIT);
-        globalCircuit.blocks.push({
+        addOperation({
             opcode: 'quantum_gateH',
             args: { QUBIT: qubit }
         });
@@ -68,7 +186,7 @@ class Scratch3QuantumBlocks {
 
     gateX (args) {
         const qubit = Cast.toNumber(args.QUBIT);
-        globalCircuit.blocks.push({
+        addOperation({
             opcode: 'quantum_gateX',
             args: { QUBIT: qubit }
         });
@@ -76,7 +194,7 @@ class Scratch3QuantumBlocks {
 
     gateY (args) {
         const qubit = Cast.toNumber(args.QUBIT);
-        globalCircuit.blocks.push({
+        addOperation({
             opcode: 'quantum_gateY',
             args: { QUBIT: qubit }
         });
@@ -84,7 +202,7 @@ class Scratch3QuantumBlocks {
 
     gateZ (args) {
         const qubit = Cast.toNumber(args.QUBIT);
-        globalCircuit.blocks.push({
+        addOperation({
             opcode: 'quantum_gateZ',
             args: { QUBIT: qubit }
         });
@@ -93,14 +211,14 @@ class Scratch3QuantumBlocks {
     gateCX (args) {
         const control = Cast.toNumber(args.CONTROL);
         const target = Cast.toNumber(args.TARGET);
-        globalCircuit.blocks.push({
+        addOperation({
             opcode: 'quantum_gateCX',
             args: { CONTROL: control, TARGET: target }
         });
     }
 
     measureAll () {
-        globalCircuit.blocks.push({
+        addOperation({
             opcode: 'quantum_measureAll',
             args: {}
         });
@@ -113,16 +231,24 @@ class Scratch3QuantumBlocks {
         // send the assembled circuit to the backend.
         if (typeof util.stackFrame.ranBody === 'undefined') {
             util.stackFrame.ranBody = true;
+            // A run with wrapped blocks starts from a clean slate, so a previous
+            // run's circuit, preparations or results can't leak into this one.
+            // (An empty run keeps the old behavior of sending blocks run above it.)
+            if (util.target.blocks.getBranch(util.thread.peekStack(), 1)) {
+                resetCircuit();
+            }
             util.startBranch(1, true); // execute SUBSTACK once, then re-enter run
             return;
         }
 
         const shots = Cast.toNumber(args.SHOTS);
 
-        if (globalCircuit.blocks.length === 0 ||
-            globalCircuit.blocks[0].opcode !== 'quantum_createCircuit') {
-            globalCircuit.result = 'Error: Use the "create circuit" block first!';
-            log.warn('Quantum: No circuit created before run');
+        if (!globalCircuit.error && !hasCircuit()) {
+            failCircuit(message('noCircuit'));
+        }
+        if (globalCircuit.error) {
+            // 검증 실패: 서버에 요청하지 않고 오류 문구를 결과로 남긴다.
+            globalCircuit.result = `${MESSAGES[getLocale()].prefix}${globalCircuit.error}`;
             return Promise.resolve();
         }
 
@@ -135,7 +261,8 @@ class Scratch3QuantumBlocks {
             },
             body: JSON.stringify({
                 blocks: globalCircuit.blocks,
-                shots: shots
+                shots: shots,
+                locale: getLocale()
             })
         }, SERVER_TIMEOUT_MS)
             .then(response => response.json())

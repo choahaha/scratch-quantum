@@ -748,9 +748,17 @@ const quantum = function (isInitialSetup, isStage, targetId, colors) {
         <block type="quantum_createCircuit">
             <value name="NUM_QUBITS">
                 <shadow type="math_number">
-                    <field name="NUM">2</field>
+                    <field name="NUM">1</field>
                 </shadow>
             </value>
+        </block>
+        <block type="quantum_prepareState">
+            <value name="QUBIT">
+                <shadow type="math_number">
+                    <field name="NUM">0</field>
+                </shadow>
+            </value>
+            <field name="STATE">0</field>
         </block>
         ${blockSeparator}
         <block type="quantum_gateH">
