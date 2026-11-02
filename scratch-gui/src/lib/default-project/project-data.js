@@ -66,7 +66,7 @@ const projectData = translateFunction => {
             },
             {
                 isStage: false,
-                name: 'Qubit1',
+                name: 'State',
                 variables: {},
                 lists: {},
                 broadcasts: {},
@@ -74,58 +74,22 @@ const projectData = translateFunction => {
                 currentCostume: 0,
                 costumes: [
                     {
-                        assetId: 'd3e828697fd4339cf404d8ff755925a0',
-                        name: 'Qubit1_1',
+                        assetId: 'acd0d83688d1ded7f476d818e017fec7',
+                        name: 'ground',
                         bitmapResolution: 2,
-                        md5ext: 'd3e828697fd4339cf404d8ff755925a0.png',
+                        md5ext: 'acd0d83688d1ded7f476d818e017fec7.png',
                         dataFormat: 'png',
                         rotationCenterX: 120,
-                        rotationCenterY: 103
+                        rotationCenterY: 97
                     },
                     {
-                        assetId: 'fc88e38b3f1ee02d7b65f34b5176b154',
-                        name: 'Qubit1_2',
+                        assetId: '906eddf479c3d9b7aef6bde8e3d8c90a',
+                        name: 'excited',
                         bitmapResolution: 2,
-                        md5ext: 'fc88e38b3f1ee02d7b65f34b5176b154.png',
+                        md5ext: '906eddf479c3d9b7aef6bde8e3d8c90a.png',
                         dataFormat: 'png',
                         rotationCenterX: 120,
-                        rotationCenterY: 105
-                    },
-                    {
-                        assetId: '1379658c9b4bd4de381ed893ae75816f',
-                        name: 'Qubit1_3',
-                        bitmapResolution: 2,
-                        md5ext: '1379658c9b4bd4de381ed893ae75816f.png',
-                        dataFormat: 'png',
-                        rotationCenterX: 120,
-                        rotationCenterY: 103
-                    },
-                    {
-                        assetId: 'e532dcf3ed7d0e54821f0c47e1186312',
-                        name: 'Qubit1_4',
-                        bitmapResolution: 2,
-                        md5ext: 'e532dcf3ed7d0e54821f0c47e1186312.png',
-                        dataFormat: 'png',
-                        rotationCenterX: 120,
-                        rotationCenterY: 95
-                    },
-                    {
-                        assetId: '39fc6371830f1827eef4467f757f66ae',
-                        name: 'Qubit1_5',
-                        bitmapResolution: 2,
-                        md5ext: '39fc6371830f1827eef4467f757f66ae.png',
-                        dataFormat: 'png',
-                        rotationCenterX: 120,
-                        rotationCenterY: 105
-                    },
-                    {
-                        assetId: '6ee0c10bc04751aeecddf36651e05118',
-                        name: 'Qubit1_6',
-                        bitmapResolution: 2,
-                        md5ext: '6ee0c10bc04751aeecddf36651e05118.png',
-                        dataFormat: 'png',
-                        rotationCenterX: 120,
-                        rotationCenterY: 110
+                        rotationCenterY: 106
                     }
                 ],
                 sounds: [
