@@ -1,6 +1,7 @@
 import {ScratchStorage} from 'scratch-storage';
 
 import defaultProject from './default-project';
+import getLocalAssetURL from './libraries/quantum-assets';
 
 /**
  * Wrapper for ScratchStorage which adds default web sources.
@@ -17,6 +18,13 @@ class Storage extends ScratchStorage {
             }
         });
         this.cacheDefaultProject();
+        // Scratch Quantum library assets are served from static/, not the Scratch CDN.
+        // Registered before the official stores so these never hit the CDN first;
+        // returning false skips this store for every other asset.
+        this.addWebStore(
+            [this.AssetType.ImageBitmap],
+            asset => getLocalAssetURL(`${asset.assetId}.${asset.dataFormat}`) || false
+        );
     }
     addOfficialScratchWebStores () {
         this.addWebStore(

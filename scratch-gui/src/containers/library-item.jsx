@@ -4,6 +4,7 @@ import React from 'react';
 import {injectIntl} from 'react-intl';
 
 import LibraryItemComponent from '../components/library-item/library-item.jsx';
+import getLocalAssetURL from '../lib/libraries/quantum-assets';
 
 class LibraryItem extends React.PureComponent {
     constructor (props) {
@@ -106,7 +107,7 @@ class LibraryItem extends React.PureComponent {
     render () {
         const iconMd5 = this.curIconMd5();
         const iconURL = iconMd5 ?
-            `https://cdn.assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/` :
+            (getLocalAssetURL(iconMd5) || `https://cdn.assets.scratch.mit.edu/internalapi/asset/${iconMd5}/get/`) :
             this.props.iconRawURL;
         return (
             <LibraryItemComponent
