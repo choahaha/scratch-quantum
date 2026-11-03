@@ -6,7 +6,7 @@ Scratch Quantum 프로젝트에서 사용되는 양자 컴퓨팅 블록들의 �
 
 | 블록명 | Opcode | 블록 타입 |
 |--------|--------|----------|
-| create a circuit (1) qubits | `quantum_createCircuit` | Statement |
+| create a circuit with (1) qubit | `quantum_createCircuit` | Statement |
 | prepare qubit (0) in state [0 ▾] | `quantum_prepareState` | Statement |
 | H gate | `quantum_gateH` | Statement |
 | X gate | `quantum_gateX` | Statement |
@@ -29,7 +29,7 @@ Scratch Quantum 프로젝트에서 사용되는 양자 컴퓨팅 블록들의 �
 
 **Scratch 블록:**
 ```
-create a circuit (NUM_QUBITS) qubits             # 한국어: 큐비트 (NUM_QUBITS)개 회로 만들기
+create a circuit with (NUM_QUBITS) qubit           # 한국어: 큐비트 (NUM_QUBITS)개 회로 만들기
 ```
 
 **기능:**

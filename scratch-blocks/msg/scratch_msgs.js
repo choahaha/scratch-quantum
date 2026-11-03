@@ -5478,7 +5478,7 @@ Blockly.ScratchMsgs.locales["en"] =
     "BROADCAST_MODAL_TITLE": "New Message",
     "DEFAULT_BROADCAST_MESSAGE_NAME": "message1",
     "CATEGORY_QUANTUM": "Quantum",
-    "QUANTUM_CREATECIRCUIT": "create a circuit %1 qubits",
+    "QUANTUM_CREATECIRCUIT": "create a circuit with %1 qubit",
     "QUANTUM_PREPARESTATE": "prepare qubit %1 in state %2",
     "QUANTUM_GATE_H": "H gate qubit %1",
     "QUANTUM_GATE_X": "X gate qubit %1",
