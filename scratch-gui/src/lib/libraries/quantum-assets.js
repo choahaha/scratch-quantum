@@ -20,7 +20,11 @@ const LOCAL_ASSETS = [
     '0b47ed82ec8886e0e7e979b4b9222ef8.png',
     // State sprite (ground, excited)
     'acd0d83688d1ded7f476d818e017fec7.png',
-    '906eddf479c3d9b7aef6bde8e3d8c90a.png'
+    '906eddf479c3d9b7aef6bde8e3d8c90a.png',
+    // Alice, Bob and Qcat sprites
+    '1ea2e425e61e3c2f29295732dbe95aa2.png',
+    '184615c73af0fda92ef60be8dbf708d6.png',
+    '3d8897917685ad0b21ed25f634f55793.png'
 ];
 
 /**

@@ -165,6 +165,72 @@
         "blocks": {}
     },
     {
+        "name": "Alice",
+        "tags": [
+            "fantasy",
+            "quantum"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "1ea2e425e61e3c2f29295732dbe95aa2",
+                "name": "Alice",
+                "bitmapResolution": 2,
+                "md5ext": "1ea2e425e61e3c2f29295732dbe95aa2.png",
+                "dataFormat": "png",
+                "rotationCenterX": 82,
+                "rotationCenterY": 120
+            }
+        ],
+        "sounds": [],
+        "blocks": {}
+    },
+    {
+        "name": "Bob",
+        "tags": [
+            "fantasy",
+            "quantum"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "184615c73af0fda92ef60be8dbf708d6",
+                "name": "Bob",
+                "bitmapResolution": 2,
+                "md5ext": "184615c73af0fda92ef60be8dbf708d6.png",
+                "dataFormat": "png",
+                "rotationCenterX": 69,
+                "rotationCenterY": 120
+            }
+        ],
+        "sounds": [],
+        "blocks": {}
+    },
+    {
+        "name": "Qcat",
+        "tags": [
+            "fantasy",
+            "quantum"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "3d8897917685ad0b21ed25f634f55793",
+                "name": "Qcat",
+                "bitmapResolution": 2,
+                "md5ext": "3d8897917685ad0b21ed25f634f55793.png",
+                "dataFormat": "png",
+                "rotationCenterX": 111,
+                "rotationCenterY": 120
+            }
+        ],
+        "sounds": [],
+        "blocks": {}
+    },
+    {
         "name": "Abby",
         "tags": [
             "people",
