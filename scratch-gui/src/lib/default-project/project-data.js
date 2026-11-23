@@ -75,7 +75,7 @@ const projectData = translateFunction => {
                 costumes: [
                     {
                         assetId: '5868e4cdf2d96fd268aae4a733745a9a',
-                        name: 'Zappy_0',
+                        name: 'ground',
                         bitmapResolution: 2,
                         md5ext: '5868e4cdf2d96fd268aae4a733745a9a.png',
                         dataFormat: 'png',
@@ -84,7 +84,7 @@ const projectData = translateFunction => {
                     },
                     {
                         assetId: 'ab1ac9bf37edfd867f7d0c9cc522064a',
-                        name: 'Zappy_1',
+                        name: 'excited',
                         bitmapResolution: 2,
                         md5ext: 'ab1ac9bf37edfd867f7d0c9cc522064a.png',
                         dataFormat: 'png',

@@ -25,7 +25,7 @@ const LOCAL_ASSETS = [
     '1ea2e425e61e3c2f29295732dbe95aa2.png',
     '184615c73af0fda92ef60be8dbf708d6.png',
     '3d8897917685ad0b21ed25f634f55793.png',
-    // Zappy sprite (Zappy_0, Zappy_1)
+    // Zappy sprite (ground, excited)
     '5868e4cdf2d96fd268aae4a733745a9a.png',
     'ab1ac9bf37edfd867f7d0c9cc522064a.png'
 ];
