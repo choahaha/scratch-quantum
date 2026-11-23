@@ -1,5 +1,36 @@
 [
     {
+        "name": "Zappy",
+        "tags": [
+            "fantasy",
+            "quantum"
+        ],
+        "isStage": false,
+        "variables": {},
+        "costumes": [
+            {
+                "assetId": "5868e4cdf2d96fd268aae4a733745a9a",
+                "name": "Zappy_0",
+                "bitmapResolution": 2,
+                "md5ext": "5868e4cdf2d96fd268aae4a733745a9a.png",
+                "dataFormat": "png",
+                "rotationCenterX": 105,
+                "rotationCenterY": 120
+            },
+            {
+                "assetId": "ab1ac9bf37edfd867f7d0c9cc522064a",
+                "name": "Zappy_1",
+                "bitmapResolution": 2,
+                "md5ext": "ab1ac9bf37edfd867f7d0c9cc522064a.png",
+                "dataFormat": "png",
+                "rotationCenterX": 107,
+                "rotationCenterY": 120
+            }
+        ],
+        "sounds": [],
+        "blocks": {}
+    },
+    {
         "name": "Qubit1",
         "tags": [
             "fantasy",

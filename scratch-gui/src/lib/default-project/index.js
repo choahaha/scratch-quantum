@@ -4,8 +4,8 @@ import projectData from './project-data';
 import popWav from '!arraybuffer-loader!./83a9787d4cb6f3b7632b4ddfebf74367.wav?';
 import meowWav from '!arraybuffer-loader!./83c36d806dc92327b9e7049a565c6bff.wav?';
 import backdrop from '!raw-loader!./cd21514d0531fdffb22204e0ec5ed84a.svg?';
-import stateGround from '!arraybuffer-loader!../../../static/quantum-assets/acd0d83688d1ded7f476d818e017fec7.png?';
-import stateExcited from '!arraybuffer-loader!../../../static/quantum-assets/906eddf479c3d9b7aef6bde8e3d8c90a.png?';
+import zappy0 from '!arraybuffer-loader!../../../static/quantum-assets/5868e4cdf2d96fd268aae4a733745a9a.png?';
+import zappy1 from '!arraybuffer-loader!../../../static/quantum-assets/ab1ac9bf37edfd867f7d0c9cc522064a.png?';
 /* eslint-enable import/no-unresolved */
 
 const defaultProject = translator => {
@@ -39,15 +39,15 @@ const defaultProject = translator => {
         dataFormat: 'SVG',
         data: encoder.encode(backdrop)
     }, {
-        id: 'acd0d83688d1ded7f476d818e017fec7',
+        id: '5868e4cdf2d96fd268aae4a733745a9a',
         assetType: 'ImageBitmap',
         dataFormat: 'PNG',
-        data: new Uint8Array(stateGround)
+        data: new Uint8Array(zappy0)
     }, {
-        id: '906eddf479c3d9b7aef6bde8e3d8c90a',
+        id: 'ab1ac9bf37edfd867f7d0c9cc522064a',
         assetType: 'ImageBitmap',
         dataFormat: 'PNG',
-        data: new Uint8Array(stateExcited)
+        data: new Uint8Array(zappy1)
     }];
 };
 

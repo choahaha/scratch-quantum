@@ -66,7 +66,7 @@ const projectData = translateFunction => {
             },
             {
                 isStage: false,
-                name: 'State',
+                name: 'Zappy',
                 variables: {},
                 lists: {},
                 broadcasts: {},
@@ -74,22 +74,22 @@ const projectData = translateFunction => {
                 currentCostume: 0,
                 costumes: [
                     {
-                        assetId: 'acd0d83688d1ded7f476d818e017fec7',
-                        name: 'ground',
+                        assetId: '5868e4cdf2d96fd268aae4a733745a9a',
+                        name: 'Zappy_0',
                         bitmapResolution: 2,
-                        md5ext: 'acd0d83688d1ded7f476d818e017fec7.png',
+                        md5ext: '5868e4cdf2d96fd268aae4a733745a9a.png',
                         dataFormat: 'png',
-                        rotationCenterX: 120,
-                        rotationCenterY: 97
+                        rotationCenterX: 105,
+                        rotationCenterY: 120
                     },
                     {
-                        assetId: '906eddf479c3d9b7aef6bde8e3d8c90a',
-                        name: 'excited',
+                        assetId: 'ab1ac9bf37edfd867f7d0c9cc522064a',
+                        name: 'Zappy_1',
                         bitmapResolution: 2,
-                        md5ext: '906eddf479c3d9b7aef6bde8e3d8c90a.png',
+                        md5ext: 'ab1ac9bf37edfd867f7d0c9cc522064a.png',
                         dataFormat: 'png',
-                        rotationCenterX: 120,
-                        rotationCenterY: 106
+                        rotationCenterX: 107,
+                        rotationCenterY: 120
                     }
                 ],
                 sounds: [
