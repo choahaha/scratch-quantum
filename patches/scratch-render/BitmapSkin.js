@@ -50,10 +50,10 @@ class BitmapSkin extends Skin {
     }
 
     /**
-     * Scratch Quantum: filter with linear interpolation when the bitmap is drawn smaller than its
-     * texture (e.g. a 2x-resolution costume at 100% size on a 1x screen). Nearest-neighbor there
-     * skips texels, so thin outlines break up. At 1:1 or when enlarged, keep Scratch's nearest-neighbor
-     * look so bitmaps stay sharp and pixel art stays blocky.
+     * Scratch Quantum: use nearest-neighbor only when each texel lands on a whole number of screen
+     * pixels (1:1, 2x, 3x ...), where it is sharp and keeps pixel art blocky. At any other scale it
+     * skips or doubles texels unevenly, so outlines look jagged: shrunk (a 2x costume on a 1x screen)
+     * or slightly enlarged (e.g. 1.1x on a retina screen with a wide stage). Use linear filtering there.
      * @param {?Array<Number>} scale The screen-space X and Y scaling factors, as percentages.
      * @param {Drawable} drawable The drawable that this skin's texture will be applied to.
      * @return {boolean} True if this skin's texture should be filtered with nearest-neighbor interpolation.
@@ -63,9 +63,11 @@ class BitmapSkin extends Skin {
         if (!scale) return true;
         // Screen pixels per texel along each axis; below 1 means the texture is being shrunk.
         const resolution = this._costumeResolution || 1;
-        const pixelsPerTexelX = Math.abs(scale[0]) / 100 / resolution;
-        const pixelsPerTexelY = Math.abs(scale[1]) / 100 / resolution;
-        return Math.min(pixelsPerTexelX, pixelsPerTexelY) >= 0.99;
+        const isWholeMultiple = pixelsPerTexel => (
+            pixelsPerTexel >= 0.99 && Math.abs(pixelsPerTexel - Math.round(pixelsPerTexel)) < 0.01
+        );
+        return isWholeMultiple(Math.abs(scale[0]) / 100 / resolution) &&
+            isWholeMultiple(Math.abs(scale[1]) / 100 / resolution);
     }
 
     /**
